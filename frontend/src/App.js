@@ -1778,7 +1778,7 @@ const HomePage = () => {
         )}
 
         {/* Empty State */}
-        {!selectedStock && pinnedStocks.length === 0 && (
+        {stackedStocks.length === 0 && pinnedStocks.length === 0 && (
           <div className="flex flex-col items-center justify-center min-h-[60vh]" data-testid="empty-state">
             <div className="text-center max-w-md">
               <TrendingUp className="w-16 h-16 mx-auto mb-4 text-[#d946ef] opacity-50" />
@@ -1786,7 +1786,7 @@ const HomePage = () => {
                 Ready for Moonshot
               </h2>
               <p className="text-gray-400">
-                Search for a stock by ticker or company name to get started. Pin your favorites for quick access.
+                Search for a stock by ticker or company name to get started. Pin your favorites for quick access. You can stack up to {MAX_STACKED_STOCKS} stocks!
               </p>
             </div>
           </div>

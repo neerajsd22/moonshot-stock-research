@@ -1174,49 +1174,13 @@ const HomePage = () => {
         {/* Chart and Detailed Analysis for selected stock */}
         {selectedStock && stockQuote && viewMode === 'spacious' && (
           <div className="space-y-6 fade-in" data-testid="stock-details-container">
-                          className="flex items-center gap-2 btn-outline-gold"
-                        >
-                          <Pin
-                            className={`w-4 h-4 ${
-                              isStockPinned(stockQuote.ticker) ? 'fill-[#d946ef] text-[#d946ef]' : ''
-                            }`}
-                          />
-                          {isStockPinned(stockQuote.ticker) ? 'Unpin' : 'Pin'}
-                        </Button>
-                      </div>
-                      <p className="text-base text-gray-400 mt-2" data-testid="stock-company-name">
-                        {stockQuote.company_name}
-                      </p>
-                    </div>
-                    
-                    <div className="text-right">
-                      <div
-                        className="text-4xl lg:text-5xl font-bold text-white mono-numbers"
-                        data-testid="stock-price"
-                      >
-                        {getCurrencySymbol(stockQuote.ticker, stockQuote.currency)}{stockQuote.price.toFixed(2)}
-                      </div>
-                      <div
-                        className={`text-base font-medium mt-2 mono-numbers ${
-                          stockQuote.change >= 0 ? 'text-green-400' : 'text-red-400'
-                        }`}
-                        data-testid="stock-change"
-                      >
-                        {stockQuote.change >= 0 ? '+' : ''}
-                        {stockQuote.change.toFixed(2)} ({stockQuote.change_percent.toFixed(2)}%)
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
             {/* Chart */}
             <Card className="premium-card gold-gradient-border">
               <CardHeader className="p-6">
                 <div className="flex items-center justify-between flex-wrap gap-4">
                   <div className="flex items-center gap-3">
                     <CardTitle className="text-white" style={{ fontFamily: 'Outfit, sans-serif' }} data-testid="chart-title">
-                      Historical Price
+                      Historical Price - {selectedStock}
                       </CardTitle>
                       <Button
                         data-testid="advanced-chart-button"

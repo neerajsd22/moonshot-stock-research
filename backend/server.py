@@ -22,7 +22,9 @@ load_dotenv(ROOT_DIR / '.env')
 
 # MongoDB connection with fallback for deployment
 mongo_url = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
-db_name = os.environ.get('DB_NAME', 'moonshot_db')
+db_name = os.environ.get('DB_NAME')
+if not db_name:
+    raise ValueError("DB_NAME environment variable is required")
 client = AsyncIOMotorClient(mongo_url)
 db = client[db_name]
 

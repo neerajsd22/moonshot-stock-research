@@ -688,6 +688,16 @@ async def get_stock_quote(ticker: str):
             # Get market state
             market_state = info.get('marketState', 'CLOSED')
             
+            # Get pre-market data
+            pre_market_price = info.get('preMarketPrice')
+            pre_market_change = info.get('preMarketChange')
+            pre_market_change_percent = info.get('preMarketChangePercent')
+            
+            # Get after-hours (post-market) data
+            post_market_price = info.get('postMarketPrice')
+            post_market_change = info.get('postMarketChange')
+            post_market_change_percent = info.get('postMarketChangePercent')
+            
             return {
                 "ticker": ticker.upper(),
                 "price": float(current_price),
@@ -704,7 +714,17 @@ async def get_stock_quote(ticker: str):
                 "day_low": float(day_low) if day_low else None,
                 "pe_ratio": float(pe_ratio) if pe_ratio else None,
                 "dividend_yield": float(dividend_yield * 100) if dividend_yield else None,
-                "market_state": market_state
+                "market_state": market_state,
+                "pre_market": {
+                    "price": float(pre_market_price) if pre_market_price else None,
+                    "change": float(pre_market_change) if pre_market_change else None,
+                    "change_percent": float(pre_market_change_percent * 100) if pre_market_change_percent else None
+                } if pre_market_price else None,
+                "post_market": {
+                    "price": float(post_market_price) if post_market_price else None,
+                    "change": float(post_market_change) if post_market_change else None,
+                    "change_percent": float(post_market_change_percent * 100) if post_market_change_percent else None
+                } if post_market_price else None
             }
         
         quote_data = await run_in_threadpool(fetch_quote)

@@ -267,6 +267,19 @@ const HomePage = () => {
     }
   };
 
+  const fetchEarningsSnapshot = async (ticker) => {
+    setLoadingEarningsSnapshot(true);
+    setEarningsSnapshot(null);
+    try {
+      const response = await axios.get(`${API}/stocks/${ticker}/earnings-snapshot`);
+      setEarningsSnapshot(response.data);
+    } catch (error) {
+      console.error('Error fetching earnings snapshot:', error);
+    } finally {
+      setLoadingEarningsSnapshot(false);
+    }
+  };
+
   const fetchAiAnalysis = async (ticker) => {
     setLoadingAiAnalysis(true);
     setAiAnalysis(null);

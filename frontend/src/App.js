@@ -1917,7 +1917,7 @@ const HomePage = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       {/* Current Metrics */}
                       <div className="p-4 bg-[rgba(255,255,255,0.02)] rounded-lg border border-[rgba(255,255,255,0.05)]">
-                        <h5 className="text-xs font-semibold text-gray-400 mb-3 uppercase tracking-wider">Key Metrics</h5>
+                        <h5 className="text-sm font-semibold text-white mb-3">Key Metrics</h5>
                         <div className="space-y-2">
                           {healthReport.current_metrics?.pe_ratio && (
                             <div className="flex justify-between">
@@ -1954,7 +1954,7 @@ const HomePage = () => {
 
                       {/* Risk Scorecard */}
                       <div className="p-4 bg-[rgba(255,255,255,0.02)] rounded-lg border border-[rgba(255,255,255,0.05)]">
-                        <h5 className="text-xs font-semibold text-gray-400 mb-3 uppercase tracking-wider">Risk Scorecard</h5>
+                        <h5 className="text-sm font-semibold text-white mb-3">Risk Scorecard</h5>
                         <div className="space-y-2">
                           <div className="flex justify-between items-center">
                             <span className="text-xs text-gray-400">Regulatory Risk</span>
@@ -1997,7 +1997,7 @@ const HomePage = () => {
 
                       {/* Sentiment Analysis */}
                       <div className="p-4 bg-[rgba(255,255,255,0.02)] rounded-lg border border-[rgba(255,255,255,0.05)]">
-                        <h5 className="text-xs font-semibold text-gray-400 mb-3 uppercase tracking-wider">Sentiment</h5>
+                        <h5 className="text-sm font-semibold text-white mb-3">Sentiment</h5>
                         <div className="space-y-2">
                           <div className="flex justify-between items-center">
                             <span className="text-xs text-gray-400">Institutional</span>

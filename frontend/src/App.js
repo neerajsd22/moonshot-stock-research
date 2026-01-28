@@ -291,6 +291,19 @@ const HomePage = () => {
     }
   };
 
+  const fetchHealthReport = async (ticker) => {
+    setLoadingHealthReport(true);
+    setHealthReport(null);
+    try {
+      const response = await axios.get(`${API}/stocks/${ticker}/health-report`);
+      setHealthReport(response.data);
+    } catch (error) {
+      console.error('Error fetching health report:', error);
+    } finally {
+      setLoadingHealthReport(false);
+    }
+  };
+
   const fetchAiAnalysis = async (ticker) => {
     setLoadingAiAnalysis(true);
     setAiAnalysis(null);

@@ -71,6 +71,8 @@ const HomePage = () => {
   const [earningsLink, setEarningsLink] = useState(null);
   const [earningsSnapshot, setEarningsSnapshot] = useState(null);
   const [loadingEarningsSnapshot, setLoadingEarningsSnapshot] = useState(false);
+  const [healthReport, setHealthReport] = useState(null);
+  const [loadingHealthReport, setLoadingHealthReport] = useState(false);
   const [aiAnalysis, setAiAnalysis] = useState(null);
   const [loadingAiAnalysis, setLoadingAiAnalysis] = useState(false);
   const [bullBearSentiment, setBullBearSentiment] = useState(null);

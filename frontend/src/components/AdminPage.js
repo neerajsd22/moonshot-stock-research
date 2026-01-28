@@ -299,7 +299,7 @@ const AdminPage = () => {
                         {item.code}
                       </code>
                       <Badge variant="outline" className="text-success border-success/50">
-                        Active
+                        {item.uses_remaining === -1 ? 'Unlimited' : `${item.uses_remaining || '∞'} uses`}
                       </Badge>
                     </div>
                     <div className="flex items-center gap-2">
@@ -320,6 +320,16 @@ const AdminPage = () => {
                             Copy
                           </>
                         )}
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => expireCode(item.code)}
+                        className="text-amber-500 border-amber-500/50 hover:bg-amber-500/10"
+                        data-testid={`expire-code-${item.code}`}
+                      >
+                        <Ban className="w-4 h-4 mr-1" />
+                        Expire
                       </Button>
                       <Button
                         size="sm"

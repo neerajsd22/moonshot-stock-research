@@ -1591,238 +1591,235 @@ const HomePage = () => {
                 </CardContent>
               </Card>
 
-            {/* Stats and Analysis Grid - 2 Column Layout */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Analysis Section */}
-            <Card className="premium-card gold-gradient-border">
-              <CardHeader className="pb-4">
-                <CardTitle className="text-base text-white section-title-gold" style={{ fontFamily: 'Outfit, sans-serif' }}>
-                  Analysis
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {/* Bull vs Bear Sentiment */}
-                <div data-testid="bull-bear-sentiment">
-                  <div className="text-sm font-semibold mb-3 text-white">Bull vs Bear Sentiment</div>
-                  {loadingBullBear ? (
-                    <div className="space-y-2">
-                      <div className="loading-skeleton h-4 w-full rounded" />
-                      <div className="loading-skeleton h-4 w-3/4 rounded" />
-                    </div>
-                  ) : bullBearSentiment ? (
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <div className="text-xs font-medium text-green-400 mb-2 flex items-center gap-1">
-                          📈 Bull Case
+            {/* Financials, Analysis & News - 3 Column Layout */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {/* Column 1: Financials Section */}
+              <Card className="premium-card gold-gradient-border h-fit">
+                <CardHeader className="pb-4">
+                  <CardTitle className="text-base text-white section-title-gold" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                    Financials
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {earningsLink ? (
+                    <div className="space-y-4">
+                      <a
+                        data-testid="earnings-link"
+                        href={earningsLink.earnings_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 text-[#d946ef] hover:text-[#f0abfc] transition-colors"
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                        <span className="text-sm">View Earnings Report</span>
+                      </a>
+                      
+                      {/* Earnings Snapshot */}
+                      <div className="pt-4 border-t border-[rgba(255,255,255,0.06)]">
+                        <div className="text-sm font-semibold mb-3 text-white flex items-center gap-2">
+                          <span>📊</span> Earnings Snapshot
                         </div>
-                        <ul className="space-y-1.5">
-                          {bullBearSentiment.bull_points.map((point, idx) => (
-                            <li key={idx} className="text-xs text-gray-400 flex gap-2">
-                              <span className="text-green-400">•</span>
-                              <span>{point}</span>
-                            </li>
-                          ))}
-                        </ul>
+                        {earningsSnapshot ? (
+                          <div className="grid grid-cols-2 gap-2">
+                            {earningsSnapshot.capex && (
+                              <div className="p-2 bg-[rgba(255,255,255,0.02)] rounded-lg">
+                                <div className="text-xs text-gray-400">CapEx</div>
+                                <div className="text-sm font-semibold text-white mono-numbers">
+                                  ${(Math.abs(earningsSnapshot.capex) / 1e9).toFixed(2)}B
+                                </div>
+                              </div>
+                            )}
+                            {earningsSnapshot.free_cash_flow && (
+                              <div className="p-2 bg-[rgba(255,255,255,0.02)] rounded-lg">
+                                <div className="text-xs text-gray-400">Free Cash Flow</div>
+                                <div className={`text-sm font-semibold mono-numbers ${earningsSnapshot.free_cash_flow >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                                  ${(earningsSnapshot.free_cash_flow / 1e9).toFixed(2)}B
+                                </div>
+                              </div>
+                            )}
+                            {earningsSnapshot.gross_margin && (
+                              <div className="p-2 bg-[rgba(255,255,255,0.02)] rounded-lg">
+                                <div className="text-xs text-gray-400">Gross Margin</div>
+                                <div className="text-sm font-semibold text-white mono-numbers">
+                                  {earningsSnapshot.gross_margin.toFixed(1)}%
+                                </div>
+                              </div>
+                            )}
+                            {earningsSnapshot.return_on_equity && (
+                              <div className="p-2 bg-[rgba(255,255,255,0.02)] rounded-lg">
+                                <div className="text-xs text-gray-400">ROE</div>
+                                <div className={`text-sm font-semibold mono-numbers ${earningsSnapshot.return_on_equity >= 15 ? 'text-green-400' : 'text-white'}`}>
+                                  {earningsSnapshot.return_on_equity.toFixed(1)}%
+                                </div>
+                              </div>
+                            )}
+                            {earningsSnapshot.target_price && (
+                              <div className="p-2 bg-[rgba(255,255,255,0.02)] rounded-lg">
+                                <div className="text-xs text-gray-400">Target</div>
+                                <div className="text-sm font-semibold text-[#d946ef] mono-numbers">
+                                  ${earningsSnapshot.target_price.toFixed(2)}
+                                </div>
+                              </div>
+                            )}
+                            {earningsSnapshot.recommendation && earningsSnapshot.recommendation !== 'N/A' && (
+                              <div className="p-2 bg-[rgba(255,255,255,0.02)] rounded-lg">
+                                <div className="text-xs text-gray-400">Rating</div>
+                                <div className={`text-sm font-semibold ${
+                                  earningsSnapshot.recommendation.includes('BUY') ? 'text-green-400' : 
+                                  earningsSnapshot.recommendation.includes('SELL') ? 'text-red-400' : 'text-yellow-400'
+                                }`}>
+                                  {earningsSnapshot.recommendation}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        ) : (
+                          <div className="text-xs text-gray-500">Loading...</div>
+                        )}
                       </div>
-                      <div>
-                        <div className="text-xs font-medium text-red-400 mb-2 flex items-center gap-1">
-                          📉 Bear Case
-                        </div>
-                        <ul className="space-y-1.5">
-                          {bullBearSentiment.bear_points.map((point, idx) => (
-                            <li key={idx} className="text-xs text-gray-400 flex gap-2">
-                              <span className="text-red-400">•</span>
-                              <span>{point}</span>
-                            </li>
-                          ))}
-                        </ul>
+                      
+                      {/* AI Deep Analysis */}
+                      <div className="pt-4 border-t border-[rgba(255,255,255,0.06)]">
+                        <div className="text-sm font-semibold mb-2 text-white">AI Deep Analysis</div>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => fetchAiAnalysis(stockQuote.ticker)}
+                          disabled={loadingAiAnalysis}
+                          className="w-full btn-outline-gold"
+                        >
+                          {loadingAiAnalysis ? (
+                            <span className="flex items-center gap-2">
+                              <span className="w-4 h-4 gold-spinner" />
+                              Analyzing...
+                            </span>
+                          ) : 'Generate AI Analysis'}
+                        </Button>
+                        {aiAnalysis && !aiAnalysis.error && (
+                          <div className="mt-3 p-3 bg-[rgba(255,255,255,0.02)] rounded-lg text-xs text-gray-400 max-h-32 overflow-y-auto border border-[rgba(255,255,255,0.05)]">
+                            <pre className="whitespace-pre-wrap">{aiAnalysis.analysis.substring(0, 300)}...</pre>
+                          </div>
+                        )}
                       </div>
                     </div>
                   ) : (
-                    <div className="text-xs text-gray-400">Loading sentiment analysis...</div>
+                    <div className="text-center py-8 text-gray-400">
+                      Loading financial data...
+                    </div>
                   )}
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
 
-            {/* Row 2: Latest News and Financials */}
-            <Card className="premium-card gold-gradient-border">
-              <CardHeader className="pb-4">
-                <CardTitle className="text-base text-white section-title-gold" style={{ fontFamily: 'Outfit, sans-serif' }}>Latest News</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {loadingNews ? (
-                  <div className="space-y-4">
-                    {[...Array(3)].map((_, i) => (
-                      <div key={i} className="flex gap-4">
-                        <div className="w-20 h-20 loading-skeleton rounded" />
-                        <div className="flex-1 space-y-2">
-                          <div className="h-4 loading-skeleton rounded w-3/4" />
-                          <div className="h-3 loading-skeleton rounded w-1/2" />
+              {/* Column 2: Analysis Section */}
+              <Card className="premium-card gold-gradient-border h-fit">
+                <CardHeader className="pb-4">
+                  <CardTitle className="text-base text-white section-title-gold" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                    Analysis
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {/* Bull vs Bear Sentiment */}
+                  <div data-testid="bull-bear-sentiment">
+                    <div className="text-sm font-semibold mb-3 text-white">Bull vs Bear Sentiment</div>
+                    {loadingBullBear ? (
+                      <div className="space-y-2">
+                        <div className="loading-skeleton h-4 w-full rounded" />
+                        <div className="loading-skeleton h-4 w-3/4 rounded" />
+                      </div>
+                    ) : bullBearSentiment ? (
+                      <div className="space-y-4">
+                        <div>
+                          <div className="text-xs font-medium text-green-400 mb-2 flex items-center gap-1">
+                            📈 Bull Case
+                          </div>
+                          <ul className="space-y-1.5">
+                            {bullBearSentiment.bull_points.map((point, idx) => (
+                              <li key={idx} className="text-xs text-gray-400 flex gap-2">
+                                <span className="text-green-400">•</span>
+                                <span>{point}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                        <div>
+                          <div className="text-xs font-medium text-red-400 mb-2 flex items-center gap-1">
+                            📉 Bear Case
+                          </div>
+                          <ul className="space-y-1.5">
+                            {bullBearSentiment.bear_points.map((point, idx) => (
+                              <li key={idx} className="text-xs text-gray-400 flex gap-2">
+                                <span className="text-red-400">•</span>
+                                <span>{point}</span>
+                              </li>
+                            ))}
+                          </ul>
                         </div>
                       </div>
-                    ))}
+                    ) : (
+                      <div className="text-xs text-gray-400">Loading sentiment analysis...</div>
+                    )}
                   </div>
-                ) : newsArticles.length > 0 ? (
-                  <div className="space-y-3 stagger-children">
-                    {newsArticles.map((article, index) => (
-                      <a
-                        key={index}
-                        href={article.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex gap-3 p-3 rounded-lg news-card transition-all duration-300 group"
-                        data-testid={`news-article-${index}`}
-                      >
-                        {article.thumbnail && (
-                          <img
-                            src={article.thumbnail}
-                            alt={article.title}
-                            className="w-16 h-16 object-cover rounded flex-shrink-0"
-                            onError={(e) => e.target.style.display = 'none'}
-                          />
-                        )}
-                        <div className="flex-1 min-w-0">
-                          <h3 className="font-semibold text-sm text-white group-hover:text-[#d946ef] transition-colors line-clamp-2 mb-1">
-                            {article.title}
-                          </h3>
-                          <div className="flex items-center gap-2 text-xs text-gray-400">
-                            <span className="font-medium">{article.publisher}</span>
-                            <span>•</span>
-                            <span>{article.published_date}</span>
+                </CardContent>
+              </Card>
+
+              {/* Column 3: Latest News */}
+              <Card className="premium-card gold-gradient-border h-fit">
+                <CardHeader className="pb-4">
+                  <CardTitle className="text-base text-white section-title-gold" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                    Latest News
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {loadingNews ? (
+                    <div className="space-y-3">
+                      {[...Array(3)].map((_, i) => (
+                        <div key={i} className="flex gap-3">
+                          <div className="w-14 h-14 loading-skeleton rounded flex-shrink-0" />
+                          <div className="flex-1 space-y-2">
+                            <div className="h-3 loading-skeleton rounded w-full" />
+                            <div className="h-3 loading-skeleton rounded w-2/3" />
                           </div>
                         </div>
-                        <ExternalLink className="w-4 h-4 text-gray-400 group-hover:text-[#d946ef] transition-colors flex-shrink-0 mt-1" />
-                      </a>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-8 text-gray-400">
-                    No news articles available
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-
-            {/* Financials Section */}
-            <Card className="premium-card gold-gradient-border">
-              <CardHeader className="pb-4">
-                <CardTitle className="text-base text-white section-title-gold" style={{ fontFamily: 'Outfit, sans-serif' }}>
-                  Financials
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {earningsLink ? (
-                  <div className="space-y-4">
-                    <a
-                      data-testid="earnings-link"
-                      href={earningsLink.earnings_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 text-[#d946ef] hover:text-[#f0abfc] transition-colors"
-                    >
-                      <ExternalLink className="w-4 h-4" />
-                      <span className="text-sm">View Earnings Report</span>
-                    </a>
-                    
-                    {/* AI Deep Analysis */}
-                    <div className="pt-4 border-t border-[rgba(255,255,255,0.06)]">
-                      <div className="text-sm font-semibold mb-2 text-white">AI Deep Analysis</div>
-                      <p className="text-xs text-gray-400 mb-3">
-                        Get comprehensive AI-powered analysis with earnings insights and price targets.
-                      </p>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => fetchAiAnalysis(stockQuote.ticker)}
-                        disabled={loadingAiAnalysis}
-                        className="w-full btn-outline-gold"
-                      >
-                        {loadingAiAnalysis ? (
-                          <span className="flex items-center gap-2">
-                            <span className="w-4 h-4 gold-spinner" />
-                            Analyzing...
-                          </span>
-                        ) : 'Generate AI Analysis'}
-                      </Button>
-                      {aiAnalysis && !aiAnalysis.error && (
-                        <div className="mt-3 p-3 bg-[rgba(255,255,255,0.02)] rounded-lg text-xs text-gray-400 max-h-48 overflow-y-auto border border-[rgba(255,255,255,0.05)]">
-                          <pre className="whitespace-pre-wrap">{aiAnalysis.analysis.substring(0, 500)}...</pre>
-                        </div>
-                      )}
+                      ))}
                     </div>
-                    
-                    {/* Earnings Snapshot */}
-                    <div className="pt-4 border-t border-[rgba(255,255,255,0.06)]">
-                      <div className="text-sm font-semibold mb-3 text-white flex items-center gap-2">
-                        <span>📊</span> Earnings Snapshot
-                      </div>
-                      {earningsSnapshot ? (
-                        <div className="grid grid-cols-2 gap-3">
-                          {earningsSnapshot.capex && (
-                            <div className="p-2 bg-[rgba(255,255,255,0.02)] rounded-lg">
-                              <div className="text-xs text-gray-400">CapEx</div>
-                              <div className="text-sm font-semibold text-white mono-numbers">
-                                ${(Math.abs(earningsSnapshot.capex) / 1e9).toFixed(2)}B
-                              </div>
-                            </div>
+                  ) : newsArticles.length > 0 ? (
+                    <div className="space-y-3 stagger-children">
+                      {newsArticles.map((article, index) => (
+                        <a
+                          key={index}
+                          href={article.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex gap-3 p-2 rounded-lg news-card transition-all duration-300 group"
+                          data-testid={`news-article-${index}`}
+                        >
+                          {article.thumbnail && (
+                            <img
+                              src={article.thumbnail}
+                              alt={article.title}
+                              className="w-14 h-14 object-cover rounded flex-shrink-0"
+                              onError={(e) => e.target.style.display = 'none'}
+                            />
                           )}
-                          {earningsSnapshot.free_cash_flow && (
-                            <div className="p-2 bg-[rgba(255,255,255,0.02)] rounded-lg">
-                              <div className="text-xs text-gray-400">Free Cash Flow</div>
-                              <div className={`text-sm font-semibold mono-numbers ${earningsSnapshot.free_cash_flow >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                                ${(earningsSnapshot.free_cash_flow / 1e9).toFixed(2)}B
-                              </div>
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-semibold text-xs text-white group-hover:text-[#d946ef] transition-colors line-clamp-2 mb-1">
+                              {article.title}
+                            </h3>
+                            <div className="flex items-center gap-1 text-xs text-gray-500">
+                              <span className="truncate">{article.publisher}</span>
                             </div>
-                          )}
-                          {earningsSnapshot.gross_margin && (
-                            <div className="p-2 bg-[rgba(255,255,255,0.02)] rounded-lg">
-                              <div className="text-xs text-gray-400">Gross Margin</div>
-                              <div className="text-sm font-semibold text-white mono-numbers">
-                                {earningsSnapshot.gross_margin.toFixed(1)}%
-                              </div>
-                            </div>
-                          )}
-                          {earningsSnapshot.return_on_equity && (
-                            <div className="p-2 bg-[rgba(255,255,255,0.02)] rounded-lg">
-                              <div className="text-xs text-gray-400">Return on Equity</div>
-                              <div className={`text-sm font-semibold mono-numbers ${earningsSnapshot.return_on_equity >= 15 ? 'text-green-400' : 'text-white'}`}>
-                                {earningsSnapshot.return_on_equity.toFixed(1)}%
-                              </div>
-                            </div>
-                          )}
-                          {earningsSnapshot.target_price && (
-                            <div className="p-2 bg-[rgba(255,255,255,0.02)] rounded-lg">
-                              <div className="text-xs text-gray-400">Analyst Target</div>
-                              <div className="text-sm font-semibold text-[#d946ef] mono-numbers">
-                                ${earningsSnapshot.target_price.toFixed(2)}
-                              </div>
-                            </div>
-                          )}
-                          {earningsSnapshot.recommendation && earningsSnapshot.recommendation !== 'N/A' && (
-                            <div className="p-2 bg-[rgba(255,255,255,0.02)] rounded-lg">
-                              <div className="text-xs text-gray-400">Recommendation</div>
-                              <div className={`text-sm font-semibold ${
-                                earningsSnapshot.recommendation.includes('BUY') ? 'text-green-400' : 
-                                earningsSnapshot.recommendation.includes('SELL') ? 'text-red-400' : 'text-yellow-400'
-                              }`}>
-                                {earningsSnapshot.recommendation}
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      ) : (
-                        <div className="text-xs text-gray-500">Loading earnings data...</div>
-                      )}
+                          </div>
+                        </a>
+                      ))}
                     </div>
-                  </div>
-                ) : (
-                  <div className="text-center py-8 text-gray-400">
-                    Loading financial data...
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+                  ) : (
+                    <div className="text-center py-8 text-gray-400 text-sm">
+                      No news available
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </div>
         )}

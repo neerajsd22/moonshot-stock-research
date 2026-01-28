@@ -661,7 +661,7 @@ const HomePage = () => {
                 className="flex items-center gap-2 btn-outline-gold"
               >
                 {isDense ? <LayoutGrid className="w-4 h-4" /> : <LayoutList className="w-4 h-4" />}
-                <span className="hidden sm:inline">{isDense ? 'Spacious' : 'Dense'}</span>
+                <span className="hidden sm:inline">{isDense ? 'Expand' : 'Dense'}</span>
               </Button>
             </div>
           </div>

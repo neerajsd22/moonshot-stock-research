@@ -1244,8 +1244,8 @@ const HomePage = () => {
               <CardHeader className="p-6">
                 <div className="flex items-center justify-between flex-wrap gap-4">
                   <div className="flex items-center gap-3">
-                    <CardTitle className="text-white" style={{ fontFamily: 'Outfit, sans-serif' }} data-testid="chart-title">
-                      Historical Price - {selectedStock}
+                    <CardTitle className="text-white text-2xl" style={{ fontFamily: 'Outfit, sans-serif' }} data-testid="chart-title">
+                      {selectedStock}
                       </CardTitle>
                       <Button
                         data-testid="advanced-chart-button"

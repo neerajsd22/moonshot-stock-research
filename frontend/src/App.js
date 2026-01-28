@@ -1810,7 +1810,7 @@ const HomePage = () => {
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-lg text-white section-title-gold flex items-center gap-2" style={{ fontFamily: 'Outfit, sans-serif' }}>
                     <BrainCircuit className="w-5 h-5 text-[#d946ef]" />
-                    AI Deep Analysis — 8-Quarter Health Report
+                    AI Deep Analysis ( 8 Quarter Health Report )
                   </CardTitle>
                   {healthReport && (
                     <Badge 

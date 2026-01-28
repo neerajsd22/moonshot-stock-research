@@ -68,6 +68,8 @@ const HomePage = () => {
   const [viewMode, setViewMode] = useState('spacious');
   const [period, setPeriod] = useState('1y');
   const [earningsLink, setEarningsLink] = useState(null);
+  const [earningsSnapshot, setEarningsSnapshot] = useState(null);
+  const [loadingEarningsSnapshot, setLoadingEarningsSnapshot] = useState(false);
   const [aiAnalysis, setAiAnalysis] = useState(null);
   const [loadingAiAnalysis, setLoadingAiAnalysis] = useState(false);
   const [bullBearSentiment, setBullBearSentiment] = useState(null);

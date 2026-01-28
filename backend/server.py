@@ -195,6 +195,7 @@ ADMIN_TOKEN = secrets.token_urlsafe(32)
 async def verify_access_code(data: dict):
     """Verify an access code"""
     code = data.get('code', '').upper().strip()
+    skip_decrement = data.get('skip_decrement', False)  # For re-verification calls
     
     if not code:
         raise HTTPException(status_code=400, detail="Access code required")
@@ -208,23 +209,24 @@ async def verify_access_code(data: dict):
     if not access_code:
         raise HTTPException(status_code=401, detail="Invalid access code")
     
-    # Decrement uses_remaining if it exists, otherwise mark as used
-    uses_remaining = access_code.get('uses_remaining', 1)
-    if uses_remaining > 1:
-        await db.access_codes.update_one(
-            {"code": code},
-            {"$inc": {"uses_remaining": -1}}
-        )
-    else:
-        await db.access_codes.update_one(
-            {"code": code},
-            {
-                "$set": {
-                    "is_active": False,
-                    "used_at": datetime.now(timezone.utc).isoformat()
+    # Only decrement on new verifications, not re-verifications
+    if not skip_decrement:
+        uses_remaining = access_code.get('uses_remaining', 1)
+        if uses_remaining > 1:
+            await db.access_codes.update_one(
+                {"code": code},
+                {"$inc": {"uses_remaining": -1}}
+            )
+        elif uses_remaining == 1:
+            await db.access_codes.update_one(
+                {"code": code},
+                {
+                    "$set": {
+                        "is_active": False,
+                        "used_at": datetime.now(timezone.utc).isoformat()
+                    }
                 }
-            }
-        )
+            )
     
     return {"valid": True, "message": "Access granted"}
 

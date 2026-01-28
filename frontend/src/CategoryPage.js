@@ -15,6 +15,7 @@ const CategoryPage = () => {
   const navigate = useNavigate();
   const [stocks, setStocks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [displayName, setDisplayName] = useState(''); // Store actual category name from API
 
   // Helper function to get currency symbol based on ticker
   const getCurrencySymbol = (ticker) => {
@@ -34,6 +35,8 @@ const CategoryPage = () => {
     try {
       const response = await axios.get(`${API}/stocks/category/${categoryName}`);
       setStocks(response.data.stocks);
+      // Use the category name from API response (handles custom categories correctly)
+      setDisplayName(response.data.category || categoryName);
     } catch (error) {
       console.error('Error fetching category stocks:', error);
       toast.error('Failed to load stocks');
@@ -48,6 +51,11 @@ const CategoryPage = () => {
   };
 
   const getCategoryTitle = () => {
+    // If we have a display name from API, use it (especially for custom categories)
+    if (displayName) {
+      return displayName;
+    }
+    
     const titles = {
       'finance': 'Finance',
       'technology': 'Technology',

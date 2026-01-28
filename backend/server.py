@@ -841,6 +841,157 @@ async def get_earnings_snapshot(ticker: str):
         }
 
 
+@api_router.get("/stocks/{ticker}/health-report")
+async def get_stock_health_report(ticker: str):
+    """Get comprehensive 8-Quarter Strategic Investment Health Report"""
+    try:
+        def fetch_health_report():
+            stock = yf.Ticker(ticker.upper())
+            info = stock.info
+            
+            # Get quarterly financials
+            quarterly_financials = stock.quarterly_financials
+            quarterly_balance = stock.quarterly_balance_sheet
+            quarterly_cashflow = stock.quarterly_cashflow
+            
+            # Initialize quarters data
+            quarters_data = []
+            
+            # Get up to 8 quarters of data
+            if quarterly_financials is not None and not quarterly_financials.empty:
+                for i, col in enumerate(quarterly_financials.columns[:8]):
+                    quarter_date = col.strftime('%Y-Q%q') if hasattr(col, 'strftime') else str(col)[:7]
+                    
+                    # Revenue
+                    revenue = quarterly_financials.loc['Total Revenue', col] if 'Total Revenue' in quarterly_financials.index else None
+                    
+                    # Gross Profit & Margin
+                    gross_profit = quarterly_financials.loc['Gross Profit', col] if 'Gross Profit' in quarterly_financials.index else None
+                    gross_margin = (gross_profit / revenue * 100) if revenue and gross_profit else None
+                    
+                    # Operating Income & Margin
+                    operating_income = quarterly_financials.loc['Operating Income', col] if 'Operating Income' in quarterly_financials.index else None
+                    op_margin = (operating_income / revenue * 100) if revenue and operating_income else None
+                    
+                    # Net Income
+                    net_income = quarterly_financials.loc['Net Income', col] if 'Net Income' in quarterly_financials.index else None
+                    
+                    # Free Cash Flow from cashflow statement
+                    fcf = None
+                    if quarterly_cashflow is not None and not quarterly_cashflow.empty and col in quarterly_cashflow.columns:
+                        op_cashflow = quarterly_cashflow.loc['Operating Cash Flow', col] if 'Operating Cash Flow' in quarterly_cashflow.index else None
+                        capex = quarterly_cashflow.loc['Capital Expenditure', col] if 'Capital Expenditure' in quarterly_cashflow.index else None
+                        if op_cashflow is not None and capex is not None:
+                            fcf = op_cashflow + capex  # capex is negative
+                    
+                    quarters_data.append({
+                        "quarter": quarter_date,
+                        "revenue": float(revenue) if revenue else None,
+                        "gross_margin": round(float(gross_margin), 1) if gross_margin else None,
+                        "op_margin": round(float(op_margin), 1) if op_margin else None,
+                        "net_income": float(net_income) if net_income else None,
+                        "fcf": float(fcf) if fcf else None,
+                    })
+            
+            # Get current metrics from info
+            current_metrics = {
+                "market_cap": info.get('marketCap'),
+                "pe_ratio": info.get('forwardPE'),
+                "debt_to_equity": info.get('debtToEquity'),
+                "current_ratio": info.get('currentRatio'),
+                "roic": info.get('returnOnAssets', 0) * 100 if info.get('returnOnAssets') else None,
+                "roe": info.get('returnOnEquity', 0) * 100 if info.get('returnOnEquity') else None,
+                "revenue_growth": info.get('revenueGrowth', 0) * 100 if info.get('revenueGrowth') else None,
+                "earnings_growth": info.get('earningsQuarterlyGrowth', 0) * 100 if info.get('earningsQuarterlyGrowth') else None,
+                "shares_outstanding": info.get('sharesOutstanding'),
+                "float_shares": info.get('floatShares'),
+                "held_by_institutions": info.get('heldPercentInstitutions', 0) * 100 if info.get('heldPercentInstitutions') else None,
+                "short_ratio": info.get('shortRatio'),
+                "beta": info.get('beta'),
+                "target_price": info.get('targetMeanPrice'),
+                "recommendation": info.get('recommendationKey', 'N/A'),
+                "analyst_count": info.get('numberOfAnalystOpinions'),
+                "sector": info.get('sector'),
+                "industry": info.get('industry'),
+            }
+            
+            # Calculate trend indicators
+            trends = {}
+            if len(quarters_data) >= 2:
+                # Revenue trend
+                revenues = [q['revenue'] for q in quarters_data if q['revenue']]
+                if len(revenues) >= 2:
+                    trends['revenue_trend'] = 'accelerating' if revenues[0] > revenues[1] else 'decelerating'
+                
+                # Margin trends
+                margins = [q['gross_margin'] for q in quarters_data if q['gross_margin']]
+                if len(margins) >= 2:
+                    trends['margin_trend'] = 'improving' if margins[0] > margins[1] else 'declining'
+                
+                # FCF Quality
+                fcfs = [q['fcf'] for q in quarters_data if q['fcf']]
+                net_incomes = [q['net_income'] for q in quarters_data if q['net_income']]
+                if fcfs and net_incomes:
+                    fcf_quality = sum(fcfs) / sum(net_incomes) if sum(net_incomes) != 0 else 0
+                    trends['fcf_quality'] = 'strong' if fcf_quality > 0.8 else 'moderate' if fcf_quality > 0.5 else 'weak'
+            
+            # Risk assessment (simplified)
+            risk_scores = {
+                "regulatory_risk": 3 if info.get('sector') in ['Technology', 'Healthcare', 'Financial Services'] else 2,
+                "concentration_risk": 5 if current_metrics.get('held_by_institutions', 0) > 80 else 3,
+                "debt_risk": min(10, int((info.get('debtToEquity', 0) or 0) / 50)) if info.get('debtToEquity') else 2,
+            }
+            
+            # Sentiment assessment
+            sentiment = {
+                "institutional": 'bullish' if current_metrics.get('held_by_institutions', 0) > 60 else 'neutral',
+                "analyst": 'bullish' if current_metrics.get('recommendation', '').lower() in ['buy', 'strong_buy'] else 'bearish' if current_metrics.get('recommendation', '').lower() in ['sell', 'strong_sell'] else 'neutral',
+            }
+            
+            # Overall verdict
+            score = 0
+            if trends.get('revenue_trend') == 'accelerating': score += 2
+            if trends.get('margin_trend') == 'improving': score += 2
+            if trends.get('fcf_quality') == 'strong': score += 2
+            if current_metrics.get('roe', 0) > 15: score += 1
+            if current_metrics.get('debt_to_equity', 100) < 100: score += 1
+            if sentiment.get('analyst') == 'bullish': score += 2
+            
+            verdict = 'BUY' if score >= 7 else 'HOLD' if score >= 4 else 'AVOID'
+            
+            return {
+                "ticker": ticker.upper(),
+                "company_name": info.get('longName', ticker.upper()),
+                "audit_date": datetime.now(timezone.utc).strftime('%Y-%m-%d'),
+                "quarters": quarters_data,
+                "current_metrics": current_metrics,
+                "trends": trends,
+                "risk_scores": risk_scores,
+                "sentiment": sentiment,
+                "verdict": verdict,
+                "score": score,
+            }
+        
+        report = await run_in_threadpool(fetch_health_report)
+        return report
+        
+    except Exception as e:
+        logger.error(f"Health report error for {ticker}: {str(e)}")
+        return {
+            "ticker": ticker.upper(),
+            "company_name": ticker.upper(),
+            "audit_date": datetime.now(timezone.utc).strftime('%Y-%m-%d'),
+            "quarters": [],
+            "current_metrics": {},
+            "trends": {},
+            "risk_scores": {},
+            "sentiment": {},
+            "verdict": "N/A",
+            "score": 0,
+            "error": str(e)
+        }
+
+
 # Get stock news
 @api_router.get("/stocks/{ticker}/news", response_model=List[NewsArticle])
 async def get_stock_news(ticker: str):

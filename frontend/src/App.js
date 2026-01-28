@@ -1189,6 +1189,39 @@ const HomePage = () => {
                         <div className={`text-base font-medium mt-2 mono-numbers ${stock.quote.change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
                           {stock.quote.change >= 0 ? '+' : ''}{stock.quote.change?.toFixed(2)} ({stock.quote.change_percent?.toFixed(2)}%)
                         </div>
+                        
+                        {/* Extended Hours Prices */}
+                        {(stock.quote.pre_market || stock.quote.post_market) && (
+                          <div className="mt-3 p-3 bg-[rgba(255,255,255,0.03)] rounded-lg border border-[rgba(255,255,255,0.08)] text-left">
+                            <div className="text-xs text-gray-500 mb-2 font-medium">Extended Hours</div>
+                            {stock.quote.pre_market && (
+                              <div className="flex items-center justify-between py-1">
+                                <span className="text-xs text-gray-400">Pre-Market</span>
+                                <div className="flex items-center gap-2">
+                                  <span className="text-sm text-white mono-numbers">
+                                    {getCurrencySymbol(stock.ticker, stock.quote.currency)}{stock.quote.pre_market.price?.toFixed(2)}
+                                  </span>
+                                  <span className={`text-xs mono-numbers ${stock.quote.pre_market.change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                                    {stock.quote.pre_market.change >= 0 ? '+' : ''}{stock.quote.pre_market.change?.toFixed(2)} ({stock.quote.pre_market.change_percent?.toFixed(2)}%)
+                                  </span>
+                                </div>
+                              </div>
+                            )}
+                            {stock.quote.post_market && (
+                              <div className="flex items-center justify-between py-1">
+                                <span className="text-xs text-gray-400">After Hours</span>
+                                <div className="flex items-center gap-2">
+                                  <span className="text-sm text-white mono-numbers">
+                                    {getCurrencySymbol(stock.ticker, stock.quote.currency)}{stock.quote.post_market.price?.toFixed(2)}
+                                  </span>
+                                  <span className={`text-xs mono-numbers ${stock.quote.post_market.change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                                    {stock.quote.post_market.change >= 0 ? '+' : ''}{stock.quote.post_market.change?.toFixed(2)} ({stock.quote.post_market.change_percent?.toFixed(2)}%)
+                                  </span>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        )}
                       </div>
                     </div>
                   </CardContent>

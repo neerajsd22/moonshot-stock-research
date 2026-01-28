@@ -1846,8 +1846,8 @@ const HomePage = () => {
                               <tr className="border-b border-[rgba(255,255,255,0.1)]">
                                 <th className="text-left py-2 px-3 text-gray-400 font-medium">Metric</th>
                                 {healthReport.quarters.slice(0, 8).map((q, i) => (
-                                  <th key={i} className="text-right py-2 px-2 text-gray-400 font-medium">
-                                    Q{healthReport.quarters.length - i}
+                                  <th key={i} className="text-center py-2 px-2 text-gray-400 font-medium text-xs">
+                                    {q.quarter}
                                   </th>
                                 ))}
                                 <th className="text-left py-2 px-3 text-gray-400 font-medium">Trend</th>

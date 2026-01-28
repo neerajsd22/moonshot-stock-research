@@ -113,12 +113,17 @@ const HomePage = () => {
     fetchAlertCount();
   }, []);
 
+  // Keep stackedStocksRef updated
+  useEffect(() => {
+    stackedStocksRef.current = stackedStocks;
+  }, [stackedStocks]);
+
   // Handle stock query parameter from category page
   useEffect(() => {
     const stockParam = searchParams.get('stock');
     if (stockParam) {
-      // Check if stock already exists in the current stackedStocks
-      const alreadyExists = stackedStocks.some(s => s.ticker === stockParam);
+      // Use ref to get the latest stackedStocks value
+      const alreadyExists = stackedStocksRef.current.some(s => s.ticker === stockParam);
       if (alreadyExists) {
         toast.info(`${stockParam} is already displayed`);
       } else {
@@ -128,7 +133,7 @@ const HomePage = () => {
       setSearchParams({});
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams]); // Only trigger on searchParams change, selectStock handles its own duplicate check
+  }, [searchParams]); // Only trigger on searchParams change
 
   // Check price alerts periodically
   useEffect(() => {

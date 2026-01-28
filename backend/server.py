@@ -863,17 +863,17 @@ async def get_stock_health_report(ticker: str):
                     if hasattr(col, 'strftime'):
                         quarter_end = col
                         quarter_month = quarter_end.month
-                        quarter_year = quarter_end.strftime('%y')
+                        quarter_year = quarter_end.strftime('%Y')
                         
                         # Determine quarter and date range
                         if quarter_month in [1, 2, 3]:
-                            quarter_label = f"Q1 (Jan'{quarter_year}-Mar'{quarter_year})"
+                            quarter_label = f"Q1 {quarter_year} (Jan-Mar)"
                         elif quarter_month in [4, 5, 6]:
-                            quarter_label = f"Q2 (Apr'{quarter_year}-Jun'{quarter_year})"
+                            quarter_label = f"Q2 {quarter_year} (Apr-Jun)"
                         elif quarter_month in [7, 8, 9]:
-                            quarter_label = f"Q3 (Jul'{quarter_year}-Sep'{quarter_year})"
+                            quarter_label = f"Q3 {quarter_year} (Jul-Sep)"
                         else:
-                            quarter_label = f"Q4 (Oct'{quarter_year}-Dec'{quarter_year})"
+                            quarter_label = f"Q4 {quarter_year} (Oct-Dec)"
                     else:
                         quarter_label = str(col)[:7]
                     

@@ -59,6 +59,7 @@ const HomePage = () => {
   const [searchResults, setSearchResults] = useState([]);
   // Changed from single stock to array of stacked stocks (max 10)
   const [stackedStocks, setStackedStocks] = useState([]);
+  const stackedStocksRef = useRef(stackedStocks); // Ref to track current stackedStocks
   // Keep selectedStock for backward compatibility with some features
   const [selectedStock, setSelectedStock] = useState(null);
   const [stockQuote, setStockQuote] = useState(null);

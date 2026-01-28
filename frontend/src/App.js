@@ -338,10 +338,11 @@ const HomePage = () => {
   // Function to fetch all data for a single stock and return it as an object
   const fetchStockData = async (ticker) => {
     try {
-      const [quoteRes, historyRes, earningsRes, sentimentRes, newsRes] = await Promise.all([
+      const [quoteRes, historyRes, earningsRes, earningsSnapshotRes, sentimentRes, newsRes] = await Promise.all([
         axios.get(`${API}/stocks/${ticker}/quote`),
         axios.get(`${API}/stocks/${ticker}/history`, { params: { period } }),
         axios.get(`${API}/stocks/${ticker}/earnings-link`).catch(() => ({ data: null })),
+        axios.get(`${API}/stocks/${ticker}/earnings-snapshot`).catch(() => ({ data: null })),
         axios.get(`${API}/stocks/${ticker}/bull-bear-sentiment`).catch(() => ({ 
           data: {
             bull_points: ['Strong market position', 'Positive growth trends', 'Favorable recommendations'],
@@ -356,6 +357,7 @@ const HomePage = () => {
         quote: quoteRes.data,
         historicalData: historyRes.data,
         earningsLink: earningsRes.data,
+        earningsSnapshot: earningsSnapshotRes.data,
         bullBearSentiment: sentimentRes.data,
         newsArticles: newsRes.data,
         period,

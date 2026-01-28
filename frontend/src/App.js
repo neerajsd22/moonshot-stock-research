@@ -410,6 +410,7 @@ const HomePage = () => {
       setStockQuote(stockData.quote);
       setHistoricalData(stockData.historicalData);
       setEarningsLink(stockData.earningsLink);
+      setEarningsSnapshot(stockData.earningsSnapshot);
       setBullBearSentiment(stockData.bullBearSentiment);
       setNewsArticles(stockData.newsArticles);
       setComparisonPoints([]);

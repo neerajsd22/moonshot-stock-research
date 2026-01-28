@@ -1695,30 +1695,6 @@ const HomePage = () => {
                           <div className="text-xs text-gray-500">Loading...</div>
                         )}
                       </div>
-                      
-                      {/* AI Deep Analysis */}
-                      <div className="pt-4 border-t border-[rgba(255,255,255,0.06)]">
-                        <div className="text-sm font-semibold mb-2 text-white">AI Deep Analysis</div>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => fetchAiAnalysis(stockQuote.ticker)}
-                          disabled={loadingAiAnalysis}
-                          className="w-full btn-outline-gold"
-                        >
-                          {loadingAiAnalysis ? (
-                            <span className="flex items-center gap-2">
-                              <span className="w-4 h-4 gold-spinner" />
-                              Analyzing...
-                            </span>
-                          ) : 'Generate AI Analysis'}
-                        </Button>
-                        {aiAnalysis && !aiAnalysis.error && (
-                          <div className="mt-3 p-3 bg-[rgba(255,255,255,0.02)] rounded-lg text-xs text-gray-400 max-h-32 overflow-y-auto border border-[rgba(255,255,255,0.05)]">
-                            <pre className="whitespace-pre-wrap">{aiAnalysis.analysis.substring(0, 300)}...</pre>
-                          </div>
-                        )}
-                      </div>
                     </div>
                   ) : (
                     <div className="text-center py-8 text-gray-400">
@@ -1838,6 +1814,282 @@ const HomePage = () => {
                 </CardContent>
               </Card>
             </div>
+
+            {/* AI Deep Analysis - Full Width Health Report */}
+            <Card className="premium-card gold-gradient-border" data-testid="ai-deep-analysis">
+              <CardHeader className="pb-4">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-lg text-white section-title-gold flex items-center gap-2" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                    <BrainCircuit className="w-5 h-5 text-[#d946ef]" />
+                    AI Deep Analysis — 8-Quarter Health Report
+                  </CardTitle>
+                  {healthReport && (
+                    <Badge 
+                      className={`text-sm px-3 py-1 ${
+                        healthReport.verdict === 'BUY' ? 'bg-green-500/20 text-green-400 border-green-500/30' :
+                        healthReport.verdict === 'HOLD' ? 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' :
+                        'bg-red-500/20 text-red-400 border-red-500/30'
+                      }`}
+                    >
+                      {healthReport.verdict} ({healthReport.score}/10)
+                    </Badge>
+                  )}
+                </div>
+                {healthReport && (
+                  <p className="text-xs text-gray-500 mt-1">
+                    Audit Date: {healthReport.audit_date} • {healthReport.company_name}
+                  </p>
+                )}
+              </CardHeader>
+              <CardContent>
+                {healthReport ? (
+                  <div className="space-y-6">
+                    {/* Core Vitals Matrix */}
+                    <div>
+                      <h4 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
+                        <span className="w-2 h-2 bg-[#d946ef] rounded-full"></span>
+                        Core Vitals Matrix (8-Quarter Trend)
+                      </h4>
+                      {healthReport.quarters && healthReport.quarters.length > 0 ? (
+                        <div className="overflow-x-auto">
+                          <table className="w-full text-xs">
+                            <thead>
+                              <tr className="border-b border-[rgba(255,255,255,0.1)]">
+                                <th className="text-left py-2 px-3 text-gray-400 font-medium">Metric</th>
+                                {healthReport.quarters.slice(0, 8).map((q, i) => (
+                                  <th key={i} className="text-right py-2 px-2 text-gray-400 font-medium">
+                                    Q{healthReport.quarters.length - i}
+                                  </th>
+                                ))}
+                                <th className="text-left py-2 px-3 text-gray-400 font-medium">Trend</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr className="border-b border-[rgba(255,255,255,0.05)]">
+                                <td className="py-2 px-3 text-gray-300">Revenue</td>
+                                {healthReport.quarters.slice(0, 8).map((q, i) => (
+                                  <td key={i} className="text-right py-2 px-2 text-white mono-numbers">
+                                    {q.revenue ? `$${(q.revenue / 1e9).toFixed(1)}B` : '-'}
+                                  </td>
+                                ))}
+                                <td className={`py-2 px-3 ${healthReport.trends?.revenue_trend === 'accelerating' ? 'text-green-400' : 'text-red-400'}`}>
+                                  {healthReport.trends?.revenue_trend === 'accelerating' ? '📈 Accelerating' : '📉 Slowing'}
+                                </td>
+                              </tr>
+                              <tr className="border-b border-[rgba(255,255,255,0.05)]">
+                                <td className="py-2 px-3 text-gray-300">Gross Margin</td>
+                                {healthReport.quarters.slice(0, 8).map((q, i) => (
+                                  <td key={i} className="text-right py-2 px-2 text-white mono-numbers">
+                                    {q.gross_margin ? `${q.gross_margin}%` : '-'}
+                                  </td>
+                                ))}
+                                <td className={`py-2 px-3 ${healthReport.trends?.margin_trend === 'improving' ? 'text-green-400' : 'text-yellow-400'}`}>
+                                  {healthReport.trends?.margin_trend === 'improving' ? '✓ Strong Moat' : '⚠ Monitor'}
+                                </td>
+                              </tr>
+                              <tr className="border-b border-[rgba(255,255,255,0.05)]">
+                                <td className="py-2 px-3 text-gray-300">Op. Margin</td>
+                                {healthReport.quarters.slice(0, 8).map((q, i) => (
+                                  <td key={i} className="text-right py-2 px-2 text-white mono-numbers">
+                                    {q.op_margin ? `${q.op_margin}%` : '-'}
+                                  </td>
+                                ))}
+                                <td className="py-2 px-3 text-gray-400">Efficiency</td>
+                              </tr>
+                              <tr className="border-b border-[rgba(255,255,255,0.05)]">
+                                <td className="py-2 px-3 text-gray-300">Net Income</td>
+                                {healthReport.quarters.slice(0, 8).map((q, i) => (
+                                  <td key={i} className={`text-right py-2 px-2 mono-numbers ${q.net_income >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                                    {q.net_income ? `$${(q.net_income / 1e9).toFixed(1)}B` : '-'}
+                                  </td>
+                                ))}
+                                <td className="py-2 px-3 text-gray-400">Profitability</td>
+                              </tr>
+                              <tr>
+                                <td className="py-2 px-3 text-gray-300">FCF</td>
+                                {healthReport.quarters.slice(0, 8).map((q, i) => (
+                                  <td key={i} className={`text-right py-2 px-2 mono-numbers ${q.fcf >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                                    {q.fcf ? `$${(q.fcf / 1e9).toFixed(1)}B` : '-'}
+                                  </td>
+                                ))}
+                                <td className={`py-2 px-3 ${healthReport.trends?.fcf_quality === 'strong' ? 'text-green-400' : 'text-yellow-400'}`}>
+                                  {healthReport.trends?.fcf_quality === 'strong' ? '✓ Strong' : healthReport.trends?.fcf_quality === 'moderate' ? '⚠ Moderate' : '✗ Weak'}
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      ) : (
+                        <div className="text-xs text-gray-500">Quarterly data not available</div>
+                      )}
+                    </div>
+
+                    {/* Key Metrics & Risk Assessment */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {/* Current Metrics */}
+                      <div className="p-4 bg-[rgba(255,255,255,0.02)] rounded-lg border border-[rgba(255,255,255,0.05)]">
+                        <h5 className="text-xs font-semibold text-gray-400 mb-3 uppercase tracking-wider">Key Metrics</h5>
+                        <div className="space-y-2">
+                          {healthReport.current_metrics?.pe_ratio && (
+                            <div className="flex justify-between">
+                              <span className="text-xs text-gray-400">Forward P/E</span>
+                              <span className="text-xs text-white mono-numbers">{healthReport.current_metrics.pe_ratio.toFixed(1)}</span>
+                            </div>
+                          )}
+                          {healthReport.current_metrics?.roe && (
+                            <div className="flex justify-between">
+                              <span className="text-xs text-gray-400">ROE</span>
+                              <span className={`text-xs mono-numbers ${healthReport.current_metrics.roe >= 15 ? 'text-green-400' : 'text-white'}`}>
+                                {healthReport.current_metrics.roe.toFixed(1)}%
+                              </span>
+                            </div>
+                          )}
+                          {healthReport.current_metrics?.debt_to_equity && (
+                            <div className="flex justify-between">
+                              <span className="text-xs text-gray-400">Debt/Equity</span>
+                              <span className={`text-xs mono-numbers ${healthReport.current_metrics.debt_to_equity < 100 ? 'text-green-400' : 'text-yellow-400'}`}>
+                                {healthReport.current_metrics.debt_to_equity.toFixed(0)}%
+                              </span>
+                            </div>
+                          )}
+                          {healthReport.current_metrics?.revenue_growth && (
+                            <div className="flex justify-between">
+                              <span className="text-xs text-gray-400">Rev Growth</span>
+                              <span className={`text-xs mono-numbers ${healthReport.current_metrics.revenue_growth >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                                {healthReport.current_metrics.revenue_growth.toFixed(1)}%
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Risk Scorecard */}
+                      <div className="p-4 bg-[rgba(255,255,255,0.02)] rounded-lg border border-[rgba(255,255,255,0.05)]">
+                        <h5 className="text-xs font-semibold text-gray-400 mb-3 uppercase tracking-wider">Risk Scorecard</h5>
+                        <div className="space-y-2">
+                          <div className="flex justify-between items-center">
+                            <span className="text-xs text-gray-400">Regulatory Risk</span>
+                            <div className="flex items-center gap-1">
+                              <div className="w-16 h-1.5 bg-[rgba(255,255,255,0.1)] rounded-full overflow-hidden">
+                                <div 
+                                  className={`h-full rounded-full ${healthReport.risk_scores?.regulatory_risk <= 3 ? 'bg-green-400' : healthReport.risk_scores?.regulatory_risk <= 6 ? 'bg-yellow-400' : 'bg-red-400'}`}
+                                  style={{ width: `${(healthReport.risk_scores?.regulatory_risk || 0) * 10}%` }}
+                                />
+                              </div>
+                              <span className="text-xs text-gray-400 w-6">{healthReport.risk_scores?.regulatory_risk}/10</span>
+                            </div>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-xs text-gray-400">Concentration Risk</span>
+                            <div className="flex items-center gap-1">
+                              <div className="w-16 h-1.5 bg-[rgba(255,255,255,0.1)] rounded-full overflow-hidden">
+                                <div 
+                                  className={`h-full rounded-full ${healthReport.risk_scores?.concentration_risk <= 3 ? 'bg-green-400' : healthReport.risk_scores?.concentration_risk <= 6 ? 'bg-yellow-400' : 'bg-red-400'}`}
+                                  style={{ width: `${(healthReport.risk_scores?.concentration_risk || 0) * 10}%` }}
+                                />
+                              </div>
+                              <span className="text-xs text-gray-400 w-6">{healthReport.risk_scores?.concentration_risk}/10</span>
+                            </div>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-xs text-gray-400">Debt Risk</span>
+                            <div className="flex items-center gap-1">
+                              <div className="w-16 h-1.5 bg-[rgba(255,255,255,0.1)] rounded-full overflow-hidden">
+                                <div 
+                                  className={`h-full rounded-full ${healthReport.risk_scores?.debt_risk <= 3 ? 'bg-green-400' : healthReport.risk_scores?.debt_risk <= 6 ? 'bg-yellow-400' : 'bg-red-400'}`}
+                                  style={{ width: `${(healthReport.risk_scores?.debt_risk || 0) * 10}%` }}
+                                />
+                              </div>
+                              <span className="text-xs text-gray-400 w-6">{healthReport.risk_scores?.debt_risk}/10</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Sentiment Analysis */}
+                      <div className="p-4 bg-[rgba(255,255,255,0.02)] rounded-lg border border-[rgba(255,255,255,0.05)]">
+                        <h5 className="text-xs font-semibold text-gray-400 mb-3 uppercase tracking-wider">Sentiment</h5>
+                        <div className="space-y-2">
+                          <div className="flex justify-between items-center">
+                            <span className="text-xs text-gray-400">Institutional</span>
+                            <Badge 
+                              variant="outline" 
+                              className={`text-xs ${
+                                healthReport.sentiment?.institutional === 'bullish' ? 'text-green-400 border-green-400/30' :
+                                healthReport.sentiment?.institutional === 'bearish' ? 'text-red-400 border-red-400/30' :
+                                'text-gray-400 border-gray-400/30'
+                              }`}
+                            >
+                              {healthReport.sentiment?.institutional || 'N/A'}
+                            </Badge>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-xs text-gray-400">Analyst</span>
+                            <Badge 
+                              variant="outline" 
+                              className={`text-xs ${
+                                healthReport.sentiment?.analyst === 'bullish' ? 'text-green-400 border-green-400/30' :
+                                healthReport.sentiment?.analyst === 'bearish' ? 'text-red-400 border-red-400/30' :
+                                'text-gray-400 border-gray-400/30'
+                              }`}
+                            >
+                              {healthReport.sentiment?.analyst || 'N/A'}
+                            </Badge>
+                          </div>
+                          {healthReport.current_metrics?.held_by_institutions && (
+                            <div className="flex justify-between items-center pt-2 border-t border-[rgba(255,255,255,0.05)]">
+                              <span className="text-xs text-gray-400">Inst. Ownership</span>
+                              <span className="text-xs text-white mono-numbers">{healthReport.current_metrics.held_by_institutions.toFixed(1)}%</span>
+                            </div>
+                          )}
+                          {healthReport.current_metrics?.target_price && (
+                            <div className="flex justify-between items-center">
+                              <span className="text-xs text-gray-400">Target Price</span>
+                              <span className="text-xs text-[#d946ef] mono-numbers">${healthReport.current_metrics.target_price.toFixed(2)}</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Final Verdict Summary */}
+                    <div className={`p-4 rounded-lg border ${
+                      healthReport.verdict === 'BUY' ? 'bg-green-500/10 border-green-500/30' :
+                      healthReport.verdict === 'HOLD' ? 'bg-yellow-500/10 border-yellow-500/30' :
+                      'bg-red-500/10 border-red-500/30'
+                    }`}>
+                      <div className="flex items-start gap-4">
+                        <div className={`text-3xl ${
+                          healthReport.verdict === 'BUY' ? 'text-green-400' :
+                          healthReport.verdict === 'HOLD' ? 'text-yellow-400' :
+                          'text-red-400'
+                        }`}>
+                          {healthReport.verdict === 'BUY' ? '✓' : healthReport.verdict === 'HOLD' ? '⚡' : '✗'}
+                        </div>
+                        <div className="flex-1">
+                          <h5 className="text-sm font-semibold text-white mb-1">Analyst Verdict: {healthReport.verdict}</h5>
+                          <p className="text-xs text-gray-400">
+                            Based on 8-quarter trend analysis, {healthReport.company_name} shows 
+                            {healthReport.trends?.revenue_trend === 'accelerating' ? ' accelerating revenue growth' : ' slowing revenue'}, 
+                            {healthReport.trends?.margin_trend === 'improving' ? ' improving margins' : ' margin pressure'}, and 
+                            {healthReport.trends?.fcf_quality === 'strong' ? ' strong cash flow generation' : ' moderate cash flow'}. 
+                            {healthReport.sentiment?.analyst === 'bullish' ? ' Analysts remain bullish' : healthReport.sentiment?.analyst === 'bearish' ? ' Analysts are cautious' : ' Mixed analyst sentiment'} 
+                            with a target price of ${healthReport.current_metrics?.target_price?.toFixed(2) || 'N/A'}.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-center py-12">
+                    <div className="text-center">
+                      <div className="w-8 h-8 gold-spinner mx-auto mb-3" />
+                      <p className="text-sm text-gray-400">Analyzing 8 quarters of financial data...</p>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
           </div>
         )}
 

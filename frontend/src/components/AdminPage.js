@@ -114,6 +114,30 @@ const AdminPage = () => {
     }
   };
 
+  const expireCode = async (code) => {
+    try {
+      await axios.put(`${API}/admin/access-codes/${code}/expire`, {}, {
+        headers: { 'X-Admin-Token': getAdminToken() }
+      });
+      toast.success('Code expired');
+      fetchAccessCodes();
+    } catch (error) {
+      toast.error('Failed to expire code');
+    }
+  };
+
+  const reactivateCode = async (code) => {
+    try {
+      await axios.put(`${API}/admin/access-codes/${code}/reactivate`, {}, {
+        headers: { 'X-Admin-Token': getAdminToken() }
+      });
+      toast.success('Code reactivated');
+      fetchAccessCodes();
+    } catch (error) {
+      toast.error('Failed to reactivate code');
+    }
+  };
+
   const copyCode = (code) => {
     navigator.clipboard.writeText(code);
     setCopiedCode(code);

@@ -209,9 +209,11 @@ async def verify_access_code(data: dict):
     if not access_code:
         raise HTTPException(status_code=401, detail="Invalid access code")
     
-    # Only decrement on new verifications, not re-verifications
-    if not skip_decrement:
-        uses_remaining = access_code.get('uses_remaining', 1)
+    # Check uses_remaining: -1 means unlimited, otherwise decrement
+    uses_remaining = access_code.get('uses_remaining', -1)  # Default to unlimited
+    
+    # Only process usage tracking for limited-use codes (not -1 unlimited)
+    if uses_remaining != -1 and not skip_decrement:
         if uses_remaining > 1:
             await db.access_codes.update_one(
                 {"code": code},

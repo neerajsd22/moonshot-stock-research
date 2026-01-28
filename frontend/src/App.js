@@ -11,6 +11,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { toast } from 'sonner';
 import { Toaster } from '@/components/ui/sonner';
 import { Routes, Route, useNavigate, useSearchParams } from 'react-router-dom';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import CategoryPage from './CategoryPage';
 import CreateCategoryDialog from './components/CreateCategoryDialog';
 import WatchlistManager from './components/WatchlistManager';

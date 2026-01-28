@@ -1821,7 +1821,6 @@ const HomePage = () => {
               </Card>
             </div>
           </div>
-        </div>
         )}
 
         {/* Empty State */}

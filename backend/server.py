@@ -185,7 +185,7 @@ def generate_access_code(length: int = 8) -> str:
 
 
 # Admin password - you can change this
-ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'moonshot2024')
+ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'z7&G2#kL9!pX')
 ADMIN_TOKEN = secrets.token_urlsafe(32)
 
 

@@ -1679,17 +1679,6 @@ const HomePage = () => {
                                 </div>
                               </div>
                             )}
-                            {earningsSnapshot.recommendation && earningsSnapshot.recommendation !== 'N/A' && (
-                              <div className="p-2 bg-[rgba(255,255,255,0.02)] rounded-lg">
-                                <div className="text-xs text-gray-400">Rating</div>
-                                <div className={`text-sm font-semibold ${
-                                  earningsSnapshot.recommendation.includes('BUY') ? 'text-green-400' : 
-                                  earningsSnapshot.recommendation.includes('SELL') ? 'text-red-400' : 'text-yellow-400'
-                                }`}>
-                                  {earningsSnapshot.recommendation}
-                                </div>
-                              </div>
-                            )}
                           </div>
                         ) : (
                           <div className="text-xs text-gray-500">Loading...</div>

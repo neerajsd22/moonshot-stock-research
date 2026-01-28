@@ -949,12 +949,18 @@ async def get_stock_health_report(ticker: str):
             
             # Overall verdict
             score = 0
-            if trends.get('revenue_trend') == 'accelerating': score += 2
-            if trends.get('margin_trend') == 'improving': score += 2
-            if trends.get('fcf_quality') == 'strong': score += 2
-            if current_metrics.get('roe', 0) > 15: score += 1
-            if current_metrics.get('debt_to_equity', 100) < 100: score += 1
-            if sentiment.get('analyst') == 'bullish': score += 2
+            if trends.get('revenue_trend') == 'accelerating':
+                score += 2
+            if trends.get('margin_trend') == 'improving':
+                score += 2
+            if trends.get('fcf_quality') == 'strong':
+                score += 2
+            if current_metrics.get('roe', 0) > 15:
+                score += 1
+            if current_metrics.get('debt_to_equity', 100) < 100:
+                score += 1
+            if sentiment.get('analyst') == 'bullish':
+                score += 2
             
             verdict = 'BUY' if score >= 7 else 'HOLD' if score >= 4 else 'AVOID'
             

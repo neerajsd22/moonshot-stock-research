@@ -582,9 +582,16 @@ const HomePage = () => {
               <div 
                 className="flex items-center gap-3 cursor-pointer group" 
                 onClick={() => {
+                  // Clear all stacked stocks and reset state
+                  setStackedStocks([]);
                   setSelectedStock(null);
+                  setStockQuote(null);
+                  setHistoricalData([]);
                   setComparisonPoints([]);
                   setComparisonMode(false);
+                  setCategoriesCollapsed(false);
+                  setSearchQuery('');
+                  setSearchResults([]);
                 }}
                 data-testid="home-link"
               >

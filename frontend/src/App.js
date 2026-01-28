@@ -437,6 +437,7 @@ const HomePage = () => {
       setHistoricalData(stockData.historicalData);
       setEarningsLink(stockData.earningsLink);
       setEarningsSnapshot(stockData.earningsSnapshot);
+      setHealthReport(stockData.healthReport);
       setBullBearSentiment(stockData.bullBearSentiment);
       setNewsArticles(stockData.newsArticles);
       setComparisonPoints([]);

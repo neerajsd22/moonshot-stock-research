@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { TrendingUp, Key, Copy, Trash2, Plus, RefreshCw, Lock, ArrowLeft, Check } from 'lucide-react';
+import { TrendingUp, Key, Copy, Trash2, Plus, RefreshCw, Lock, ArrowLeft, Check, Ban, RotateCcw } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';

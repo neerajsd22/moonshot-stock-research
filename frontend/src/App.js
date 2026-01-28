@@ -896,8 +896,283 @@ const HomePage = () => {
         />
 
         {/* Pinned Stocks Section - OLD LOCATION - REMOVED */}
-        {/* Selected Stock Details */}
-        {selectedStock && stockQuote && (
+        
+        {/* Dense View - Compact table showing all stacked stocks with Key Stats */}
+        {viewMode === 'dense' && stackedStocks.length > 0 && (
+          <div className="fade-in" data-testid="dense-view-container">
+            <Card className="premium-card gold-gradient-border overflow-hidden">
+              <CardHeader className="p-4 border-b border-[rgba(255,255,255,0.06)]">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-lg text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                    Stacked Stocks ({stackedStocks.length}/{MAX_STACKED_STOCKS})
+                  </CardTitle>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setViewMode('spacious')}
+                    className="flex items-center gap-2 btn-outline-gold"
+                    data-testid="expand-view-button"
+                  >
+                    <LayoutGrid className="w-4 h-4" />
+                    Expand
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent className="p-0">
+                <div className="overflow-x-auto">
+                  <table className="w-full" data-testid="dense-stocks-table">
+                    <thead>
+                      <tr className="bg-[rgba(255,255,255,0.02)] border-b border-[rgba(255,255,255,0.06)]">
+                        <th className="text-left p-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Ticker</th>
+                        <th className="text-right p-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Price</th>
+                        <th className="text-right p-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Change</th>
+                        <th className="text-right p-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Day Open</th>
+                        <th className="text-right p-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Day High</th>
+                        <th className="text-right p-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Day Low</th>
+                        <th className="text-right p-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Market Cap</th>
+                        <th className="text-right p-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">P/E</th>
+                        <th className="text-right p-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">52W High</th>
+                        <th className="text-right p-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">52W Low</th>
+                        <th className="text-right p-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Volume</th>
+                        <th className="text-center p-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {stackedStocks.map((stock, index) => (
+                        <tr 
+                          key={stock.ticker} 
+                          className="border-b border-[rgba(255,255,255,0.04)] hover:bg-[rgba(255,255,255,0.02)] transition-colors"
+                          data-testid={`dense-row-${stock.ticker}`}
+                        >
+                          <td className="p-3">
+                            <div className="flex items-center gap-2">
+                              <span className="font-bold text-white" style={{ fontFamily: 'DM Mono, monospace' }}>{stock.ticker}</span>
+                              <span className="text-xs text-gray-500 hidden lg:inline truncate max-w-[120px]">{stock.quote.company_name}</span>
+                            </div>
+                          </td>
+                          <td className="p-3 text-right">
+                            <span className="font-semibold text-white mono-numbers">
+                              {getCurrencySymbol(stock.ticker, stock.quote.currency)}{stock.quote.price?.toFixed(2)}
+                            </span>
+                          </td>
+                          <td className="p-3 text-right">
+                            <span className={`font-medium mono-numbers ${stock.quote.change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                              {stock.quote.change >= 0 ? '+' : ''}{stock.quote.change?.toFixed(2)} ({stock.quote.change_percent?.toFixed(2)}%)
+                            </span>
+                          </td>
+                          <td className="p-3 text-right text-gray-300 mono-numbers">
+                            {stock.quote.day_open ? `${getCurrencySymbol(stock.ticker, stock.quote.currency)}${stock.quote.day_open.toFixed(2)}` : '-'}
+                          </td>
+                          <td className="p-3 text-right text-gray-300 mono-numbers">
+                            {stock.quote.day_high ? `${getCurrencySymbol(stock.ticker, stock.quote.currency)}${stock.quote.day_high.toFixed(2)}` : '-'}
+                          </td>
+                          <td className="p-3 text-right text-gray-300 mono-numbers">
+                            {stock.quote.day_low ? `${getCurrencySymbol(stock.ticker, stock.quote.currency)}${stock.quote.day_low.toFixed(2)}` : '-'}
+                          </td>
+                          <td className="p-3 text-right text-gray-300 mono-numbers">
+                            {stock.quote.market_cap ? `$${(stock.quote.market_cap / 1e9).toFixed(2)}B` : '-'}
+                          </td>
+                          <td className="p-3 text-right text-gray-300 mono-numbers">
+                            {stock.quote.pe_ratio ? stock.quote.pe_ratio.toFixed(2) : '-'}
+                          </td>
+                          <td className="p-3 text-right text-gray-300 mono-numbers">
+                            {stock.quote.high_52week ? `${getCurrencySymbol(stock.ticker, stock.quote.currency)}${stock.quote.high_52week.toFixed(2)}` : '-'}
+                          </td>
+                          <td className="p-3 text-right text-gray-300 mono-numbers">
+                            {stock.quote.low_52week ? `${getCurrencySymbol(stock.ticker, stock.quote.currency)}${stock.quote.low_52week.toFixed(2)}` : '-'}
+                          </td>
+                          <td className="p-3 text-right text-gray-300 mono-numbers">
+                            {stock.quote.volume ? `${(stock.quote.volume / 1e6).toFixed(2)}M` : '-'}
+                          </td>
+                          <td className="p-3 text-center">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => dismissStock(stock.ticker)}
+                              className="text-gray-400 hover:text-red-400 hover:bg-red-500/10 h-8 w-8 p-0"
+                              data-testid={`dense-dismiss-${stock.ticker}`}
+                            >
+                              <X className="w-4 h-4" />
+                            </Button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {/* Spacious View - Full stock details for each stacked stock */}
+        {viewMode === 'spacious' && stackedStocks.length > 0 && (
+          <div className="space-y-8" data-testid="stacked-stocks-container">
+            {stackedStocks.map((stock, index) => (
+              <div 
+                key={stock.ticker} 
+                className={`space-y-6 ${index === stackedStocks.length - 1 && stockAnimating ? 'stock-slide-in' : 'fade-in'}`}
+                data-testid={`stock-details-${stock.ticker}`}
+              >
+                {/* Stock Header */}
+                <Card className="premium-card gold-gradient-border">
+                  <CardContent className="p-6 lg:p-8">
+                    <div className="flex flex-wrap items-start justify-between gap-4">
+                      <div>
+                        <div className="flex items-center gap-4 flex-wrap">
+                          <h2
+                            className="text-3xl lg:text-4xl font-bold text-white"
+                            style={{ fontFamily: 'Outfit, sans-serif' }}
+                            data-testid={`stock-ticker-${stock.ticker}`}
+                          >
+                            {stock.quote.ticker}
+                          </h2>
+                          
+                          {/* Market Status Badge */}
+                          {stock.quote.market_state && (
+                            <Badge 
+                              variant={stock.quote.market_state === 'REGULAR' ? 'default' : 'secondary'}
+                              className={`${stock.quote.market_state === 'REGULAR' ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-[rgba(255,255,255,0.05)] text-gray-400'}`}
+                            >
+                              <span className="inline-block w-2 h-2 rounded-full bg-current mr-1.5 animate-pulse"></span>
+                              {stock.quote.market_state === 'REGULAR' ? 'Market Open' : 'Market Closed'}
+                            </Badge>
+                          )}
+                          
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() =>
+                              isStockPinned(stock.quote.ticker)
+                                ? unpinStock(stock.quote.ticker)
+                                : pinStock(stock.quote.ticker, stock.quote.company_name)
+                            }
+                            className="flex items-center gap-2 btn-outline-gold"
+                          >
+                            <Pin className={`w-4 h-4 ${isStockPinned(stock.quote.ticker) ? 'fill-[#d946ef] text-[#d946ef]' : ''}`} />
+                            {isStockPinned(stock.quote.ticker) ? 'Unpin' : 'Pin'}
+                          </Button>
+                          
+                          {/* Dismiss Button */}
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => dismissStock(stock.ticker)}
+                            className="flex items-center gap-2 text-red-400 border-red-400/30 hover:bg-red-500/10 hover:border-red-400"
+                            data-testid={`dismiss-stock-${stock.ticker}`}
+                          >
+                            <X className="w-4 h-4" />
+                            Dismiss
+                          </Button>
+                        </div>
+                        <p className="text-base text-gray-400 mt-2">
+                          {stock.quote.company_name}
+                        </p>
+                      </div>
+                      
+                      <div className="text-right">
+                        <div className="text-4xl lg:text-5xl font-bold text-white mono-numbers">
+                          {getCurrencySymbol(stock.ticker, stock.quote.currency)}{stock.quote.price?.toFixed(2)}
+                        </div>
+                        <div className={`text-base font-medium mt-2 mono-numbers ${stock.quote.change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                          {stock.quote.change >= 0 ? '+' : ''}{stock.quote.change?.toFixed(2)} ({stock.quote.change_percent?.toFixed(2)}%)
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Key Stats */}
+                <Card className="premium-card gold-gradient-border">
+                  <CardHeader className="pb-4">
+                    <CardTitle className="text-base text-white section-title-gold" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                      Key Stats
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-3 md:grid-cols-5 lg:grid-cols-9 gap-4">
+                      {stock.quote.day_open && (
+                        <div className="stat-item">
+                          <div className="text-sm text-gray-400">Day Open</div>
+                          <div className="text-base font-semibold mt-1 text-white mono-numbers">
+                            {getCurrencySymbol(stock.ticker, stock.quote.currency)}{stock.quote.day_open.toFixed(2)}
+                          </div>
+                        </div>
+                      )}
+                      {stock.quote.day_high && (
+                        <div className="stat-item">
+                          <div className="text-sm text-gray-400">Day High</div>
+                          <div className="text-base font-semibold mt-1 text-white mono-numbers">
+                            {getCurrencySymbol(stock.ticker, stock.quote.currency)}{stock.quote.day_high.toFixed(2)}
+                          </div>
+                        </div>
+                      )}
+                      {stock.quote.day_low && (
+                        <div className="stat-item">
+                          <div className="text-sm text-gray-400">Day Low</div>
+                          <div className="text-base font-semibold mt-1 text-white mono-numbers">
+                            {getCurrencySymbol(stock.ticker, stock.quote.currency)}{stock.quote.day_low.toFixed(2)}
+                          </div>
+                        </div>
+                      )}
+                      {stock.quote.market_cap && (
+                        <div className="stat-item">
+                          <div className="text-sm text-gray-400">Market Cap</div>
+                          <div className="text-base font-semibold mt-1 text-white mono-numbers">
+                            ${(stock.quote.market_cap / 1e9).toFixed(2)}B
+                          </div>
+                        </div>
+                      )}
+                      {stock.quote.pe_ratio && (
+                        <div className="stat-item">
+                          <div className="text-sm text-gray-400">P/E Ratio</div>
+                          <div className="text-base font-semibold mt-1 text-white mono-numbers">
+                            {stock.quote.pe_ratio.toFixed(2)}
+                          </div>
+                        </div>
+                      )}
+                      {stock.quote.dividend_yield !== null && stock.quote.dividend_yield !== undefined && (
+                        <div className="stat-item">
+                          <div className="text-sm text-gray-400">Dividend</div>
+                          <div className="text-base font-semibold mt-1 text-white mono-numbers">
+                            {stock.quote.dividend_yield.toFixed(2)}%
+                          </div>
+                        </div>
+                      )}
+                      {stock.quote.high_52week && (
+                        <div className="stat-item">
+                          <div className="text-sm text-gray-400">52W High</div>
+                          <div className="text-base font-semibold mt-1 text-white mono-numbers">
+                            {getCurrencySymbol(stock.ticker, stock.quote.currency)}{stock.quote.high_52week.toFixed(2)}
+                          </div>
+                        </div>
+                      )}
+                      {stock.quote.low_52week && (
+                        <div className="stat-item">
+                          <div className="text-sm text-gray-400">52W Low</div>
+                          <div className="text-base font-semibold mt-1 text-white mono-numbers">
+                            {getCurrencySymbol(stock.ticker, stock.quote.currency)}{stock.quote.low_52week.toFixed(2)}
+                          </div>
+                        </div>
+                      )}
+                      {stock.quote.volume && (
+                        <div className="stat-item">
+                          <div className="text-sm text-gray-400">Volume</div>
+                          <div className="text-base font-semibold mt-1 text-white mono-numbers">
+                            {(stock.quote.volume / 1e6).toFixed(2)}M
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Legacy Single Stock Details - keeping for chart and detailed analysis */}
+        {selectedStock && stockQuote && viewMode === 'spacious' && (
           <div className={`space-y-6 ${stockAnimating ? 'stock-slide-in' : 'fade-in'}`} data-testid="stock-details-container">
             {/* Stock Header */}
             <Card className="premium-card gold-gradient-border">

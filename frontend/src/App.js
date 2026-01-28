@@ -1715,6 +1715,8 @@ const HomePage = () => {
                       <ExternalLink className="w-4 h-4" />
                       <span className="text-sm">View Earnings Report</span>
                     </a>
+                    
+                    {/* AI Deep Analysis */}
                     <div className="pt-4 border-t border-[rgba(255,255,255,0.06)]">
                       <div className="text-sm font-semibold mb-2 text-white">AI Deep Analysis</div>
                       <p className="text-xs text-gray-400 mb-3">
@@ -1738,6 +1740,70 @@ const HomePage = () => {
                         <div className="mt-3 p-3 bg-[rgba(255,255,255,0.02)] rounded-lg text-xs text-gray-400 max-h-48 overflow-y-auto border border-[rgba(255,255,255,0.05)]">
                           <pre className="whitespace-pre-wrap">{aiAnalysis.analysis.substring(0, 500)}...</pre>
                         </div>
+                      )}
+                    </div>
+                    
+                    {/* Earnings Snapshot */}
+                    <div className="pt-4 border-t border-[rgba(255,255,255,0.06)]">
+                      <div className="text-sm font-semibold mb-3 text-white flex items-center gap-2">
+                        <span>📊</span> Earnings Snapshot
+                      </div>
+                      {earningsSnapshot ? (
+                        <div className="grid grid-cols-2 gap-3">
+                          {earningsSnapshot.capex && (
+                            <div className="p-2 bg-[rgba(255,255,255,0.02)] rounded-lg">
+                              <div className="text-xs text-gray-400">CapEx</div>
+                              <div className="text-sm font-semibold text-white mono-numbers">
+                                ${(Math.abs(earningsSnapshot.capex) / 1e9).toFixed(2)}B
+                              </div>
+                            </div>
+                          )}
+                          {earningsSnapshot.free_cash_flow && (
+                            <div className="p-2 bg-[rgba(255,255,255,0.02)] rounded-lg">
+                              <div className="text-xs text-gray-400">Free Cash Flow</div>
+                              <div className={`text-sm font-semibold mono-numbers ${earningsSnapshot.free_cash_flow >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                                ${(earningsSnapshot.free_cash_flow / 1e9).toFixed(2)}B
+                              </div>
+                            </div>
+                          )}
+                          {earningsSnapshot.gross_margin && (
+                            <div className="p-2 bg-[rgba(255,255,255,0.02)] rounded-lg">
+                              <div className="text-xs text-gray-400">Gross Margin</div>
+                              <div className="text-sm font-semibold text-white mono-numbers">
+                                {earningsSnapshot.gross_margin.toFixed(1)}%
+                              </div>
+                            </div>
+                          )}
+                          {earningsSnapshot.return_on_equity && (
+                            <div className="p-2 bg-[rgba(255,255,255,0.02)] rounded-lg">
+                              <div className="text-xs text-gray-400">Return on Equity</div>
+                              <div className={`text-sm font-semibold mono-numbers ${earningsSnapshot.return_on_equity >= 15 ? 'text-green-400' : 'text-white'}`}>
+                                {earningsSnapshot.return_on_equity.toFixed(1)}%
+                              </div>
+                            </div>
+                          )}
+                          {earningsSnapshot.target_price && (
+                            <div className="p-2 bg-[rgba(255,255,255,0.02)] rounded-lg">
+                              <div className="text-xs text-gray-400">Analyst Target</div>
+                              <div className="text-sm font-semibold text-[#d946ef] mono-numbers">
+                                ${earningsSnapshot.target_price.toFixed(2)}
+                              </div>
+                            </div>
+                          )}
+                          {earningsSnapshot.recommendation && earningsSnapshot.recommendation !== 'N/A' && (
+                            <div className="p-2 bg-[rgba(255,255,255,0.02)] rounded-lg">
+                              <div className="text-xs text-gray-400">Recommendation</div>
+                              <div className={`text-sm font-semibold ${
+                                earningsSnapshot.recommendation.includes('BUY') ? 'text-green-400' : 
+                                earningsSnapshot.recommendation.includes('SELL') ? 'text-red-400' : 'text-yellow-400'
+                              }`}>
+                                {earningsSnapshot.recommendation}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="text-xs text-gray-500">Loading earnings data...</div>
                       )}
                     </div>
                   </div>

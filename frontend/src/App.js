@@ -369,10 +369,15 @@ const HomePage = () => {
     setSearchResults([]);
     setSearchQuery('');
     
-    // Fetch stock data
+    // Set loading ticker for animation
+    setLoadingTicker(ticker);
     setLoading(true);
+    
+    // Fetch stock data
     const stockData = await fetchStockData(ticker);
+    
     setLoading(false);
+    setLoadingTicker(null);
     
     if (stockData) {
       // Add to stacked stocks

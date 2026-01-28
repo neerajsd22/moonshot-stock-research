@@ -1171,44 +1171,9 @@ const HomePage = () => {
           </div>
         )}
 
-        {/* Legacy Single Stock Details - keeping for chart and detailed analysis */}
+        {/* Chart and Detailed Analysis for selected stock */}
         {selectedStock && stockQuote && viewMode === 'spacious' && (
-          <div className={`space-y-6 ${stockAnimating ? 'stock-slide-in' : 'fade-in'}`} data-testid="stock-details-container">
-            {/* Stock Header */}
-            <Card className="premium-card gold-gradient-border">
-              <CardContent className="p-6 lg:p-8">
-                <div className="flex flex-wrap items-start justify-between gap-4">
-                  <div>
-                    <div className="flex items-center gap-4 flex-wrap">
-                      <h2
-                        className="text-3xl lg:text-4xl font-bold text-white"
-                        style={{ fontFamily: 'Outfit, sans-serif' }}
-                        data-testid="stock-ticker"
-                      >
-                        {stockQuote.ticker}
-                      </h2>
-                      
-                      {/* Market Status Badge */}
-                      {stockQuote.market_state && (
-                        <Badge 
-                          variant={stockQuote.market_state === 'REGULAR' ? 'default' : 'secondary'}
-                          className={`${stockQuote.market_state === 'REGULAR' ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-[rgba(255,255,255,0.05)] text-gray-400'}`}
-                          data-testid="market-status"
-                        >
-                          <span className="inline-block w-2 h-2 rounded-full bg-current mr-1.5 animate-pulse"></span>
-                          {stockQuote.market_state === 'REGULAR' ? 'Market Open' : 'Market Closed'}
-                        </Badge>
-                      )}
-                      
-                      <Button
-                        data-testid="pin-toggle-button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() =>
-                            isStockPinned(stockQuote.ticker)
-                              ? unpinStock(stockQuote.ticker)
-                              : pinStock(stockQuote.ticker, stockQuote.company_name)
-                          }
+          <div className="space-y-6 fade-in" data-testid="stock-details-container">
                           className="flex items-center gap-2 btn-outline-gold"
                         >
                           <Pin

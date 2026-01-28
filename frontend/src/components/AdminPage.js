@@ -253,7 +253,7 @@ const AdminPage = () => {
               </Button>
             </div>
             <p className="text-xs text-muted-foreground mt-2">
-              Each code can be used once. Share codes with people you want to give access to.
+              Codes are persistent and can be used unlimited times until you expire them.
             </p>
           </CardContent>
         </Card>

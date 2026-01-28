@@ -851,7 +851,6 @@ async def get_stock_health_report(ticker: str):
             
             # Get quarterly financials
             quarterly_financials = stock.quarterly_financials
-            quarterly_balance = stock.quarterly_balance_sheet
             quarterly_cashflow = stock.quarterly_cashflow
             
             # Initialize quarters data

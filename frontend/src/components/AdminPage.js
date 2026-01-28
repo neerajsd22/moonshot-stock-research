@@ -353,11 +353,11 @@ const AdminPage = () => {
             <CardHeader className="pb-3">
               <CardTitle className="text-lg flex items-center gap-2 text-muted-foreground">
                 <Key className="w-5 h-5" />
-                Used Codes ({usedCodes.length})
+                Expired Codes ({usedCodes.length})
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-2 opacity-60">
+              <div className="space-y-2">
                 {usedCodes.map((item) => (
                   <div
                     key={item.code}
@@ -365,16 +365,36 @@ const AdminPage = () => {
                   >
                     <div className="flex items-center gap-4">
                       <code 
-                        className="text-lg font-bold tracking-widest text-muted-foreground line-through"
+                        className="text-lg font-bold tracking-widest text-muted-foreground"
                         style={{ fontFamily: 'JetBrains Mono, monospace' }}
                       >
                         {item.code}
                       </code>
-                      <Badge variant="secondary">Used</Badge>
+                      <Badge variant="secondary">Expired</Badge>
                     </div>
-                    <span className="text-sm text-muted-foreground">
-                      {item.used_at && new Date(item.used_at).toLocaleDateString()}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm text-muted-foreground mr-2">
+                        {item.expired_at ? new Date(item.expired_at).toLocaleDateString() : item.used_at ? new Date(item.used_at).toLocaleDateString() : ''}
+                      </span>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => reactivateCode(item.code)}
+                        className="text-green-500 border-green-500/50 hover:bg-green-500/10"
+                        data-testid={`reactivate-code-${item.code}`}
+                      >
+                        <RotateCcw className="w-4 h-4 mr-1" />
+                        Reactivate
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => deleteCode(item.code)}
+                        className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
                   </div>
                 ))}
               </div>

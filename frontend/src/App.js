@@ -111,9 +111,12 @@ const HomePage = () => {
   // Handle stock query parameter from category page
   useEffect(() => {
     const stockParam = searchParams.get('stock');
-    if (stockParam) {
+    if (stockParam && !stackedStocks.some(s => s.ticker === stockParam)) {
       selectStock(stockParam);
       // Clear the query param after selecting
+      setSearchParams({});
+    } else if (stockParam) {
+      // Stock already exists, just clear the param
       setSearchParams({});
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

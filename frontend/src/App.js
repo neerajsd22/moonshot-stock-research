@@ -1810,7 +1810,7 @@ const HomePage = () => {
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-lg text-white section-title-gold flex items-center gap-2" style={{ fontFamily: 'Outfit, sans-serif' }}>
                     <BrainCircuit className="w-5 h-5 text-[#d946ef]" />
-                    AI Deep Analysis ( 8 Quarter Health Report )
+                    AI Deep Analysis
                   </CardTitle>
                   {healthReport && (
                     <Badge 
@@ -1837,7 +1837,7 @@ const HomePage = () => {
                     <div>
                       <h4 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
                         <span className="w-2 h-2 bg-[#d946ef] rounded-full"></span>
-                        Core Vitals Matrix (8-Quarter Trend)
+                        Core Vitals Matrix
                       </h4>
                       {healthReport.quarters && healthReport.quarters.length > 0 ? (
                         <div className="overflow-x-auto">

@@ -314,24 +314,111 @@ const HomePage = () => {
     }
   };
 
+  // Function to fetch all data for a single stock and return it as an object
+  const fetchStockData = async (ticker) => {
+    try {
+      const [quoteRes, historyRes, earningsRes, sentimentRes, newsRes] = await Promise.all([
+        axios.get(`${API}/stocks/${ticker}/quote`),
+        axios.get(`${API}/stocks/${ticker}/history`, { params: { period } }),
+        axios.get(`${API}/stocks/${ticker}/earnings-link`).catch(() => ({ data: null })),
+        axios.get(`${API}/stocks/${ticker}/bull-bear-sentiment`).catch(() => ({ 
+          data: {
+            bull_points: ['Strong market position', 'Positive growth trends', 'Favorable recommendations'],
+            bear_points: ['Market volatility risks', 'Competitive pressures', 'Economic uncertainties']
+          }
+        })),
+        axios.get(`${API}/stocks/${ticker}/news`).catch(() => ({ data: [] })),
+      ]);
+      
+      return {
+        ticker,
+        quote: quoteRes.data,
+        historicalData: historyRes.data,
+        earningsLink: earningsRes.data,
+        bullBearSentiment: sentimentRes.data,
+        newsArticles: newsRes.data,
+        period,
+      };
+    } catch (error) {
+      console.error(`Error fetching data for ${ticker}:`, error);
+      return null;
+    }
+  };
+
   const selectStock = async (ticker) => {
+    // Check if stock is already in the stack
+    if (stackedStocks.some(s => s.ticker === ticker)) {
+      toast.info(`${ticker} is already displayed`);
+      setSearchResults([]);
+      setSearchQuery('');
+      return;
+    }
+    
+    // Check max limit
+    if (stackedStocks.length >= MAX_STACKED_STOCKS) {
+      toast.warning(`Maximum ${MAX_STACKED_STOCKS} stocks can be displayed. Remove one to add more.`);
+      setSearchResults([]);
+      setSearchQuery('');
+      return;
+    }
+    
     // Start animation and collapse categories
     setStockAnimating(true);
     setCategoriesCollapsed(true);
-    setSelectedStock(ticker);
     setSearchResults([]);
     setSearchQuery('');
-    setComparisonPoints([]);
-    setComparisonMode(false);
-    await Promise.all([
-      fetchStockQuote(ticker),
-      fetchHistoricalData(ticker, period),
-      fetchEarningsLink(ticker),
-      fetchBullBearSentiment(ticker),
-      fetchStockNews(ticker),
-    ]);
+    
+    // Fetch stock data
+    setLoading(true);
+    const stockData = await fetchStockData(ticker);
+    setLoading(false);
+    
+    if (stockData) {
+      // Add to stacked stocks
+      setStackedStocks(prev => [...prev, stockData]);
+      
+      // Also set as selectedStock for backward compatibility
+      setSelectedStock(ticker);
+      setStockQuote(stockData.quote);
+      setHistoricalData(stockData.historicalData);
+      setEarningsLink(stockData.earningsLink);
+      setBullBearSentiment(stockData.bullBearSentiment);
+      setNewsArticles(stockData.newsArticles);
+      setComparisonPoints([]);
+      setComparisonMode(false);
+    }
+    
     // End animation after data loads
     setTimeout(() => setStockAnimating(false), 300);
+  };
+
+  // Function to dismiss/remove a stock from the stack
+  const dismissStock = (ticker) => {
+    setStackedStocks(prev => prev.filter(s => s.ticker !== ticker));
+    
+    // If the dismissed stock was the selected one, update selectedStock
+    if (selectedStock === ticker) {
+      const remaining = stackedStocks.filter(s => s.ticker !== ticker);
+      if (remaining.length > 0) {
+        const lastStock = remaining[remaining.length - 1];
+        setSelectedStock(lastStock.ticker);
+        setStockQuote(lastStock.quote);
+        setHistoricalData(lastStock.historicalData);
+        setEarningsLink(lastStock.earningsLink);
+        setBullBearSentiment(lastStock.bullBearSentiment);
+        setNewsArticles(lastStock.newsArticles);
+      } else {
+        setSelectedStock(null);
+        setStockQuote(null);
+        setHistoricalData([]);
+        setEarningsLink(null);
+        setBullBearSentiment(null);
+        setNewsArticles([]);
+        setCategoriesCollapsed(false);
+      }
+    }
+    
+    toast.success(`${ticker} removed`);
   };
 
   const pinStock = async (ticker, companyName) => {

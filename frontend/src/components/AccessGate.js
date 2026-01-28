@@ -70,7 +70,10 @@ const AccessGate = ({ children }) => {
   const verifyCode = async (code, silent = false) => {
     setVerifying(true);
     try {
-      const response = await axios.post(`${API}/access/verify`, { code: code.toUpperCase() });
+      const response = await axios.post(`${API}/access/verify`, { 
+        code: code.toUpperCase(),
+        skip_decrement: silent  // Don't decrement on re-verification
+      });
       if (response.data.valid) {
         localStorage.setItem('access_code', code.toUpperCase());
         if (!silent) {

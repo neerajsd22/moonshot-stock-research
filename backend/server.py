@@ -859,7 +859,23 @@ async def get_stock_health_report(ticker: str):
             # Get up to 8 quarters of data
             if quarterly_financials is not None and not quarterly_financials.empty:
                 for i, col in enumerate(quarterly_financials.columns[:8]):
-                    quarter_date = col.strftime('%Y-Q%q') if hasattr(col, 'strftime') else str(col)[:7]
+                    # Format quarter with date range
+                    if hasattr(col, 'strftime'):
+                        quarter_end = col
+                        quarter_month = quarter_end.month
+                        quarter_year = quarter_end.strftime('%y')
+                        
+                        # Determine quarter and date range
+                        if quarter_month in [1, 2, 3]:
+                            quarter_label = f"Q1 (Jan'{quarter_year}-Mar'{quarter_year})"
+                        elif quarter_month in [4, 5, 6]:
+                            quarter_label = f"Q2 (Apr'{quarter_year}-Jun'{quarter_year})"
+                        elif quarter_month in [7, 8, 9]:
+                            quarter_label = f"Q3 (Jul'{quarter_year}-Sep'{quarter_year})"
+                        else:
+                            quarter_label = f"Q4 (Oct'{quarter_year}-Dec'{quarter_year})"
+                    else:
+                        quarter_label = str(col)[:7]
                     
                     # Revenue
                     revenue = quarterly_financials.loc['Total Revenue', col] if 'Total Revenue' in quarterly_financials.index else None
@@ -884,7 +900,7 @@ async def get_stock_health_report(ticker: str):
                             fcf = op_cashflow + capex  # capex is negative
                     
                     quarters_data.append({
-                        "quarter": quarter_date,
+                        "quarter": quarter_label,
                         "revenue": float(revenue) if revenue else None,
                         "gross_margin": round(float(gross_margin), 1) if gross_margin else None,
                         "op_margin": round(float(op_margin), 1) if op_margin else None,

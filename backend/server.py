@@ -208,16 +208,23 @@ async def verify_access_code(data: dict):
     if not access_code:
         raise HTTPException(status_code=401, detail="Invalid access code")
     
-    # Mark code as used
-    await db.access_codes.update_one(
-        {"code": code},
-        {
-            "$set": {
-                "is_active": False,
-                "used_at": datetime.now(timezone.utc).isoformat()
+    # Decrement uses_remaining if it exists, otherwise mark as used
+    uses_remaining = access_code.get('uses_remaining', 1)
+    if uses_remaining > 1:
+        await db.access_codes.update_one(
+            {"code": code},
+            {"$inc": {"uses_remaining": -1}}
+        )
+    else:
+        await db.access_codes.update_one(
+            {"code": code},
+            {
+                "$set": {
+                    "is_active": False,
+                    "used_at": datetime.now(timezone.utc).isoformat()
+                }
             }
-        }
-    )
+        )
     
     return {"valid": True, "message": "Access granted"}
 

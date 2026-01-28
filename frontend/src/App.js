@@ -55,6 +55,9 @@ const HomePage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
+  // Changed from single stock to array of stacked stocks (max 10)
+  const [stackedStocks, setStackedStocks] = useState([]);
+  // Keep selectedStock for backward compatibility with some features
   const [selectedStock, setSelectedStock] = useState(null);
   const [stockQuote, setStockQuote] = useState(null);
   const [historicalData, setHistoricalData] = useState([]);
@@ -86,6 +89,8 @@ const HomePage = () => {
   });
   const [categoriesCollapsed, setCategoriesCollapsed] = useState(false);
   const [stockAnimating, setStockAnimating] = useState(false);
+  
+  const MAX_STACKED_STOCKS = 10;
 
   // Helper function to get currency symbol based on ticker
   const getCurrencySymbol = (ticker, currency) => {

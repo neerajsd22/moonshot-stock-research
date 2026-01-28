@@ -1311,40 +1311,94 @@ const HomePage = () => {
                       <div className="flex flex-wrap items-center gap-4">
                         <div className="flex-1 min-w-[200px]">
                           <label className="text-xs text-muted-foreground mb-1 block">Start Date</label>
-                          <Select
-                            value={comparisonPoints[0]?.date || ''}
-                            onValueChange={(value) => handleComparisonSelect(0, value)}
-                          >
-                            <SelectTrigger className="bg-background/50 border-border/50" data-testid="comparison-date-1">
-                              <SelectValue placeholder="Select start date" />
-                            </SelectTrigger>
-                            <SelectContent className="max-h-[300px]">
-                              {historicalData.map((d) => (
-                                <SelectItem key={d.date} value={d.date}>
-                                  {d.date} - ${d.close.toFixed(2)}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button
+                                variant="outline"
+                                className="w-full justify-start text-left font-normal bg-background/50 border-border/50"
+                                data-testid="comparison-date-1"
+                              >
+                                <CalendarDays className="mr-2 h-4 w-4" />
+                                {comparisonPoints[0]?.date ? (
+                                  <span>{new Date(comparisonPoints[0].date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} - ${comparisonPoints[0].price?.toFixed(2)}</span>
+                                ) : (
+                                  <span className="text-muted-foreground">Select start date</span>
+                                )}
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0" align="start">
+                              <Calendar
+                                mode="single"
+                                selected={comparisonPoints[0]?.date ? new Date(comparisonPoints[0].date) : undefined}
+                                onSelect={(date) => {
+                                  if (date) {
+                                    const dateStr = date.toISOString().split('T')[0];
+                                    const dataPoint = historicalData.find(d => d.date === dateStr);
+                                    if (dataPoint) {
+                                      handleComparisonSelect(0, dateStr);
+                                    } else {
+                                      // Find closest date
+                                      const closest = historicalData.reduce((prev, curr) => 
+                                        Math.abs(new Date(curr.date) - date) < Math.abs(new Date(prev.date) - date) ? curr : prev
+                                      );
+                                      if (closest) handleComparisonSelect(0, closest.date);
+                                    }
+                                  }
+                                }}
+                                disabled={(date) => {
+                                  const dateStr = date.toISOString().split('T')[0];
+                                  return !historicalData.some(d => d.date === dateStr);
+                                }}
+                                initialFocus
+                              />
+                            </PopoverContent>
+                          </Popover>
                         </div>
                         <div className="text-muted-foreground">→</div>
                         <div className="flex-1 min-w-[200px]">
                           <label className="text-xs text-muted-foreground mb-1 block">End Date</label>
-                          <Select
-                            value={comparisonPoints[1]?.date || ''}
-                            onValueChange={(value) => handleComparisonSelect(1, value)}
-                          >
-                            <SelectTrigger className="bg-background/50 border-border/50" data-testid="comparison-date-2">
-                              <SelectValue placeholder="Select end date" />
-                            </SelectTrigger>
-                            <SelectContent className="max-h-[300px]">
-                              {historicalData.map((d) => (
-                                <SelectItem key={d.date} value={d.date}>
-                                  {d.date} - ${d.close.toFixed(2)}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button
+                                variant="outline"
+                                className="w-full justify-start text-left font-normal bg-background/50 border-border/50"
+                                data-testid="comparison-date-2"
+                              >
+                                <CalendarDays className="mr-2 h-4 w-4" />
+                                {comparisonPoints[1]?.date ? (
+                                  <span>{new Date(comparisonPoints[1].date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} - ${comparisonPoints[1].price?.toFixed(2)}</span>
+                                ) : (
+                                  <span className="text-muted-foreground">Select end date</span>
+                                )}
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0" align="start">
+                              <Calendar
+                                mode="single"
+                                selected={comparisonPoints[1]?.date ? new Date(comparisonPoints[1].date) : undefined}
+                                onSelect={(date) => {
+                                  if (date) {
+                                    const dateStr = date.toISOString().split('T')[0];
+                                    const dataPoint = historicalData.find(d => d.date === dateStr);
+                                    if (dataPoint) {
+                                      handleComparisonSelect(1, dateStr);
+                                    } else {
+                                      // Find closest date
+                                      const closest = historicalData.reduce((prev, curr) => 
+                                        Math.abs(new Date(curr.date) - date) < Math.abs(new Date(prev.date) - date) ? curr : prev
+                                      );
+                                      if (closest) handleComparisonSelect(1, closest.date);
+                                    }
+                                  }
+                                }}
+                                disabled={(date) => {
+                                  const dateStr = date.toISOString().split('T')[0];
+                                  return !historicalData.some(d => d.date === dateStr);
+                                }}
+                                initialFocus
+                              />
+                            </PopoverContent>
+                          </Popover>
                         </div>
                       </div>
                     </div>

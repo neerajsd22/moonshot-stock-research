@@ -777,6 +777,70 @@ async def get_earnings_link(ticker: str):
         }
 
 
+@api_router.get("/stocks/{ticker}/earnings-snapshot")
+async def get_earnings_snapshot(ticker: str):
+    """Get earnings snapshot with key financial metrics"""
+    try:
+        def fetch_earnings_snapshot():
+            stock = yf.Ticker(ticker.upper())
+            info = stock.info
+            
+            # Get financial data
+            capex = info.get('capitalExpenditures')
+            free_cash_flow = info.get('freeCashflow')
+            gross_margins = info.get('grossMargins')
+            return_on_equity = info.get('returnOnEquity')
+            
+            # Get earnings estimates
+            earnings_estimate = info.get('earningsQuarterlyGrowth')
+            revenue_estimate = info.get('revenueGrowth')
+            target_mean_price = info.get('targetMeanPrice')
+            recommendation = info.get('recommendationKey', 'N/A')
+            
+            # Additional useful metrics
+            operating_margins = info.get('operatingMargins')
+            profit_margins = info.get('profitMargins')
+            revenue = info.get('totalRevenue')
+            net_income = info.get('netIncomeToCommon')
+            
+            return {
+                "ticker": ticker.upper(),
+                "capex": capex,
+                "free_cash_flow": free_cash_flow,
+                "gross_margin": float(gross_margins * 100) if gross_margins else None,
+                "operating_margin": float(operating_margins * 100) if operating_margins else None,
+                "profit_margin": float(profit_margins * 100) if profit_margins else None,
+                "return_on_equity": float(return_on_equity * 100) if return_on_equity else None,
+                "earnings_growth": float(earnings_estimate * 100) if earnings_estimate else None,
+                "revenue_growth": float(revenue_estimate * 100) if revenue_estimate else None,
+                "target_price": target_mean_price,
+                "recommendation": recommendation.upper() if recommendation else 'N/A',
+                "revenue": revenue,
+                "net_income": net_income
+            }
+        
+        snapshot = await run_in_threadpool(fetch_earnings_snapshot)
+        return snapshot
+        
+    except Exception as e:
+        logger.error(f"Earnings snapshot error for {ticker}: {str(e)}")
+        return {
+            "ticker": ticker.upper(),
+            "capex": None,
+            "free_cash_flow": None,
+            "gross_margin": None,
+            "operating_margin": None,
+            "profit_margin": None,
+            "return_on_equity": None,
+            "earnings_growth": None,
+            "revenue_growth": None,
+            "target_price": None,
+            "recommendation": "N/A",
+            "revenue": None,
+            "net_income": None
+        }
+
+
 # Get stock news
 @api_router.get("/stocks/{ticker}/news", response_model=List[NewsArticle])
 async def get_stock_news(ticker: str):

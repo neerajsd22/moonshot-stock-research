@@ -285,12 +285,56 @@ async def create_access_codes(data: dict, x_admin_token: str = Header(None)):
         await db.access_codes.insert_one({
             "code": code,
             "is_active": True,
+            "uses_remaining": -1,  # -1 means unlimited uses (persistent code)
             "created_at": datetime.now(timezone.utc).isoformat(),
-            "used_at": None
+            "used_at": None,
+            "expired_at": None
         })
         codes.append(code)
     
     return {"codes": codes, "count": len(codes)}
+
+
+@api_router.put("/admin/access-codes/{code}/expire")
+async def expire_access_code(code: str, x_admin_token: str = Header(None)):
+    """Expire an access code (admin only) - makes it inactive"""
+    await verify_admin_token(x_admin_token)
+    
+    result = await db.access_codes.update_one(
+        {"code": code.upper()},
+        {
+            "$set": {
+                "is_active": False,
+                "expired_at": datetime.now(timezone.utc).isoformat()
+            }
+        }
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Access code not found")
+    
+    return {"message": "Access code expired"}
+
+
+@api_router.put("/admin/access-codes/{code}/reactivate")
+async def reactivate_access_code(code: str, x_admin_token: str = Header(None)):
+    """Reactivate an expired access code (admin only)"""
+    await verify_admin_token(x_admin_token)
+    
+    result = await db.access_codes.update_one(
+        {"code": code.upper()},
+        {
+            "$set": {
+                "is_active": True,
+                "expired_at": None
+            }
+        }
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Access code not found")
+    
+    return {"message": "Access code reactivated"}
 
 
 @api_router.delete("/admin/access-codes/{code}")

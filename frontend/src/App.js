@@ -115,16 +115,19 @@ const HomePage = () => {
   // Handle stock query parameter from category page
   useEffect(() => {
     const stockParam = searchParams.get('stock');
-    if (stockParam && !stackedStocks.some(s => s.ticker === stockParam)) {
-      selectStock(stockParam);
-      // Clear the query param after selecting
-      setSearchParams({});
-    } else if (stockParam) {
-      // Stock already exists, just clear the param
+    if (stockParam) {
+      // Check if stock already exists in the current stackedStocks
+      const alreadyExists = stackedStocks.some(s => s.ticker === stockParam);
+      if (alreadyExists) {
+        toast.info(`${stockParam} is already displayed`);
+      } else {
+        selectStock(stockParam);
+      }
+      // Always clear the query param
       setSearchParams({});
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams]);
+  }, [searchParams]); // Only trigger on searchParams change, selectStock handles its own duplicate check
 
   // Check price alerts periodically
   useEffect(() => {

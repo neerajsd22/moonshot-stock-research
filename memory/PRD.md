@@ -95,6 +95,12 @@ GET  /api/custom-categories           - List custom categories
 8. Changed admin password
 9. Added fun loading animation (rocket + sparkles)
 
+### Jan 29, 2026
+10. **Major Refactoring**: Extracted 8 components from App.js (2188→1879 lines):
+    - StockHeader, KeyStatsCard, DenseViewTable, LoadingAnimation
+    - FinancialsCard, AnalysisCard, NewsCard, HealthReportCard
+11. Extended hours price display (pre-market/after-hours) - implemented but dependent on yfinance API data availability
+
 ## Backlog (Future Features)
 ### P1
 - Persist stacked stocks across sessions (localStorage)
@@ -107,5 +113,11 @@ GET  /api/custom-categories           - List custom categories
 - Price alerts notifications
 - Watchlist sync across devices
 
+### P3 (Refactoring Opportunities)
+- Extract chart components (HistoricalChart, ComparisonSelectors)
+- Extract category components (CategoryGrid, CategoryCard)
+- Extract header components (SearchBar, NavButtons)
+- Further reduce App.js to ~1000 lines
+
 ---
-*Last Updated: Jan 28, 2026*
+*Last Updated: Jan 29, 2026*

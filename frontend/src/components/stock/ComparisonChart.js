@@ -15,45 +15,11 @@ import {
 import axios from 'axios';
 
 const COLORS = [
-  '#d946ef', // Primary pink
-  '#22c55e', // Green
-  '#3b82f6', // Blue
-  '#f59e0b', // Amber
-  '#ef4444', // Red
-  '#8b5cf6', // Violet
-  '#06b6d4', // Cyan
-  '#ec4899', // Pink
-  '#14b8a6', // Teal
-  '#f97316', // Orange
+  '#d946ef', '#22c55e', '#3b82f6', '#f59e0b', '#ef4444',
+  '#8b5cf6', '#06b6d4', '#ec4899', '#14b8a6', '#f97316',
 ];
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
-
-// Custom tooltip component - defined outside to avoid re-creation
-const ChartTooltip = ({ active, payload, label, normalizeData, formatDate, formatValue }) => {
-  if (active && payload && payload.length) {
-    return (
-      <div className="bg-[#1a1a24] border border-[rgba(255,255,255,0.1)] rounded-lg p-3 shadow-xl">
-        <p className="text-xs text-gray-400 mb-2">{formatDate(label)}</p>
-        {payload.map((entry, idx) => (
-          <div key={idx} className="flex items-center justify-between gap-4 text-sm">
-            <div className="flex items-center gap-2">
-              <div 
-                className="w-2 h-2 rounded-full" 
-                style={{ backgroundColor: entry.color }}
-              />
-              <span className="text-gray-300">{entry.dataKey}</span>
-            </div>
-            <span className={`font-mono ${entry.value >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-              {formatValue(entry.value, normalizeData)}
-            </span>
-          </div>
-        ))}
-      </div>
-    );
-  }
-  return null;
-};
 
 const ComparisonChart = ({ stocks, onClose, period = '1y' }) => {
   const [chartData, setChartData] = useState([]);
@@ -63,17 +29,12 @@ const ComparisonChart = ({ stocks, onClose, period = '1y' }) => {
   useEffect(() => {
     const fetchComparisonData = async () => {
       if (stocks.length === 0) return;
-      
       setLoading(true);
       try {
-        // Fetch historical data for all stocks
         const promises = stocks.map(stock => 
           axios.get(`${API}/stocks/${stock.ticker}/history`, { params: { period } })
         );
-        
         const responses = await Promise.all(promises);
-        
-        // Merge data by date
         const dataMap = new Map();
         
         responses.forEach((response, idx) => {
@@ -83,7 +44,6 @@ const ComparisonChart = ({ stocks, onClose, period = '1y' }) => {
           
           data.forEach(point => {
             const existing = dataMap.get(point.date) || { date: point.date };
-            // Normalize to percentage change from start if enabled
             existing[ticker] = normalizeData 
               ? ((point.close / firstPrice) - 1) * 100 
               : point.close;
@@ -91,10 +51,8 @@ const ComparisonChart = ({ stocks, onClose, period = '1y' }) => {
           });
         });
         
-        // Convert to array and sort by date
         const mergedData = Array.from(dataMap.values())
           .sort((a, b) => new Date(a.date) - new Date(b.date));
-        
         setChartData(mergedData);
       } catch (error) {
         console.error('Error fetching comparison data:', error);
@@ -102,7 +60,6 @@ const ComparisonChart = ({ stocks, onClose, period = '1y' }) => {
         setLoading(false);
       }
     };
-
     fetchComparisonData();
   }, [stocks, period, normalizeData]);
 
@@ -111,14 +68,36 @@ const ComparisonChart = ({ stocks, onClose, period = '1y' }) => {
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   }, []);
 
-  const formatValue = useCallback((value, normalize) => {
-    if (normalize) {
+  const formatValue = useCallback((value) => {
+    if (normalizeData) {
       return `${value >= 0 ? '+' : ''}${value.toFixed(2)}%`;
     }
     return `$${value.toFixed(2)}`;
-  }, []); 
-                  style={{ backgroundColor: entry.color }}
-                />
+  }, [normalizeData]);
+
+  const exportToCSV = () => {
+    if (chartData.length === 0) return;
+    const headers = ['Date', ...stocks.map(s => s.ticker)];
+    const rows = chartData.map(row => [row.date, ...stocks.map(s => row[s.ticker]?.toFixed(2) || '')]);
+    const csvContent = [headers, ...rows].map(row => row.join(',')).join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `stock_comparison_${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const renderTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="bg-[#1a1a24] border border-[rgba(255,255,255,0.1)] rounded-lg p-3 shadow-xl">
+          <p className="text-xs text-gray-400 mb-2">{formatDate(label)}</p>
+          {payload.map((entry, idx) => (
+            <div key={idx} className="flex items-center justify-between gap-4 text-sm">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }} />
                 <span className="text-gray-300">{entry.dataKey}</span>
               </div>
               <span className={`font-mono ${entry.value >= 0 ? 'text-green-400' : 'text-red-400'}`}>
@@ -132,24 +111,6 @@ const ComparisonChart = ({ stocks, onClose, period = '1y' }) => {
     return null;
   };
 
-  const exportToCSV = () => {
-    if (chartData.length === 0) return;
-    
-    const headers = ['Date', ...stocks.map(s => s.ticker)];
-    const rows = chartData.map(row => {
-      return [row.date, ...stocks.map(s => row[s.ticker]?.toFixed(2) || '')];
-    });
-    
-    const csvContent = [headers, ...rows].map(row => row.join(',')).join('\n');
-    const blob = new Blob([csvContent], { type: 'text/csv' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `stock_comparison_${new Date().toISOString().split('T')[0]}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
-  };
-
   return (
     <Card className="premium-card gold-gradient-border" data-testid="comparison-chart">
       <CardHeader className="pb-4">
@@ -159,9 +120,7 @@ const ComparisonChart = ({ stocks, onClose, period = '1y' }) => {
             <CardTitle className="text-lg text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
               Stock Comparison
             </CardTitle>
-            <Badge variant="outline" className="text-xs text-gray-400">
-              {stocks.length} stocks
-            </Badge>
+            <Badge variant="outline" className="text-xs text-gray-400">{stocks.length} stocks</Badge>
           </div>
           <div className="flex items-center gap-2">
             <Button
@@ -173,98 +132,46 @@ const ComparisonChart = ({ stocks, onClose, period = '1y' }) => {
             >
               {normalizeData ? '% Change' : 'Price'}
             </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={exportToCSV}
-              className="btn-outline-gold"
-              data-testid="export-comparison-csv"
-            >
-              <Download className="w-3 h-3 mr-1" />
-              CSV
+            <Button variant="outline" size="sm" onClick={exportToCSV} className="btn-outline-gold" data-testid="export-comparison-csv">
+              <Download className="w-3 h-3 mr-1" />CSV
             </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onClose}
-              className="text-gray-400 hover:text-white"
-              data-testid="close-comparison"
-            >
+            <Button variant="ghost" size="sm" onClick={onClose} className="text-gray-400 hover:text-white" data-testid="close-comparison">
               <X className="w-4 h-4" />
             </Button>
           </div>
         </div>
-        
-        {/* Stock Legend */}
         <div className="flex flex-wrap gap-2 mt-3">
           {stocks.map((stock, idx) => (
-            <div 
-              key={stock.ticker}
-              className="flex items-center gap-1.5 px-2 py-1 bg-[rgba(255,255,255,0.03)] rounded"
-            >
-              <div 
-                className="w-2 h-2 rounded-full" 
-                style={{ backgroundColor: COLORS[idx % COLORS.length] }}
-              />
+            <div key={stock.ticker} className="flex items-center gap-1.5 px-2 py-1 bg-[rgba(255,255,255,0.03)] rounded">
+              <div className="w-2 h-2 rounded-full" style={{ backgroundColor: COLORS[idx % COLORS.length] }} />
               <span className="text-xs text-gray-300 font-medium">{stock.ticker}</span>
             </div>
           ))}
         </div>
       </CardHeader>
-      
       <CardContent>
         {loading ? (
           <div className="h-[300px] flex items-center justify-center">
-            <div className="loading-dots">
-              <span></span>
-              <span></span>
-              <span></span>
-            </div>
+            <div className="loading-dots"><span></span><span></span><span></span></div>
           </div>
         ) : chartData.length > 0 ? (
           <div className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={chartData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-                <XAxis 
-                  dataKey="date" 
-                  tickFormatter={formatDate}
-                  stroke="rgba(255,255,255,0.3)"
-                  tick={{ fontSize: 11 }}
-                  interval="preserveStartEnd"
-                />
-                <YAxis 
-                  stroke="rgba(255,255,255,0.3)"
-                  tick={{ fontSize: 11 }}
-                  tickFormatter={(v) => normalizeData ? `${v.toFixed(0)}%` : `$${v}`}
-                  domain={normalizeData ? ['auto', 'auto'] : ['auto', 'auto']}
-                />
-                <Tooltip content={<CustomTooltip />} />
+                <XAxis dataKey="date" tickFormatter={formatDate} stroke="rgba(255,255,255,0.3)" tick={{ fontSize: 11 }} interval="preserveStartEnd" />
+                <YAxis stroke="rgba(255,255,255,0.3)" tick={{ fontSize: 11 }} tickFormatter={(v) => normalizeData ? `${v.toFixed(0)}%` : `$${v}`} />
+                <Tooltip content={renderTooltip} />
                 {stocks.map((stock, idx) => (
-                  <Line
-                    key={stock.ticker}
-                    type="monotone"
-                    dataKey={stock.ticker}
-                    stroke={COLORS[idx % COLORS.length]}
-                    strokeWidth={2}
-                    dot={false}
-                    activeDot={{ r: 4, strokeWidth: 0 }}
-                  />
+                  <Line key={stock.ticker} type="monotone" dataKey={stock.ticker} stroke={COLORS[idx % COLORS.length]} strokeWidth={2} dot={false} activeDot={{ r: 4, strokeWidth: 0 }} />
                 ))}
               </LineChart>
             </ResponsiveContainer>
           </div>
         ) : (
-          <div className="h-[300px] flex items-center justify-center text-gray-500">
-            No data available for comparison
-          </div>
+          <div className="h-[300px] flex items-center justify-center text-gray-500">No data available</div>
         )}
-        
-        {normalizeData && (
-          <p className="text-xs text-gray-500 mt-3 text-center">
-            Showing percentage change from start of period for fair comparison
-          </p>
-        )}
+        {normalizeData && <p className="text-xs text-gray-500 mt-3 text-center">Showing percentage change from start of period</p>}
       </CardContent>
     </Card>
   );

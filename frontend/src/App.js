@@ -1060,58 +1060,6 @@ const HomePage = () => {
           </div>
         </div>
 
-        {/* Pinned Stocks Section - Below categories, only visible when there are pinned stocks */}
-        {pinnedStocks.length > 0 && (
-          <div className="mb-8" data-testid="pinned-stocks-section">
-            <div className="flex items-center gap-2 mb-6">
-              <h2
-                className="text-xl font-semibold text-white section-title-gold"
-                style={{ fontFamily: 'Outfit, sans-serif' }}
-              >
-                Pinned Stocks
-              </h2>
-              <span className="text-xs text-gray-500">({pinnedStocks.length})</span>
-            </div>
-            
-            <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide" data-testid="pinned-stocks-container">
-              {pinnedStocks.map((stock) => (
-                <Card
-                  key={stock.ticker}
-                  data-testid={`pinned-stock-${stock.ticker}`}
-                  className="min-w-[200px] bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.1)] hover:border-[#d946ef]/50 transition-colors duration-200 cursor-pointer flex-shrink-0"
-                  onClick={() => selectStock(stock.ticker)}
-                >
-                  <CardContent className="p-4">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <div
-                          className="text-lg font-bold text-white"
-                          style={{ fontFamily: 'DM Mono, monospace' }}
-                        >
-                          {stock.ticker}
-                        </div>
-                        <div className="text-sm text-gray-400 mt-1 line-clamp-2">
-                          {stock.company_name}
-                        </div>
-                      </div>
-                      <button
-                        data-testid={`unpin-button-${stock.ticker}`}
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            unpinStock(stock.ticker);
-                          }}
-                          className="text-gray-400 hover:text-red-400 transition-colors"
-                        >
-                          <X className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-          </div>
-        )}
-
         <CreateCategoryDialog
           isOpen={showCreateDialog}
           onClose={() => setShowCreateDialog(false)}

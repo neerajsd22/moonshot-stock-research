@@ -4,6 +4,7 @@ from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import logging
+import math
 from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict
 from typing import List, Optional
@@ -15,6 +16,27 @@ import pandas as pd
 from emergentintegrations.llm.chat import LlmChat, UserMessage
 import secrets
 import string
+
+
+# Helper function to sanitize float values for JSON
+def safe_float(value, default=None):
+    """Convert value to float, returning default if NaN, Inf, or None"""
+    if value is None:
+        return default
+    try:
+        f = float(value)
+        if math.isnan(f) or math.isinf(f):
+            return default
+        return f
+    except (ValueError, TypeError):
+        return default
+
+def safe_round(value, decimals=1, default=None):
+    """Round a value safely, handling NaN and None"""
+    f = safe_float(value)
+    if f is None:
+        return default
+    return round(f, decimals)
 
 
 ROOT_DIR = Path(__file__).parent

@@ -125,7 +125,6 @@ const HomePage = () => {
     return saved ? JSON.parse(saved) : [];
   });
   const [categoriesCollapsed, setCategoriesCollapsed] = useState(false);
-  const [pinnedStocksCollapsed, setPinnedStocksCollapsed] = useState(false);
   const [stockAnimating, setStockAnimating] = useState(false);
   const [loadingTicker, setLoadingTicker] = useState(null); // Track which ticker is loading
   const [selectedBackground, setSelectedBackground] = useState(() => {

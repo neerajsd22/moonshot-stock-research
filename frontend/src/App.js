@@ -127,6 +127,10 @@ const HomePage = () => {
   const [pinnedStocksCollapsed, setPinnedStocksCollapsed] = useState(false);
   const [stockAnimating, setStockAnimating] = useState(false);
   const [loadingTicker, setLoadingTicker] = useState(null); // Track which ticker is loading
+  const [selectedBackground, setSelectedBackground] = useState(() => {
+    return localStorage.getItem('moonshot_background') || 'particles';
+  });
+  const [showBackgroundPicker, setShowBackgroundPicker] = useState(false);
   
   const MAX_STACKED_STOCKS = 10;
 

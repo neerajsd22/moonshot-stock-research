@@ -1050,9 +1050,14 @@ const HomePage = () => {
           <div className="mb-8" data-testid="pinned-stocks-section">
             <div className="flex items-center justify-between mb-6">
               <button
-                onClick={() => setPinnedStocksCollapsed(!pinnedStocksCollapsed)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setPinnedStocksCollapsed(prev => !prev);
+                }}
                 className="flex items-center gap-2 group"
                 data-testid="pinned-stocks-toggle"
+                type="button"
               >
                 <ChevronDown 
                   className={`w-5 h-5 text-[#d946ef] transition-transform duration-300 ${pinnedStocksCollapsed ? '-rotate-90' : ''}`}

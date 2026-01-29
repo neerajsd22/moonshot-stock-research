@@ -30,7 +30,17 @@ import {
   ComparisonChart,
   ExportButton,
 } from './components/stock';
-import AnimatedBackground from './components/AnimatedBackground';
+import { ParticleNetwork, FloatingOrbs, GridGlow, Starfield, GradientWaves } from './components/AnimatedBackground';
+
+// Background options for selection
+const BACKGROUND_OPTIONS = {
+  particles: { name: 'Particle Network', component: ParticleNetwork, description: 'Connected dots that react to mouse' },
+  orbs: { name: 'Floating Orbs', component: FloatingOrbs, description: 'Soft gradient blobs floating around' },
+  grid: { name: 'Grid Glow', component: GridGlow, description: 'Subtle grid pattern with corner accents' },
+  stars: { name: 'Starfield', component: Starfield, description: 'Twinkling stars with shooting stars' },
+  waves: { name: 'Gradient Waves', component: GradientWaves, description: 'Animated wave patterns at bottom' },
+  none: { name: 'None', component: () => null, description: 'No animated background' },
+};
 import {
   LineChart,
   ComposedChart,

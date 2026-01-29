@@ -106,6 +106,14 @@ GET  /api/custom-categories           - List custom categories
     - ✅ Stock comparison chart overlay (compare multiple stocks on one chart)
 13. **Animated Background**: Added elegant particle effect with connecting lines that react to mouse movement
 14. **ComparisonChart component**: New modal with % Change/Price toggle and CSV export for comparison data
+15. **Pinned Stocks Section**: Updated styling to match "Explore by Category" with collapsible toggle
+16. **Background Theme Picker**: 6 animated background options:
+    - Particle Network (connected dots, mouse reactive)
+    - Floating Orbs (soft gradient blobs)
+    - Grid Glow (subtle grid with corner accents)
+    - Starfield (twinkling stars + shooting stars)
+    - Gradient Waves (animated waves at bottom)
+    - None (clean, no animation)
 
 ## Backlog (Future Features)
 ### P1 - COMPLETED ✅

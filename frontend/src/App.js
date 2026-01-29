@@ -1968,12 +1968,13 @@ const HomePage = () => {
                       </div>
                     </div>
                   </div>
+                ) : healthReport === null ? (
+                  <BrainAnalyzing />
                 ) : (
-                  <div className="flex items-center justify-center py-12">
-                    <div className="text-center">
-                      <div className="w-8 h-8 gold-spinner mx-auto mb-3" />
-                      <p className="text-sm text-gray-400">Analyzing 8 quarters of financial data...</p>
-                    </div>
+                  <div className="flex flex-col items-center justify-center py-12">
+                    <span className="text-4xl mb-4">📊</span>
+                    <p className="text-sm text-gray-400">Unable to load AI analysis for this stock.</p>
+                    <p className="text-xs text-gray-500 mt-1">Financial data may not be available.</p>
                   </div>
                 )}
               </CardContent>

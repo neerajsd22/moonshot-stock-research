@@ -114,6 +114,12 @@ GET  /api/custom-categories           - List custom categories
     - Starfield (twinkling stars + shooting stars)
     - Gradient Waves (animated waves at bottom)
     - None (clean, no animation)
+17. **AI Deep Analysis Refresh Button** ✅: 
+    - Added refresh button in AI Deep Analysis section header
+    - Added "Retry" button in error state for failed API calls
+    - Shows spinning animation during refresh
+    - Displays toast notification on success
+    - Tested: 100% pass rate (11/11 backend tests, all frontend features verified)
 
 ## Backlog (Future Features)
 ### P1 - COMPLETED ✅

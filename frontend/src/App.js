@@ -421,12 +421,23 @@ const HomePage = () => {
   // Function to fetch all data for a single stock and return it as an object
   const fetchStockData = async (ticker) => {
     try {
+      // Create a timeout wrapper for long-running requests
+      const timeoutPromise = (promise, ms = 15000) => {
+        return Promise.race([
+          promise,
+          new Promise((_, reject) => setTimeout(() => reject(new Error('Request timeout')), ms))
+        ]);
+      };
+
       const [quoteRes, historyRes, earningsRes, earningsSnapshotRes, healthReportRes, sentimentRes, newsRes] = await Promise.all([
         axios.get(`${API}/stocks/${ticker}/quote`),
         axios.get(`${API}/stocks/${ticker}/history`, { params: { period } }),
         axios.get(`${API}/stocks/${ticker}/earnings-link`).catch(() => ({ data: null })),
         axios.get(`${API}/stocks/${ticker}/earnings-snapshot`).catch(() => ({ data: null })),
-        axios.get(`${API}/stocks/${ticker}/health-report`).catch(() => ({ data: null })),
+        timeoutPromise(axios.get(`${API}/stocks/${ticker}/health-report`)).catch((err) => {
+          console.warn(`Health report failed for ${ticker}:`, err.message);
+          return { data: { error: true, message: 'Failed to load health report' } };
+        }),
         axios.get(`${API}/stocks/${ticker}/bull-bear-sentiment`).catch(() => ({ 
           data: {
             bull_points: ['Strong market position', 'Positive growth trends', 'Favorable recommendations'],
@@ -436,13 +447,17 @@ const HomePage = () => {
         axios.get(`${API}/stocks/${ticker}/news`).catch(() => ({ data: [] })),
       ]);
       
+      // Validate health report data
+      const healthData = healthReportRes.data;
+      const validHealthReport = healthData && !healthData.error && healthData.quarters ? healthData : null;
+      
       return {
         ticker,
         quote: quoteRes.data,
         historicalData: historyRes.data,
         earningsLink: earningsRes.data,
         earningsSnapshot: earningsSnapshotRes.data,
-        healthReport: healthReportRes.data,
+        healthReport: validHealthReport,
         bullBearSentiment: sentimentRes.data,
         newsArticles: newsRes.data,
         period,

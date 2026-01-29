@@ -100,12 +100,18 @@ GET  /api/custom-categories           - List custom categories
     - StockHeader, KeyStatsCard, DenseViewTable, LoadingAnimation
     - FinancialsCard, AnalysisCard, NewsCard, HealthReportCard
 11. Extended hours price display (pre-market/after-hours) - implemented but dependent on yfinance API data availability
+12. **P1 Features Implemented**:
+    - ✅ Persist stacked stocks in localStorage (survives page refresh)
+    - ✅ Export stacked stocks to CSV
+    - ✅ Stock comparison chart overlay (compare multiple stocks on one chart)
+13. **Animated Background**: Added elegant particle effect with connecting lines that react to mouse movement
+14. **ComparisonChart component**: New modal with % Change/Price toggle and CSV export for comparison data
 
 ## Backlog (Future Features)
-### P1
-- Persist stacked stocks across sessions (localStorage)
-- Export stacked stocks to CSV
-- Compare charts overlay
+### P1 - COMPLETED ✅
+- ~~Persist stacked stocks across sessions (localStorage)~~
+- ~~Export stacked stocks to CSV~~
+- ~~Compare charts overlay~~
 
 ### P2
 - Custom columns in Dense view

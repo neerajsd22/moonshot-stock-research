@@ -1017,9 +1017,12 @@ async def get_stock_health_report(ticker: str):
                 score += 2
             if trends.get('fcf_quality') == 'strong':
                 score += 2
-            if current_metrics.get('roe', 0) > 15:
+            # None-safe comparisons: use 'or' to provide fallback when value is None
+            roe_val = current_metrics.get('roe')
+            if roe_val is not None and roe_val > 15:
                 score += 1
-            if current_metrics.get('debt_to_equity', 100) < 100:
+            debt_val = current_metrics.get('debt_to_equity')
+            if debt_val is not None and debt_val < 100:
                 score += 1
             if sentiment.get('analyst') == 'bullish':
                 score += 2

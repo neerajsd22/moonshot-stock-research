@@ -68,7 +68,15 @@ const HomePage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   // Changed from single stock to array of stacked stocks (max 10)
-  const [stackedStocks, setStackedStocks] = useState([]);
+  // Initialize from localStorage
+  const [stackedStocks, setStackedStocks] = useState(() => {
+    try {
+      const saved = localStorage.getItem('moonshot_stacked_stocks');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
   const stackedStocksRef = useRef(stackedStocks); // Ref to track current stackedStocks
   // Keep selectedStock for backward compatibility with some features
   const [selectedStock, setSelectedStock] = useState(null);
@@ -89,6 +97,7 @@ const HomePage = () => {
   const [loadingBullBear, setLoadingBullBear] = useState(false);
   const [comparisonPoints, setComparisonPoints] = useState([]);
   const [comparisonMode, setComparisonMode] = useState(false);
+  const [showComparisonChart, setShowComparisonChart] = useState(false); // New comparison chart modal
   const chartRef = useRef(null);
   const [customCategories, setCustomCategories] = useState([]);
   const [showCreateDialog, setShowCreateDialog] = useState(false);

@@ -1913,6 +1913,19 @@ const HomePage = () => {
         enabledCategories={enabledCategories}
         onCategoriesChange={setEnabledCategories}
       />
+      
+      {/* Stock Comparison Chart Modal */}
+      {showComparisonChart && stackedStocks.length >= 2 && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+          <div className="w-full max-w-5xl">
+            <ComparisonChart 
+              stocks={stackedStocks}
+              onClose={() => setShowComparisonChart(false)}
+              period={period}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

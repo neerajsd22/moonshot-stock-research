@@ -996,17 +996,21 @@ async def get_stock_health_report(ticker: str):
                     fcf_quality = sum(fcfs) / sum(net_incomes) if sum(net_incomes) != 0 else 0
                     trends['fcf_quality'] = 'strong' if fcf_quality > 0.8 else 'moderate' if fcf_quality > 0.5 else 'weak'
             
-            # Risk assessment (simplified)
+            # Risk assessment (simplified) - None-safe comparisons
+            held_by_inst = current_metrics.get('held_by_institutions')
+            debt_eq = info.get('debtToEquity')
+            
             risk_scores = {
                 "regulatory_risk": 3 if info.get('sector') in ['Technology', 'Healthcare', 'Financial Services'] else 2,
-                "concentration_risk": 5 if current_metrics.get('held_by_institutions', 0) > 80 else 3,
-                "debt_risk": min(10, int((info.get('debtToEquity', 0) or 0) / 50)) if info.get('debtToEquity') else 2,
+                "concentration_risk": 5 if held_by_inst is not None and held_by_inst > 80 else 3,
+                "debt_risk": min(10, int(debt_eq / 50)) if debt_eq is not None else 2,
             }
             
-            # Sentiment assessment
+            # Sentiment assessment - None-safe comparisons
+            recommendation = (current_metrics.get('recommendation') or '').lower()
             sentiment = {
-                "institutional": 'bullish' if current_metrics.get('held_by_institutions', 0) > 60 else 'neutral',
-                "analyst": 'bullish' if current_metrics.get('recommendation', '').lower() in ['buy', 'strong_buy'] else 'bearish' if current_metrics.get('recommendation', '').lower() in ['sell', 'strong_sell'] else 'neutral',
+                "institutional": 'bullish' if held_by_inst is not None and held_by_inst > 60 else 'neutral',
+                "analyst": 'bullish' if recommendation in ['buy', 'strong_buy'] else 'bearish' if recommendation in ['sell', 'strong_sell'] else 'neutral',
             }
             
             # Overall verdict

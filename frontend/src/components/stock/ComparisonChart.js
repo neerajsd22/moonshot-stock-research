@@ -106,28 +106,17 @@ const ComparisonChart = ({ stocks, onClose, period = '1y' }) => {
     fetchComparisonData();
   }, [stocks, period, normalizeData]);
 
-  const formatDate = (dateStr) => {
+  const formatDate = useCallback((dateStr) => {
     const date = new Date(dateStr);
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-  };
+  }, []);
 
-  const formatValue = (value) => {
-    if (normalizeData) {
+  const formatValue = useCallback((value, normalize) => {
+    if (normalize) {
       return `${value >= 0 ? '+' : ''}${value.toFixed(2)}%`;
     }
     return `$${value.toFixed(2)}`;
-  };
-
-  const CustomTooltip = ({ active, payload, label }) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="bg-[#1a1a24] border border-[rgba(255,255,255,0.1)] rounded-lg p-3 shadow-xl">
-          <p className="text-xs text-gray-400 mb-2">{formatDate(label)}</p>
-          {payload.map((entry, idx) => (
-            <div key={idx} className="flex items-center justify-between gap-4 text-sm">
-              <div className="flex items-center gap-2">
-                <div 
-                  className="w-2 h-2 rounded-full" 
+  }, []); 
                   style={{ backgroundColor: entry.color }}
                 />
                 <span className="text-gray-300">{entry.dataKey}</span>

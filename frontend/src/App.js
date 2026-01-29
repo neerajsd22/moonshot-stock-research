@@ -29,7 +29,7 @@ import {
   LoadingAnimation,
   ComparisonChart,
   ExportButton,
-  BrainAnalyzing,
+  ResearchAnalysis,
 } from './components/stock';
 import { ParticleNetwork, FloatingOrbs, GridGlow, Starfield, GradientWaves } from './components/AnimatedBackground';
 

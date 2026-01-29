@@ -5,7 +5,7 @@
 *(Make sure repo is public when cloning)*
 
 ## Access Credentials
-- **User Access Code**: `MOONSHOT` (unlimited uses, persistent)
+- **User Access Code**: Use codes from admin panel (check DB for active codes)
 - **Admin Password**: `z7&G2#kL9!pX`
 - **Admin URL**: `/admin`
 
@@ -17,12 +17,22 @@
 
 ## Key Files
 ```
-/app/frontend/src/App.js           - Main app component (HomePage with all stock features)
-/app/frontend/src/CategoryPage.js  - Category detail page
-/app/frontend/src/components/AdminPage.js - Admin dashboard
-/app/frontend/src/components/AccessGate.js - Access code authentication
-/app/frontend/src/App.css          - Global styles
-/app/backend/server.py             - FastAPI backend with all endpoints
+/app/frontend/src/App.js                    - Main app (reduced from 2188 to 1879 lines after refactoring)
+/app/frontend/src/CategoryPage.js           - Category detail page
+/app/frontend/src/components/AdminPage.js   - Admin dashboard
+/app/frontend/src/components/AccessGate.js  - Access code authentication
+/app/frontend/src/components/stock/         - Refactored stock components
+  - StockHeader.js      - Stock title, price, extended hours, pin/dismiss
+  - KeyStatsCard.js     - Key statistics grid
+  - DenseViewTable.js   - Compact table view
+  - LoadingAnimation.js - Stock loading animation
+  - FinancialsCard.js   - Financials section
+  - AnalysisCard.js     - Bull/Bear analysis
+  - NewsCard.js         - Latest news section
+  - HealthReportCard.js - AI Deep Analysis
+  - index.js            - Barrel export
+/app/frontend/src/App.css                   - Global styles
+/app/backend/server.py                      - FastAPI backend with all endpoints
 ```
 
 ## Core Features Implemented

@@ -139,6 +139,31 @@ const HomePage = () => {
     stackedStocksRef.current = stackedStocks;
   }, [stackedStocks]);
 
+  // Persist stacked stocks to localStorage
+  useEffect(() => {
+    if (stackedStocks.length > 0) {
+      localStorage.setItem('moonshot_stacked_stocks', JSON.stringify(stackedStocks));
+    } else {
+      localStorage.removeItem('moonshot_stacked_stocks');
+    }
+  }, [stackedStocks]);
+
+  // Initialize selected stock from persisted data
+  useEffect(() => {
+    if (stackedStocks.length > 0 && !selectedStock) {
+      const lastStock = stackedStocks[stackedStocks.length - 1];
+      setSelectedStock(lastStock.ticker);
+      setStockQuote(lastStock.quote);
+      setHistoricalData(lastStock.historicalData || []);
+      setEarningsLink(lastStock.earningsLink);
+      setEarningsSnapshot(lastStock.earningsSnapshot);
+      setHealthReport(lastStock.healthReport);
+      setBullBearSentiment(lastStock.bullBearSentiment);
+      setNewsArticles(lastStock.newsArticles || []);
+      setCategoriesCollapsed(true);
+    }
+  }, []);
+
   // Handle stock query parameter from category page
   useEffect(() => {
     const stockParam = searchParams.get('stock');

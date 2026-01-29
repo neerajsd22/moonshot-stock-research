@@ -9,4 +9,4 @@ export { default as NewsCard } from './NewsCard';
 export { default as HealthReportCard } from './HealthReportCard';
 export { default as ComparisonChart } from './ComparisonChart';
 export { default as ExportButton } from './ExportButton';
-export { BrainAnalyzing, ChartDrawing, RobotProcessing, NumberCrunching, DeepSearch } from './AILoadingAnimation';
+export { RocketChart, ResearchAnalysis, CalculatorGears, TargetAnalysis, CrystalBall, PulseMonitor, BrainAnalyzing } from './AILoadingAnimation';

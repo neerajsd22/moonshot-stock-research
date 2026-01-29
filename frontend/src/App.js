@@ -1948,7 +1948,7 @@ const HomePage = () => {
                     </div>
                   </div>
                 ) : healthReport === null ? (
-                  <BrainAnalyzing />
+                  <ResearchAnalysis />
                 ) : (
                   <div className="flex flex-col items-center justify-center py-12">
                     <span className="text-4xl mb-4">📊</span>

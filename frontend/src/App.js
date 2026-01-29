@@ -102,6 +102,7 @@ const HomePage = () => {
   const [loadingEarningsSnapshot, setLoadingEarningsSnapshot] = useState(false);
   const [healthReport, setHealthReport] = useState(null);
   const [loadingHealthReport, setLoadingHealthReport] = useState(false);
+  const [refreshingHealthReport, setRefreshingHealthReport] = useState(false);
   const [aiAnalysis, setAiAnalysis] = useState(null);
   const [loadingAiAnalysis, setLoadingAiAnalysis] = useState(false);
   const [bullBearSentiment, setBullBearSentiment] = useState(null);

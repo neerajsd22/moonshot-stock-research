@@ -21,6 +21,13 @@ import AdvancedChart from './components/AdvancedChart';
 import CategorySettings, { ALL_CATEGORIES } from './components/CategorySettings';
 import AccessGate from './components/AccessGate';
 import AdminPage from './components/AdminPage';
+// Refactored stock components
+import {
+  StockHeader,
+  KeyStatsCard,
+  DenseViewTable,
+  LoadingAnimation,
+} from './components/stock';
 import {
   LineChart,
   ComposedChart,

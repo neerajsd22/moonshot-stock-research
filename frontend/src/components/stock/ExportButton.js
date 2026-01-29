@@ -9,7 +9,7 @@ const ExportButton = ({ stocks, className = '' }) => {
       return;
     }
 
-    // Define CSV headers
+    // Define CSV headers - includes basic info + AI Deep Analysis
     const headers = [
       'Ticker',
       'Company',
@@ -25,14 +25,36 @@ const ExportButton = ({ stocks, className = '' }) => {
       '52W High',
       '52W Low',
       'Volume',
+      // AI Deep Analysis fields
+      'AI Verdict',
+      'AI Score',
+      'Revenue Trend',
+      'Margin Trend',
+      'FCF Quality',
+      'ROE',
+      'Debt/Equity',
+      'Inst. Ownership',
+      'Target Price',
+      'Analyst Sentiment',
+      'Latest Revenue (Q)',
+      'Latest Gross Margin (Q)',
+      'Latest Op Margin (Q)',
+      'Latest Net Income (Q)',
+      'Latest FCF (Q)',
     ];
 
     // Build rows from stock data
     const rows = stocks.map(stock => {
       const q = stock.quote;
+      const h = stock.healthReport || {};
+      const metrics = h.current_metrics || {};
+      const trends = h.trends || {};
+      const sentiment = h.sentiment || {};
+      const latestQ = h.quarters?.[0] || {};
+
       return [
         stock.ticker,
-        `"${q.company_name || ''}"`, // Quote to handle commas
+        `"${q.company_name || ''}"`,
         q.price?.toFixed(2) || '',
         q.change?.toFixed(2) || '',
         q.change_percent?.toFixed(2) || '',
@@ -45,6 +67,22 @@ const ExportButton = ({ stocks, className = '' }) => {
         q.high_52week?.toFixed(2) || '',
         q.low_52week?.toFixed(2) || '',
         q.volume ? (q.volume / 1e6).toFixed(2) + 'M' : '',
+        // AI Deep Analysis
+        h.verdict || '',
+        h.score || '',
+        trends.revenue_trend || '',
+        trends.margin_trend || '',
+        trends.fcf_quality || '',
+        metrics.roe ? metrics.roe.toFixed(1) + '%' : '',
+        metrics.debt_to_equity?.toFixed(1) || '',
+        metrics.held_by_institutions ? metrics.held_by_institutions.toFixed(1) + '%' : '',
+        metrics.target_price ? '$' + metrics.target_price.toFixed(2) : '',
+        sentiment.analyst || '',
+        latestQ.revenue ? '$' + (latestQ.revenue / 1e9).toFixed(2) + 'B' : '',
+        latestQ.gross_margin ? latestQ.gross_margin.toFixed(1) + '%' : '',
+        latestQ.op_margin ? latestQ.op_margin.toFixed(1) + '%' : '',
+        latestQ.net_income ? '$' + (latestQ.net_income / 1e9).toFixed(2) + 'B' : '',
+        latestQ.fcf ? '$' + (latestQ.fcf / 1e9).toFixed(2) + 'B' : '',
       ];
     });
 
@@ -65,7 +103,7 @@ const ExportButton = ({ stocks, className = '' }) => {
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
 
-    toast.success(`Exported ${stocks.length} stocks to CSV`);
+    toast.success(`Exported ${stocks.length} stocks with AI analysis to CSV`);
   };
 
   return (

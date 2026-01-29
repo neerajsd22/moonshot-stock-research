@@ -619,6 +619,47 @@ const HomePage = () => {
     toast.info('Comparison mode disabled');
   };
 
+  // Refresh AI Deep Analysis / Health Report for current stock
+  const refreshHealthReport = async () => {
+    if (!selectedStock) return;
+    
+    setRefreshingHealthReport(true);
+    setHealthReport(null); // Show loading state
+    
+    try {
+      const timeoutPromise = (promise, ms = 20000) => {
+        return Promise.race([
+          promise,
+          new Promise((_, reject) => setTimeout(() => reject(new Error('Request timeout')), ms))
+        ]);
+      };
+      
+      const response = await timeoutPromise(axios.get(`${API}/stocks/${selectedStock}/health-report`));
+      const healthData = response.data;
+      
+      if (healthData && healthData.quarters && healthData.quarters.length > 0) {
+        setHealthReport(healthData);
+        toast.success('AI Analysis refreshed successfully!');
+        
+        // Also update the stacked stock data
+        setStackedStocks(prev => prev.map(stock => 
+          stock.ticker === selectedStock 
+            ? { ...stock, healthReport: healthData }
+            : stock
+        ));
+      } else {
+        setHealthReport({ _failed: true, message: 'No financial data available for this stock' });
+        toast.error('Could not load AI analysis - no data available');
+      }
+    } catch (error) {
+      console.error('Error refreshing health report:', error);
+      setHealthReport({ _failed: true, message: error.message || 'Failed to load health report' });
+      toast.error('Failed to refresh AI analysis. Please try again.');
+    } finally {
+      setRefreshingHealthReport(false);
+    }
+  };
+
   const toggleComparisonMode = () => {
     if (comparisonMode) {
       setComparisonMode(false);

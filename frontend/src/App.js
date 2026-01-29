@@ -683,8 +683,55 @@ const HomePage = () => {
 
   return (
     <div className="min-h-screen bg-background relative">
-      {/* Animated Background */}
-      <AnimatedBackground />
+      {/* Animated Background - Dynamic based on selection */}
+      {(() => {
+        const BackgroundComponent = BACKGROUND_OPTIONS[selectedBackground]?.component;
+        return BackgroundComponent ? <BackgroundComponent /> : null;
+      })()}
+      
+      {/* Background Picker Modal */}
+      {showBackgroundPicker && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+          <Card className="premium-card gold-gradient-border w-full max-w-lg">
+            <CardHeader>
+              <CardTitle className="text-lg text-white flex items-center justify-between">
+                Choose Background Style
+                <Button variant="ghost" size="sm" onClick={() => setShowBackgroundPicker(false)} className="text-gray-400 hover:text-white">
+                  <X className="w-4 h-4" />
+                </Button>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {Object.entries(BACKGROUND_OPTIONS).map(([key, option]) => (
+                <button
+                  key={key}
+                  onClick={() => {
+                    setSelectedBackground(key);
+                    localStorage.setItem('moonshot_background', key);
+                    setShowBackgroundPicker(false);
+                  }}
+                  className={`w-full p-4 rounded-lg border text-left transition-all ${
+                    selectedBackground === key 
+                      ? 'border-[#d946ef] bg-[#d946ef]/10' 
+                      : 'border-[rgba(255,255,255,0.1)] hover:border-[rgba(255,255,255,0.2)] bg-[rgba(255,255,255,0.02)]'
+                  }`}
+                  data-testid={`bg-option-${key}`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="font-medium text-white">{option.name}</div>
+                      <div className="text-xs text-gray-400 mt-1">{option.description}</div>
+                    </div>
+                    {selectedBackground === key && (
+                      <Badge className="bg-[#d946ef] text-white">Active</Badge>
+                    )}
+                  </div>
+                </button>
+              ))}
+            </CardContent>
+          </Card>
+        </div>
+      )}
       
       {/* Header */}
       <header className="sticky top-0 z-50 backdrop-blur-xl bg-[#0a0a0f]/80 border-b border-[rgba(217,70,239,0.1)]">

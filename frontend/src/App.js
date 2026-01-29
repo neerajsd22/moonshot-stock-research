@@ -27,7 +27,10 @@ import {
   KeyStatsCard,
   DenseViewTable,
   LoadingAnimation,
+  ComparisonChart,
+  ExportButton,
 } from './components/stock';
+import AnimatedBackground from './components/AnimatedBackground';
 import {
   LineChart,
   ComposedChart,

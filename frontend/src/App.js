@@ -1699,7 +1699,7 @@ const HomePage = () => {
                     <BrainCircuit className="w-5 h-5 text-[#d946ef]" />
                     AI Deep Analysis
                   </CardTitle>
-                  {healthReport && (
+                  {healthReport && healthReport.verdict && (
                     <Badge 
                       className={`text-sm px-3 py-1 ${
                         healthReport.verdict === 'BUY' ? 'bg-green-500/20 text-green-400 border-green-500/30' :
@@ -1711,7 +1711,7 @@ const HomePage = () => {
                     </Badge>
                   )}
                 </div>
-                {healthReport && (
+                {healthReport && healthReport.audit_date && (
                   <p className="text-xs text-gray-500 mt-1">
                     Audit Date: {healthReport.audit_date} • {healthReport.company_name}
                   </p>

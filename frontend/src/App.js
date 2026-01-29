@@ -824,6 +824,19 @@ const HomePage = () => {
                 <span className="hidden md:inline">Categories</span>
               </Button>
               
+              {/* Background Picker Button */}
+              <Button
+                data-testid="background-picker-button"
+                variant="outline"
+                size="sm"
+                onClick={() => setShowBackgroundPicker(true)}
+                className="flex items-center gap-2 btn-outline-gold"
+                title="Change background style"
+              >
+                <span className="text-base">✨</span>
+                <span className="hidden lg:inline">Theme</span>
+              </Button>
+              
               {/* Compare Stocks Button - Only show when 2+ stocks */}
               {stackedStocks.length >= 2 && (
                 <Button

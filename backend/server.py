@@ -944,11 +944,11 @@ async def get_stock_health_report(ticker: str):
                     quarters_data.append({
                         "quarter": quarter_label,
                         "date": col.isoformat() if hasattr(col, 'isoformat') else str(col),
-                        "revenue": float(revenue) if revenue else None,
-                        "gross_margin": round(float(gross_margin), 1) if gross_margin else None,
-                        "op_margin": round(float(op_margin), 1) if op_margin else None,
-                        "net_income": float(net_income) if net_income else None,
-                        "fcf": float(fcf) if fcf else None,
+                        "revenue": safe_float(revenue),
+                        "gross_margin": safe_round(gross_margin, 1),
+                        "op_margin": safe_round(op_margin, 1),
+                        "net_income": safe_float(net_income),
+                        "fcf": safe_float(fcf),
                     })
             
             # Sort quarters in descending order (most recent first)

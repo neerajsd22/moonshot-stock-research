@@ -1737,21 +1737,35 @@ const HomePage = () => {
             <Card className="premium-card gold-gradient-border" data-testid="ai-deep-analysis">
               <CardHeader className="pb-4">
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-lg text-white section-title-gold flex items-center gap-2" style={{ fontFamily: 'Outfit, sans-serif' }}>
-                    <BrainCircuit className="w-5 h-5 text-[#d946ef]" />
-                    AI Deep Analysis
-                  </CardTitle>
-                  {healthReport && healthReport.verdict && (
-                    <Badge 
-                      className={`text-sm px-3 py-1 ${
-                        healthReport.verdict === 'BUY' ? 'bg-green-500/20 text-green-400 border-green-500/30' :
-                        healthReport.verdict === 'HOLD' ? 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' :
-                        'bg-red-500/20 text-red-400 border-red-500/30'
-                      }`}
-                    >
-                      {healthReport.verdict} ({healthReport.score}/10)
-                    </Badge>
-                  )}
+                  <div className="flex items-center gap-3">
+                    <CardTitle className="text-lg text-white section-title-gold flex items-center gap-2" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                      <BrainCircuit className="w-5 h-5 text-[#d946ef]" />
+                      AI Deep Analysis
+                    </CardTitle>
+                    {healthReport && healthReport.verdict && (
+                      <Badge 
+                        className={`text-sm px-3 py-1 ${
+                          healthReport.verdict === 'BUY' ? 'bg-green-500/20 text-green-400 border-green-500/30' :
+                          healthReport.verdict === 'HOLD' ? 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' :
+                          'bg-red-500/20 text-red-400 border-red-500/30'
+                        }`}
+                      >
+                        {healthReport.verdict} ({healthReport.score}/10)
+                      </Badge>
+                    )}
+                  </div>
+                  {/* Refresh Button */}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={refreshHealthReport}
+                    disabled={refreshingHealthReport}
+                    className="flex items-center gap-2 btn-outline-gold"
+                    data-testid="refresh-ai-analysis"
+                  >
+                    <RefreshCw className={`w-4 h-4 ${refreshingHealthReport ? 'animate-spin' : ''}`} />
+                    <span className="hidden sm:inline">{refreshingHealthReport ? 'Refreshing...' : 'Refresh'}</span>
+                  </Button>
                 </div>
                 {healthReport && healthReport.audit_date && (
                   <p className="text-xs text-gray-500 mt-1">

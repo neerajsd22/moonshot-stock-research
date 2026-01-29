@@ -449,7 +449,16 @@ const HomePage = () => {
       
       // Validate health report data
       const healthData = healthReportRes.data;
-      const validHealthReport = healthData && !healthData.error && healthData.quarters ? healthData : null;
+      let validHealthReport = null;
+      if (healthData && !healthData.error && healthData.quarters && healthData.quarters.length > 0) {
+        validHealthReport = healthData;
+      } else if (healthData && healthData.error) {
+        // Explicitly mark as failed
+        validHealthReport = { _failed: true, message: healthData.message || 'Failed to load' };
+      } else {
+        // No data available
+        validHealthReport = { _failed: true, message: 'No financial data available' };
+      }
       
       return {
         ticker,

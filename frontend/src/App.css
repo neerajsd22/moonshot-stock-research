@@ -370,3 +370,50 @@
   0% { background-position: 200% 0; }
   100% { background-position: -200% 0; }
 }
+
+/* Animated Background Styles */
+@keyframes float-slow {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(30px, -30px) scale(1.05); }
+  66% { transform: translate(-20px, 20px) scale(0.95); }
+}
+
+@keyframes float-medium {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-40px, 30px) scale(1.1); }
+}
+
+@keyframes float-fast {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(20px, -20px); }
+  50% { transform: translate(-15px, 25px); }
+  75% { transform: translate(25px, 10px); }
+}
+
+@keyframes float-reverse {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(30px, -40px) scale(0.9); }
+}
+
+@keyframes wave-slow {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(-50px); }
+}
+
+@keyframes wave-medium {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(30px); }
+}
+
+.animate-float-slow { animation: float-slow 20s ease-in-out infinite; }
+.animate-float-medium { animation: float-medium 15s ease-in-out infinite; }
+.animate-float-fast { animation: float-fast 10s ease-in-out infinite; }
+.animate-float-reverse { animation: float-reverse 18s ease-in-out infinite reverse; }
+.animate-wave-slow { animation: wave-slow 8s ease-in-out infinite; }
+.animate-wave-medium { animation: wave-medium 6s ease-in-out infinite; }
+
+/* Radial gradient helper */
+.bg-gradient-radial {
+  background: radial-gradient(circle at center, var(--tw-gradient-from), var(--tw-gradient-to));
+}
+

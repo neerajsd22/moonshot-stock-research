@@ -446,3 +446,17 @@
 .animate-search-move { animation: search-move 1.5s ease-in-out infinite; }
 .animate-equalizer { animation: equalizer 0.8s ease-in-out infinite; }
 
+@keyframes draw-pulse {
+  0% { stroke-dasharray: 0 300; }
+  50% { stroke-dasharray: 150 150; }
+  100% { stroke-dasharray: 300 0; }
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.animate-draw-pulse { animation: draw-pulse 1.5s ease-in-out infinite; }
+.animate-shimmer { animation: shimmer 2s linear infinite; }
+

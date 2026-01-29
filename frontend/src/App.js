@@ -2019,12 +2019,34 @@ const HomePage = () => {
                     <span className="text-4xl mb-4">📊</span>
                     <p className="text-sm text-gray-400">Unable to load AI analysis for this stock.</p>
                     <p className="text-xs text-gray-500 mt-1">{healthReport.message || 'Financial data may not be available.'}</p>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={refreshHealthReport}
+                      disabled={refreshingHealthReport}
+                      className="mt-4 btn-outline-gold"
+                      data-testid="retry-ai-analysis"
+                    >
+                      <RefreshCw className={`w-4 h-4 mr-2 ${refreshingHealthReport ? 'animate-spin' : ''}`} />
+                      {refreshingHealthReport ? 'Retrying...' : 'Retry'}
+                    </Button>
                   </div>
                 ) : (
                   <div className="flex flex-col items-center justify-center py-12">
                     <span className="text-4xl mb-4">📊</span>
                     <p className="text-sm text-gray-400">Unable to load AI analysis for this stock.</p>
                     <p className="text-xs text-gray-500 mt-1">Financial data may not be available.</p>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={refreshHealthReport}
+                      disabled={refreshingHealthReport}
+                      className="mt-4 btn-outline-gold"
+                      data-testid="retry-ai-analysis-fallback"
+                    >
+                      <RefreshCw className={`w-4 h-4 mr-2 ${refreshingHealthReport ? 'animate-spin' : ''}`} />
+                      {refreshingHealthReport ? 'Retrying...' : 'Retry'}
+                    </Button>
                   </div>
                 )}
               </CardContent>

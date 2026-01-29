@@ -935,10 +935,10 @@ const HomePage = () => {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-[1600px] mx-auto px-6 py-8 lg:px-8 lg:py-10">
+      <main className="max-w-[1600px] mx-auto px-6 py-8 lg:px-8 lg:py-10 relative z-10">
         {/* Pinned Stocks Section - At the top, always visible when there are pinned stocks */}
         {pinnedStocks.length > 0 && (
-          <div className="mb-8" data-testid="pinned-stocks-section">
+          <div className="mb-8 relative z-20" data-testid="pinned-stocks-section">
             <div className="flex items-center gap-2 mb-4">
               <span className="text-xl">📌</span>
               <h2
@@ -955,7 +955,7 @@ const HomePage = () => {
                 <Card
                   key={stock.ticker}
                   data-testid={`pinned-stock-${stock.ticker}`}
-                  className="min-w-[200px] bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.1)] hover:border-[#d946ef]/50 transition-colors duration-200 cursor-pointer flex-shrink-0"
+                  className="min-w-[200px] bg-[rgba(15,15,20,0.95)] border border-[rgba(255,255,255,0.15)] hover:border-[#d946ef]/50 transition-colors duration-200 cursor-pointer flex-shrink-0 shadow-lg"
                   onClick={() => selectStock(stock.ticker)}
                 >
                   <CardContent className="p-4">

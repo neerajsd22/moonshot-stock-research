@@ -1718,7 +1718,7 @@ const HomePage = () => {
                 )}
               </CardHeader>
               <CardContent>
-                {healthReport ? (
+                {healthReport && healthReport.quarters && healthReport.quarters.length > 0 ? (
                   <div className="space-y-6">
                     {/* Core Vitals Matrix */}
                     <div>

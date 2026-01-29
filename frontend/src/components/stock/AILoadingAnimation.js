@@ -10,7 +10,7 @@ const LOADING_MESSAGES = [
   "Generating investment verdict...",
 ];
 
-// Option 1: Pulsing Brain with Data Streams
+// Option 1: Stock Analysis with Chart and Rocket (More relevant to stock analysis)
 export const BrainAnalyzing = ({ message }) => {
   const [messageIndex, setMessageIndex] = useState(0);
   
@@ -25,29 +25,42 @@ export const BrainAnalyzing = ({ message }) => {
     <div className="flex flex-col items-center justify-center py-12">
       <div className="relative">
         {/* Outer glow ring */}
-        <div className="absolute inset-0 w-20 h-20 rounded-full bg-[#d946ef]/20 animate-ping" />
-        {/* Brain icon */}
-        <div className="relative w-20 h-20 flex items-center justify-center">
-          <span className="text-5xl animate-pulse">🧠</span>
+        <div className="absolute inset-0 w-24 h-24 rounded-full bg-[#d946ef]/20 animate-ping" style={{ animationDuration: '2s' }} />
+        {/* Main icons - Rocket analyzing charts */}
+        <div className="relative w-24 h-24 flex items-center justify-center">
+          <div className="relative">
+            <span className="text-5xl">📈</span>
+            <span className="absolute -top-2 -right-2 text-2xl animate-bounce">🚀</span>
+          </div>
         </div>
-        {/* Orbiting data points */}
-        <div className="absolute inset-0 w-20 h-20 animate-spin" style={{ animationDuration: '3s' }}>
-          <div className="absolute -top-2 left-1/2 w-2 h-2 bg-green-400 rounded-full" />
-          <div className="absolute top-1/2 -right-2 w-2 h-2 bg-blue-400 rounded-full" />
-          <div className="absolute -bottom-2 left-1/2 w-2 h-2 bg-yellow-400 rounded-full" />
-          <div className="absolute top-1/2 -left-2 w-2 h-2 bg-pink-400 rounded-full" />
+        {/* Orbiting financial indicators */}
+        <div className="absolute inset-0 w-24 h-24 animate-spin" style={{ animationDuration: '4s' }}>
+          <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+            <span className="text-sm">💰</span>
+          </div>
+          <div className="absolute top-1/2 -right-3 transform -translate-y-1/2">
+            <span className="text-sm">📊</span>
+          </div>
+          <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2">
+            <span className="text-sm">💹</span>
+          </div>
+          <div className="absolute top-1/2 -left-3 transform -translate-y-1/2">
+            <span className="text-sm">🎯</span>
+          </div>
         </div>
       </div>
       <p className="text-sm text-[#d946ef] mt-6 font-medium">{message || LOADING_MESSAGES[messageIndex]}</p>
-      <div className="flex gap-1 mt-3">
-        {[0, 1, 2].map(i => (
-          <div 
-            key={i} 
-            className="w-2 h-2 bg-[#d946ef] rounded-full animate-bounce" 
-            style={{ animationDelay: `${i * 150}ms` }} 
-          />
-        ))}
+      {/* Progress bar */}
+      <div className="w-48 h-1.5 bg-[rgba(255,255,255,0.1)] rounded-full mt-4 overflow-hidden">
+        <div 
+          className="h-full bg-gradient-to-r from-[#d946ef] via-[#f0abfc] to-[#d946ef] rounded-full"
+          style={{
+            animation: 'shimmer 1.5s ease-in-out infinite',
+            backgroundSize: '200% 100%'
+          }}
+        />
       </div>
+      <p className="text-xs text-gray-500 mt-2">Analyzing financial health...</p>
     </div>
   );
 };

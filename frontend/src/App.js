@@ -1958,6 +1958,12 @@ const HomePage = () => {
                   </div>
                 ) : healthReport === null ? (
                   <ResearchAnalysis />
+                ) : healthReport._failed ? (
+                  <div className="flex flex-col items-center justify-center py-12">
+                    <span className="text-4xl mb-4">📊</span>
+                    <p className="text-sm text-gray-400">Unable to load AI analysis for this stock.</p>
+                    <p className="text-xs text-gray-500 mt-1">{healthReport.message || 'Financial data may not be available.'}</p>
+                  </div>
                 ) : (
                   <div className="flex flex-col items-center justify-center py-12">
                     <span className="text-4xl mb-4">📊</span>

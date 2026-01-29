@@ -762,6 +762,25 @@ const HomePage = () => {
                 <span className="hidden md:inline">Categories</span>
               </Button>
               
+              {/* Compare Stocks Button - Only show when 2+ stocks */}
+              {stackedStocks.length >= 2 && (
+                <Button
+                  data-testid="compare-stocks-button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowComparisonChart(true)}
+                  className="flex items-center gap-2 bg-[#d946ef]/10 border-[#d946ef]/30 text-[#d946ef] hover:bg-[#d946ef]/20"
+                >
+                  <TrendingUp className="w-4 h-4" />
+                  <span className="hidden sm:inline">Compare</span>
+                </Button>
+              )}
+              
+              {/* Export CSV Button - Only show when stocks exist */}
+              {stackedStocks.length > 0 && (
+                <ExportButton stocks={stackedStocks} />
+              )}
+              
               {/* View Mode Toggle */}
               <Button
                 data-testid="view-mode-toggle"

@@ -7,3 +7,5 @@ export { default as FinancialsCard } from './FinancialsCard';
 export { default as AnalysisCard } from './AnalysisCard';
 export { default as NewsCard } from './NewsCard';
 export { default as HealthReportCard } from './HealthReportCard';
+export { default as ComparisonChart } from './ComparisonChart';
+export { default as ExportButton } from './ExportButton';

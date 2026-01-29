@@ -1071,26 +1071,26 @@ const HomePage = () => {
             </div>
             
             <div 
-              className={`transition-all duration-400 ease-out overflow-hidden ${pinnedStocksCollapsed ? 'max-h-0 opacity-0' : 'max-h-[500px] opacity-100'}`}
+              className={`transition-all duration-300 ease-out overflow-hidden ${pinnedStocksCollapsed ? 'max-h-0 opacity-0' : 'max-h-[500px] opacity-100'}`}
             >
               <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide" data-testid="pinned-stocks-container">
                 {pinnedStocks.map((stock) => (
                   <Card
                     key={stock.ticker}
                     data-testid={`pinned-stock-${stock.ticker}`}
-                    className="min-w-[200px] bg-card border border-border/50 hover:border-primary/50 transition-colors duration-200 cursor-pointer flex-shrink-0"
+                    className="min-w-[200px] bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.1)] hover:border-[#d946ef]/50 transition-colors duration-200 cursor-pointer flex-shrink-0"
                     onClick={() => selectStock(stock.ticker)}
                   >
                     <CardContent className="p-4">
                       <div className="flex items-start justify-between">
                         <div>
                           <div
-                            className="text-lg font-bold"
+                            className="text-lg font-bold text-white"
                             style={{ fontFamily: 'DM Mono, monospace' }}
                           >
                             {stock.ticker}
                           </div>
-                          <div className="text-sm text-muted-foreground mt-1 line-clamp-2">
+                          <div className="text-sm text-gray-400 mt-1 line-clamp-2">
                             {stock.company_name}
                           </div>
                         </div>
@@ -1100,7 +1100,7 @@ const HomePage = () => {
                             e.stopPropagation();
                             unpinStock(stock.ticker);
                           }}
-                          className="text-muted-foreground hover:text-destructive transition-colors"
+                          className="text-gray-400 hover:text-red-400 transition-colors"
                         >
                           <X className="w-4 h-4" />
                         </button>

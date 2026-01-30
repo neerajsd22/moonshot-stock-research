@@ -570,7 +570,6 @@ const HomePage = () => {
     setBullBearSentiment(null);
     setNewsArticles([]);
     setHealthReport(null);
-    setCategoriesCollapsed(false);
     localStorage.removeItem('moonshot_stacked_stocks');
     toast.success('All stocks cleared');
   };

@@ -1,6 +1,7 @@
 // Stock components barrel export
 export { default as StockHeader } from './StockHeader';
 export { default as KeyStatsCard } from './KeyStatsCard';
+export { default as StockCard } from './StockCard';
 export { default as DenseViewTable } from './DenseViewTable';
 export { default as LoadingAnimation } from './LoadingAnimation';
 export { default as FinancialsCard } from './FinancialsCard';

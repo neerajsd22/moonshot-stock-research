@@ -949,77 +949,45 @@ const HomePage = () => {
       
       {/* Header */}
       <header className="sticky top-0 z-50 backdrop-blur-xl bg-[#0a0a0f]/80 border-b border-[rgba(217,70,239,0.1)]">
-        <div className="max-w-[1600px] mx-auto px-6 py-5">
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-6">
-              <div 
-                className="flex items-center gap-3 cursor-pointer group" 
-                onClick={() => {
-                  // Clear all stacked stocks and reset state
-                  setStackedStocks([]);
-                  setSelectedStock(null);
-                  setStockQuote(null);
-                  setHistoricalData([]);
-                  setComparisonPoints([]);
-                  setComparisonMode(false);
-                  setCategoriesCollapsed(false);
-                  setSearchQuery('');
-                  setSearchResults([]);
-                }}
-                data-testid="home-link"
-              >
-                <TrendingUp className="w-8 h-8 text-[#d946ef] transition-all duration-300 group-hover:scale-110" data-testid="logo-icon" />
-                <div>
-                  <h1 className="text-2xl md:text-3xl font-bold gold-text" style={{ fontFamily: 'Outfit, sans-serif' }} data-testid="app-title">
-                    Moonshot
-                  </h1>
-                  <p className="text-xs text-gray-400 hidden sm:block" style={{ fontFamily: 'DM Sans, sans-serif', letterSpacing: '0.02em' }}>
-                    Discover Your Next Big Win
-                  </p>
-                </div>
-              </div>
-              
-              {/* Clean header - just hamburger menu and Dense toggle */}
-              <div className="flex items-center gap-3">
-                {/* View Mode Toggle */}
-                <Button
-                  data-testid="view-mode-toggle"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setViewMode(isDense ? 'spacious' : 'dense')}
-                  className="flex items-center gap-2 btn-outline-gold"
-                >
-                  {isDense ? <LayoutGrid className="w-4 h-4" /> : <LayoutList className="w-4 h-4" />}
-                  <span className="hidden sm:inline">{isDense ? 'Expand' : 'Dense'}</span>
-                </Button>
-                
-                {/* Hamburger Menu Button */}
-                <Button
-                  data-testid="sidebar-toggle"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setSidebarOpen(true)}
-                  className="flex items-center gap-2 btn-outline-gold"
-                >
-                  <Menu className="w-4 h-4" />
-                  <span className="hidden sm:inline">Menu</span>
-                </Button>
+        <div className="max-w-[1600px] mx-auto px-6 py-4">
+          <div className="flex items-center gap-4">
+            {/* Logo */}
+            <div 
+              className="flex items-center gap-3 cursor-pointer group flex-shrink-0" 
+              onClick={() => {
+                setStackedStocks([]);
+                setSelectedStock(null);
+                setStockQuote(null);
+                setHistoricalData([]);
+                setComparisonPoints([]);
+                setComparisonMode(false);
+                setCategoriesCollapsed(false);
+                setSearchQuery('');
+                setSearchResults([]);
+              }}
+              data-testid="home-link"
+            >
+              <TrendingUp className="w-7 h-7 text-[#d946ef] transition-all duration-300 group-hover:scale-110" data-testid="logo-icon" />
+              <div className="hidden sm:block">
+                <h1 className="text-xl font-bold gold-text leading-tight" style={{ fontFamily: 'Outfit, sans-serif' }} data-testid="app-title">
+                  Moonshot
+                </h1>
               </div>
             </div>
             
-            {/* Search Bar */}
-            <div className="relative mt-5">
+            {/* Search Bar - Expanded */}
+            <div className="relative flex-1 max-w-2xl">
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
               <Input
                 data-testid="stock-search-input"
                 type="text"
-                placeholder="Search by ticker or company name (e.g., AAPL, Microsoft)..."
+                placeholder="Search stocks... (e.g., AAPL, Microsoft)"
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
                   searchStocks(e.target.value);
                 }}
-                className="pl-12 h-14 text-base input-premium rounded-xl"
+                className="pl-12 h-11 text-sm input-premium rounded-lg w-full"
                 style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}
               />
               
@@ -1052,6 +1020,33 @@ const HomePage = () => {
                   </CardContent>
                 </Card>
               )}
+            </div>
+            
+            {/* Right side buttons */}
+            <div className="flex items-center gap-2 flex-shrink-0">
+              {/* View Mode Toggle */}
+              <Button
+                data-testid="view-mode-toggle"
+                variant="outline"
+                size="sm"
+                onClick={() => setViewMode(isDense ? 'spacious' : 'dense')}
+                className="h-11 px-4 flex items-center gap-2 btn-outline-gold"
+              >
+                {isDense ? <LayoutGrid className="w-4 h-4" /> : <LayoutList className="w-4 h-4" />}
+                <span className="hidden sm:inline">{isDense ? 'Expand' : 'Dense'}</span>
+              </Button>
+              
+              {/* Menu Button */}
+              <Button
+                data-testid="sidebar-toggle"
+                variant="outline"
+                size="sm"
+                onClick={() => setSidebarOpen(true)}
+                className="h-11 px-4 flex items-center gap-2 btn-outline-gold"
+              >
+                <Menu className="w-4 h-4" />
+                <span className="hidden sm:inline">Menu</span>
+              </Button>
             </div>
           </div>
         </div>

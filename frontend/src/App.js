@@ -2111,6 +2111,7 @@ function App() {
           <AccessGate>
             <Routes>
               <Route path="/" element={<HomePage />} />
+              <Route path="/categories" element={<CategoriesPage />} />
               <Route path="/category/:categoryName" element={<CategoryPage />} />
             </Routes>
           </AccessGate>

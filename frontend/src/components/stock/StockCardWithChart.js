@@ -42,23 +42,27 @@ const StockCardWithChart = ({
   const formatXAxisTick = (dateStr) => {
     const date = new Date(dateStr);
     if (currentPeriod === '1mo') {
-      return date.toLocaleDateString('en-US', { day: 'numeric' });
+      // Show "Jan 5", "Jan 15", etc.
+      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
     } else if (currentPeriod === '3mo') {
+      // Show "Jan 5", "Feb 10", etc.
       return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
     } else if (['6mo', '1y'].includes(currentPeriod)) {
+      // Show just month: "Jan", "Feb", etc.
       return date.toLocaleDateString('en-US', { month: 'short' });
     }
+    // 5Y: Show "Jan '22", "Jul '23", etc.
     return date.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
   };
   
   // Calculate optimal tick interval based on data length
   const getTickInterval = () => {
     const len = historicalData.length;
-    if (len <= 30) return Math.floor(len / 5);  // ~5 ticks for 1 month
-    if (len <= 90) return Math.floor(len / 6);  // ~6 ticks for 3 months
-    if (len <= 180) return Math.floor(len / 6); // ~6 ticks for 6 months
-    if (len <= 365) return Math.floor(len / 6); // ~6 ticks for 1 year
-    return Math.floor(len / 5);                  // ~5 ticks for 5 years
+    if (len <= 25) return 4;   // ~5-6 ticks for 1 month
+    if (len <= 70) return 10;  // ~6-7 ticks for 3 months
+    if (len <= 140) return 20; // ~7 ticks for 6 months
+    if (len <= 260) return 40; // ~6-7 ticks for 1 year
+    return Math.floor(len / 6); // ~6 ticks for 5 years
   };
 
   // Calculate price range for mini stats

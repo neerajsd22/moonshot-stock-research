@@ -736,7 +736,7 @@ async def get_stock_quote(ticker: str):
     """Get current stock quote"""
     try:
         def fetch_quote():
-            stock = yf.Ticker(ticker.upper())
+            stock = ticker_cache.get_or_create(ticker.upper())
             info = stock.info
             hist = stock.history(period="1d")
             

@@ -240,76 +240,76 @@ const StockCardWithChart = ({
           </div>
         </div>
 
-        {/* Key Stats Row - Compact */}
-        <div className="grid grid-cols-5 lg:grid-cols-9 gap-2 mt-3 pt-3 border-t border-[rgba(255,255,255,0.06)]">
+        {/* Key Stats Row - Aligned */}
+        <div className="grid grid-cols-5 lg:grid-cols-9 gap-4 mt-4 pt-4 border-t border-[rgba(255,255,255,0.08)]">
           {quote.day_open && (
-            <div className="text-center">
-              <div className="text-[10px] text-gray-500">Open</div>
-              <div className="text-xs font-medium text-white mono-numbers">
+            <div className="flex flex-col items-center">
+              <div className="text-[11px] text-gray-400 mb-1">Open</div>
+              <div className="text-sm font-medium text-white mono-numbers">
                 {getCurrencySymbol(ticker, quote.currency)}{quote.day_open.toFixed(2)}
               </div>
             </div>
           )}
           {quote.day_high && (
-            <div className="text-center">
-              <div className="text-[10px] text-gray-500">High</div>
-              <div className="text-xs font-medium text-white mono-numbers">
+            <div className="flex flex-col items-center">
+              <div className="text-[11px] text-gray-400 mb-1">High</div>
+              <div className="text-sm font-medium text-white mono-numbers">
                 {getCurrencySymbol(ticker, quote.currency)}{quote.day_high.toFixed(2)}
               </div>
             </div>
           )}
           {quote.day_low && (
-            <div className="text-center">
-              <div className="text-[10px] text-gray-500">Low</div>
-              <div className="text-xs font-medium text-white mono-numbers">
+            <div className="flex flex-col items-center">
+              <div className="text-[11px] text-gray-400 mb-1">Low</div>
+              <div className="text-sm font-medium text-white mono-numbers">
                 {getCurrencySymbol(ticker, quote.currency)}{quote.day_low.toFixed(2)}
               </div>
             </div>
           )}
           {quote.market_cap && (
-            <div className="text-center">
-              <div className="text-[10px] text-gray-500">Mkt Cap</div>
-              <div className="text-xs font-medium text-white mono-numbers">
+            <div className="flex flex-col items-center">
+              <div className="text-[11px] text-gray-400 mb-1">Mkt Cap</div>
+              <div className="text-sm font-medium text-white mono-numbers">
                 ${(quote.market_cap / 1e9).toFixed(0)}B
               </div>
             </div>
           )}
           {quote.pe_ratio && (
-            <div className="text-center">
-              <div className="text-[10px] text-gray-500">P/E</div>
-              <div className="text-xs font-medium text-white mono-numbers">
+            <div className="flex flex-col items-center">
+              <div className="text-[11px] text-gray-400 mb-1">P/E</div>
+              <div className="text-sm font-medium text-white mono-numbers">
                 {quote.pe_ratio.toFixed(1)}
               </div>
             </div>
           )}
           {quote.dividend_yield !== null && quote.dividend_yield !== undefined && (
-            <div className="text-center hidden lg:block">
-              <div className="text-[10px] text-gray-500">Div</div>
-              <div className="text-xs font-medium text-white mono-numbers">
+            <div className="flex flex-col items-center hidden lg:flex">
+              <div className="text-[11px] text-gray-400 mb-1">Div</div>
+              <div className="text-sm font-medium text-white mono-numbers">
                 {quote.dividend_yield.toFixed(2)}%
               </div>
             </div>
           )}
           {quote.high_52week && (
-            <div className="text-center hidden lg:block">
-              <div className="text-[10px] text-gray-500">52W H</div>
-              <div className="text-xs font-medium text-white mono-numbers">
+            <div className="flex flex-col items-center hidden lg:flex">
+              <div className="text-[11px] text-gray-400 mb-1">52W H</div>
+              <div className="text-sm font-medium text-white mono-numbers">
                 ${quote.high_52week.toFixed(0)}
               </div>
             </div>
           )}
           {quote.low_52week && (
-            <div className="text-center hidden lg:block">
-              <div className="text-[10px] text-gray-500">52W L</div>
-              <div className="text-xs font-medium text-white mono-numbers">
+            <div className="flex flex-col items-center hidden lg:flex">
+              <div className="text-[11px] text-gray-400 mb-1">52W L</div>
+              <div className="text-sm font-medium text-white mono-numbers">
                 ${quote.low_52week.toFixed(0)}
               </div>
             </div>
           )}
           {quote.volume && (
-            <div className="text-center hidden lg:block">
-              <div className="text-[10px] text-gray-500">Vol</div>
-              <div className="text-xs font-medium text-white mono-numbers">
+            <div className="flex flex-col items-center hidden lg:flex">
+              <div className="text-[11px] text-gray-400 mb-1">Vol</div>
+              <div className="text-sm font-medium text-white mono-numbers">
                 {(quote.volume / 1e6).toFixed(1)}M
               </div>
             </div>

@@ -260,24 +260,12 @@ const HomePage = () => {
   };
 
   const handleCreateCategory = async (categoryData) => {
-    try {
-      await axios.post(`${API}/custom-categories`, categoryData);
-      await fetchCustomCategories();
-    } catch (error) {
-      console.error('Error creating category:', error);
-      throw error;
-    }
+    // Category creation now handled in CategoriesPage
   };
 
   const handleDeleteCategory = async (categoryId) => {
-    try {
-      await axios.delete(`${API}/custom-categories/${categoryId}`);
-      await fetchCustomCategories();
-      toast.success('Category deleted');
-    } catch (error) {
-      console.error('Error deleting category:', error);
-      toast.error('Failed to delete category');
-    }
+    // Category deletion now handled in CategoriesPage
+  };
   };
 
   const searchStocks = async (query) => {

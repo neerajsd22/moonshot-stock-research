@@ -851,15 +851,6 @@ const HomePage = () => {
             </button>
             
             <button
-              onClick={() => { setShowCategorySettings(true); setSidebarOpen(false); }}
-              className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-gray-300 hover:bg-[rgba(217,70,239,0.1)] hover:text-white transition-colors"
-              data-testid="sidebar-categories"
-            >
-              <Settings className="w-5 h-5 text-[#d946ef]" />
-              <span>Categories</span>
-            </button>
-            
-            <button
               onClick={() => { setShowBackgroundPicker(true); setSidebarOpen(false); }}
               className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-gray-300 hover:bg-[rgba(217,70,239,0.1)] hover:text-white transition-colors"
               data-testid="sidebar-theme"

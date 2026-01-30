@@ -963,7 +963,6 @@ const HomePage = () => {
                 setHistoricalData([]);
                 setComparisonPoints([]);
                 setComparisonMode(false);
-                setCategoriesCollapsed(false);
                 setSearchQuery('');
                 setSearchResults([]);
               }}

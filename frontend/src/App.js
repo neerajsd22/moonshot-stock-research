@@ -863,113 +863,36 @@ const HomePage = () => {
                 </div>
               </div>
               
-              {/* Current Date Display */}
-              <div className="hidden md:flex items-center gap-2 px-4 py-2 bg-[rgba(255,255,255,0.03)] rounded-lg border border-[rgba(255,255,255,0.06)]" data-testid="current-date">
-                <span className="text-[#d946ef] text-sm">📅</span>
-                <span className="text-white text-sm font-medium" style={{ fontFamily: 'DM Sans, sans-serif' }}>
-                  {new Date().toLocaleDateString('en-US', { 
-                    weekday: 'short',
-                    month: 'long', 
-                    day: 'numeric',
-                    year: 'numeric'
-                  })}
-                </span>
+              {/* Clean header - just hamburger menu and Dense toggle */}
+              <div className="flex items-center gap-3">
+                {/* View Mode Toggle */}
+                <Button
+                  data-testid="view-mode-toggle"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setViewMode(isDense ? 'spacious' : 'dense')}
+                  className="flex items-center gap-2 btn-outline-gold"
+                >
+                  {isDense ? <LayoutGrid className="w-4 h-4" /> : <LayoutList className="w-4 h-4" />}
+                  <span className="hidden sm:inline">{isDense ? 'Expand' : 'Dense'}</span>
+                </Button>
+                
+                {/* Hamburger Menu Button */}
+                <Button
+                  data-testid="sidebar-toggle"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setSidebarOpen(true)}
+                  className="flex items-center gap-2 btn-outline-gold"
+                >
+                  <Menu className="w-4 h-4" />
+                  <span className="hidden sm:inline">Menu</span>
+                </Button>
               </div>
             </div>
             
-            <div className="flex items-center gap-3">
-              {/* Watchlists Button */}
-              <Button
-                data-testid="watchlists-button"
-                variant="outline"
-                size="sm"
-                onClick={() => setShowWatchlistManager(true)}
-                className="flex items-center gap-2 btn-outline-gold"
-              >
-                <List className="w-4 h-4" />
-                <span className="hidden sm:inline">Watchlists</span>
-              </Button>
-              
-              {/* Price Alerts Button */}
-              <Button
-                data-testid="price-alerts-button"
-                variant="outline"
-                size="sm"
-                onClick={() => setShowPriceAlertManager(true)}
-                className="flex items-center gap-2 relative btn-outline-gold"
-              >
-                <Bell className="w-4 h-4" />
-                <span className="hidden sm:inline">Alerts</span>
-                {alertCount > 0 && (
-                  <Badge 
-                    variant="default" 
-                    className="absolute -top-2 -right-2 h-5 w-5 p-0 flex items-center justify-center text-xs bg-[#d946ef] text-[#0a0a0f]"
-                  >
-                    {alertCount}
-                  </Badge>
-                )}
-              </Button>
-              
-              {/* Category Settings Button */}
-              <Button
-                data-testid="category-settings-button"
-                variant="outline"
-                size="sm"
-                onClick={() => setShowCategorySettings(true)}
-                className="flex items-center gap-2 btn-outline-gold"
-              >
-                <Settings className="w-4 h-4" />
-                <span className="hidden md:inline">Categories</span>
-              </Button>
-              
-              {/* Background Picker Button */}
-              <Button
-                data-testid="background-picker-button"
-                variant="outline"
-                size="sm"
-                onClick={() => setShowBackgroundPicker(true)}
-                className="flex items-center gap-2 btn-outline-gold"
-                title="Change background style"
-              >
-                <span className="text-base">✨</span>
-                <span className="hidden lg:inline">Theme</span>
-              </Button>
-              
-              {/* Compare Stocks Button - Only show when 2+ stocks */}
-              {stackedStocks.length >= 2 && (
-                <Button
-                  data-testid="compare-stocks-button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setShowComparisonChart(true)}
-                  className="flex items-center gap-2 bg-[#d946ef]/10 border-[#d946ef]/30 text-[#d946ef] hover:bg-[#d946ef]/20"
-                >
-                  <TrendingUp className="w-4 h-4" />
-                  <span className="hidden sm:inline">Compare</span>
-                </Button>
-              )}
-              
-              {/* Export CSV Button - Only show when stocks exist */}
-              {stackedStocks.length > 0 && (
-                <ExportButton stocks={stackedStocks} />
-              )}
-              
-              {/* View Mode Toggle */}
-              <Button
-                data-testid="view-mode-toggle"
-                variant="outline"
-                size="sm"
-                onClick={() => setViewMode(isDense ? 'spacious' : 'dense')}
-                className="flex items-center gap-2 btn-outline-gold"
-              >
-                {isDense ? <LayoutGrid className="w-4 h-4" /> : <LayoutList className="w-4 h-4" />}
-                <span className="hidden sm:inline">{isDense ? 'Expand' : 'Dense'}</span>
-              </Button>
-            </div>
-          </div>
-          
-          {/* Search Bar */}
-          <div className="relative mt-5">
+            {/* Search Bar */}
+            <div className="relative mt-5">
             <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
             <Input
               data-testid="stock-search-input"

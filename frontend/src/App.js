@@ -831,6 +831,122 @@ const HomePage = () => {
         </div>
       )}
       
+      {/* Collapsible Sidebar */}
+      <div 
+        className={`fixed inset-0 z-[100] transition-opacity duration-300 ${sidebarOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+        onClick={() => setSidebarOpen(false)}
+      >
+        <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
+      </div>
+      <aside 
+        className={`fixed top-0 right-0 h-full w-72 z-[101] bg-[#0a0a0f] border-l border-[rgba(217,70,239,0.2)] shadow-2xl transform transition-transform duration-300 ease-out ${sidebarOpen ? 'translate-x-0' : 'translate-x-full'}`}
+      >
+        <div className="flex flex-col h-full">
+          {/* Sidebar Header */}
+          <div className="flex items-center justify-between p-4 border-b border-[rgba(255,255,255,0.08)]">
+            <h2 className="text-lg font-semibold text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>Menu</h2>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setSidebarOpen(false)}
+              className="text-gray-400 hover:text-white"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </Button>
+          </div>
+          
+          {/* Current Date */}
+          <div className="px-4 py-3 border-b border-[rgba(255,255,255,0.06)]">
+            <div className="flex items-center gap-2 text-gray-400">
+              <CalendarDays className="w-4 h-4" />
+              <span className="text-sm">
+                {new Date().toLocaleDateString('en-US', { 
+                  weekday: 'long',
+                  month: 'long', 
+                  day: 'numeric',
+                  year: 'numeric'
+                })}
+              </span>
+            </div>
+          </div>
+          
+          {/* Sidebar Menu Items */}
+          <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+            <button
+              onClick={() => { setShowWatchlistManager(true); setSidebarOpen(false); }}
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-gray-300 hover:bg-[rgba(217,70,239,0.1)] hover:text-white transition-colors"
+              data-testid="sidebar-watchlists"
+            >
+              <List className="w-5 h-5 text-[#d946ef]" />
+              <span>Watchlists</span>
+            </button>
+            
+            <button
+              onClick={() => { setShowPriceAlertManager(true); setSidebarOpen(false); }}
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-gray-300 hover:bg-[rgba(217,70,239,0.1)] hover:text-white transition-colors relative"
+              data-testid="sidebar-alerts"
+            >
+              <Bell className="w-5 h-5 text-[#d946ef]" />
+              <span>Price Alerts</span>
+              {alertCount > 0 && (
+                <Badge className="ml-auto bg-[#d946ef] text-[#0a0a0f] text-xs">
+                  {alertCount}
+                </Badge>
+              )}
+            </button>
+            
+            <button
+              onClick={() => { setShowCategorySettings(true); setSidebarOpen(false); }}
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-gray-300 hover:bg-[rgba(217,70,239,0.1)] hover:text-white transition-colors"
+              data-testid="sidebar-categories"
+            >
+              <Settings className="w-5 h-5 text-[#d946ef]" />
+              <span>Categories</span>
+            </button>
+            
+            <button
+              onClick={() => { setShowBackgroundPicker(true); setSidebarOpen(false); }}
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-gray-300 hover:bg-[rgba(217,70,239,0.1)] hover:text-white transition-colors"
+              data-testid="sidebar-theme"
+            >
+              <span className="text-lg">✨</span>
+              <span>Theme</span>
+            </button>
+            
+            <div className="border-t border-[rgba(255,255,255,0.06)] my-3" />
+            
+            {/* Compare Stocks - Only show when 2+ stocks */}
+            {stackedStocks.length >= 2 && (
+              <button
+                onClick={() => { setShowComparisonChart(true); setSidebarOpen(false); }}
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-[#d946ef] bg-[rgba(217,70,239,0.1)] hover:bg-[rgba(217,70,239,0.2)] transition-colors"
+                data-testid="sidebar-compare"
+              >
+                <TrendingUp className="w-5 h-5" />
+                <span>Compare Stocks</span>
+                <Badge className="ml-auto bg-[#d946ef]/20 text-[#d946ef] text-xs">
+                  {stackedStocks.length}
+                </Badge>
+              </button>
+            )}
+            
+            {/* Export CSV - Only show when stocks exist */}
+            {stackedStocks.length > 0 && (
+              <div onClick={() => setSidebarOpen(false)}>
+                <ExportButton stocks={stackedStocks} className="w-full justify-start gap-3 px-4 py-3" />
+              </div>
+            )}
+          </nav>
+          
+          {/* Sidebar Footer */}
+          <div className="p-4 border-t border-[rgba(255,255,255,0.06)]">
+            <div className="text-xs text-gray-500 text-center">
+              Moonshot v1.0
+            </div>
+          </div>
+        </div>
+      </aside>
+      
       {/* Header */}
       <header className="sticky top-0 z-50 backdrop-blur-xl bg-[#0a0a0f]/80 border-b border-[rgba(217,70,239,0.1)]">
         <div className="max-w-[1600px] mx-auto px-6 py-5">

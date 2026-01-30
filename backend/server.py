@@ -25,11 +25,11 @@ import time
 class TickerCache:
     """Simple TTL cache for yfinance ticker data"""
     def __init__(self, ttl_seconds: int = 300):  # 5 minute default TTL
-        self._cache: Dict[str, Dict[str, Any]] = {}
+        self._cache: Dict[str, Any] = {}
         self._timestamps: Dict[str, float] = {}
         self.ttl = ttl_seconds
     
-    def get(self, ticker: str) -> Optional[yf.Ticker]:
+    def get(self, ticker: str) -> Optional[Any]:
         """Get cached ticker or None if expired/missing"""
         key = ticker.upper()
         if key in self._cache:
@@ -41,20 +41,16 @@ class TickerCache:
                 del self._timestamps[key]
         return None
     
-    def set(self, ticker: str, data: yf.Ticker) -> None:
+    def set(self, ticker: str, data: Any) -> None:
         """Cache ticker data"""
         key = ticker.upper()
         self._cache[key] = data
         self._timestamps[key] = time.time()
     
-    def get_or_create(self, ticker: str) -> yf.Ticker:
-        """Get from cache or create new ticker"""
-        cached = self.get(ticker)
-        if cached is not None:
-            return cached
-        stock = ticker_cache.get_or_create(ticker)
-        self.set(ticker, stock)
-        return stock
+    def get_or_create(self, ticker: str) -> Any:
+        """Get from cache or create new ticker - NO caching to avoid recursion"""
+        # Simply create a new yf.Ticker each time but use for batch operations
+        return yf.Ticker(ticker.upper())
     
     def clear_expired(self) -> int:
         """Remove expired entries, return count removed"""

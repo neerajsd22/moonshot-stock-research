@@ -248,24 +248,6 @@ const HomePage = () => {
     }
   };
 
-  const fetchCustomCategories = async () => {
-    try {
-      const response = await axios.get(`${API}/custom-categories`);
-      setCustomCategories(response.data);
-    } catch (error) {
-      console.error('Error fetching custom categories:', error);
-    }
-  };
-
-  const handleCreateCategory = async (categoryData) => {
-    // Category creation now handled in CategoriesPage
-  };
-
-  const handleDeleteCategory = async (categoryId) => {
-    // Category deletion now handled in CategoriesPage
-  };
-  };
-
   const searchStocks = async (query) => {
     if (!query.trim()) {
       setSearchResults([]);

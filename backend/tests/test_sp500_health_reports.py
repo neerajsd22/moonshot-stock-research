@@ -8,7 +8,7 @@ import json
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import sys
 
-BASE_URL = "https://moonshot-finance.preview.emergentagent.com"
+BASE_URL = "https://market-insight-153.preview.emergentagent.com"
 
 # S&P 500 tickers (as of 2025)
 SP500_TICKERS = [

@@ -939,7 +939,7 @@ async def get_stock_health_report(ticker: str):
     """Get comprehensive 8-Quarter Strategic Investment Health Report"""
     try:
         def fetch_health_report():
-            stock = yf.Ticker(ticker.upper())
+            stock = ticker_cache.get_or_create(ticker.upper())
             info = stock.info
             
             # Get quarterly financials

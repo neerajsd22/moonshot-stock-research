@@ -1200,17 +1200,31 @@ const HomePage = () => {
           />
         )}
 
-        {/* Spacious View - Full stock details for each stacked stock */}
+        {/* Spacious View - Combined stock card with header + key stats */}
         {viewMode === 'spacious' && stackedStocks.length > 0 && (
-          <div className="space-y-8" data-testid="stacked-stocks-container">
+          <div className="space-y-4" data-testid="stacked-stocks-container">
+            {/* Dismiss All Button - Only show when multiple stocks */}
+            {stackedStocks.length > 1 && (
+              <div className="flex justify-end">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={dismissAllStocks}
+                  className="flex items-center gap-2 text-red-400 border-red-400/30 hover:bg-red-500/10 hover:border-red-400"
+                  data-testid="dismiss-all-stocks"
+                >
+                  <X className="w-4 h-4" />
+                  Dismiss All ({stackedStocks.length})
+                </Button>
+              </div>
+            )}
             {stackedStocks.map((stock, index) => (
               <div 
                 key={stock.ticker} 
-                className={`space-y-6 ${index === stackedStocks.length - 1 && stockAnimating ? 'stock-slide-in' : 'fade-in'}`}
+                className={`${index === stackedStocks.length - 1 && stockAnimating ? 'stock-slide-in' : 'fade-in'}`}
                 data-testid={`stock-details-${stock.ticker}`}
               >
-                {/* Stock Header */}
-                <StockHeader
+                <StockCard
                   stock={stock}
                   isStockPinned={isStockPinned}
                   onPin={pinStock}
@@ -1218,9 +1232,6 @@ const HomePage = () => {
                   onDismiss={dismissStock}
                   getCurrencySymbol={getCurrencySymbol}
                 />
-
-                {/* Key Stats */}
-                <KeyStatsCard stock={stock} getCurrencySymbol={getCurrencySymbol} />
               </div>
             ))}
           </div>

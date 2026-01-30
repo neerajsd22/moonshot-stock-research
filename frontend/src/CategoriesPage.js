@@ -80,6 +80,8 @@ const CategoriesPage = () => {
 
   // Filter categories based on enabled preferences
   const filterCategories = (cats) => {
+    // If no preferences saved, show all categories
+    if (enabledCategories.length === 0) return cats;
     return cats.filter(cat => enabledCategories.includes(cat.slug));
   };
 

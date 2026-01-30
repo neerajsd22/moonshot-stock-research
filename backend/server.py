@@ -52,7 +52,7 @@ class TickerCache:
         cached = self.get(ticker)
         if cached is not None:
             return cached
-        stock = yf.Ticker(ticker)
+        stock = ticker_cache.get_or_create(ticker)
         self.set(ticker, stock)
         return stock
     
@@ -814,7 +814,7 @@ async def get_stock_history(ticker: str, period: str = "1y"):
     """Get historical stock data"""
     try:
         def fetch_history():
-            stock = yf.Ticker(ticker.upper())
+            stock = ticker_cache.get_or_create(ticker.upper())
             hist = stock.history(period=period)
             
             if hist.empty:
@@ -846,7 +846,7 @@ async def get_earnings_link(ticker: str):
     """Get link to latest earnings report"""
     try:
         def fetch_earnings_info():
-            stock = yf.Ticker(ticker.upper())
+            stock = ticker_cache.get_or_create(ticker.upper())
             info = stock.info
             
             # Yahoo Finance earnings page
@@ -875,7 +875,7 @@ async def get_earnings_snapshot(ticker: str):
     """Get earnings snapshot with key financial metrics"""
     try:
         def fetch_earnings_snapshot():
-            stock = yf.Ticker(ticker.upper())
+            stock = ticker_cache.get_or_create(ticker.upper())
             info = stock.info
             
             # Get financial data
@@ -1123,7 +1123,7 @@ async def get_stock_news(ticker: str):
     """Get top 3 news articles for a stock"""
     try:
         def fetch_news():
-            stock = yf.Ticker(ticker.upper())
+            stock = ticker_cache.get_or_create(ticker.upper())
             info = stock.info
             company_name = info.get('longName', info.get('shortName', ticker.upper()))
             
@@ -1303,7 +1303,7 @@ async def get_ai_analysis(ticker: str):
     """Get AI-powered analysis of stock based on earnings reports"""
     try:
         def fetch_earnings_data():
-            stock = yf.Ticker(ticker.upper())
+            stock = ticker_cache.get_or_create(ticker.upper())
             info = stock.info
             
             # Get quarterly earnings and financials
@@ -1413,7 +1413,7 @@ async def get_bull_bear_sentiment(ticker: str):
     """Get AI-generated bull and bear sentiment analysis"""
     try:
         def fetch_stock_data():
-            stock = yf.Ticker(ticker.upper())
+            stock = ticker_cache.get_or_create(ticker.upper())
             info = stock.info
             
             company_name = info.get('longName', info.get('shortName', ticker.upper()))
@@ -1661,7 +1661,7 @@ async def get_stocks_by_category(category_name: str):
         async def fetch_stock_info(ticker):
             try:
                 def get_info():
-                    stock = yf.Ticker(ticker)
+                    stock = ticker_cache.get_or_create(ticker)
                     info = stock.info
                     hist_1d = stock.history(period="1d")
                     
@@ -1895,7 +1895,7 @@ async def get_watchlist_stocks(watchlist_id: str):
     async def fetch_stock_info(ticker):
         try:
             def get_info():
-                stock = yf.Ticker(ticker)
+                stock = ticker_cache.get_or_create(ticker)
                 info = stock.info
                 hist_1d = stock.history(period="1d")
                 
@@ -1987,7 +1987,7 @@ async def check_price_alerts():
     for alert in alerts:
         try:
             def get_current_price(ticker):
-                stock = yf.Ticker(ticker)
+                stock = ticker_cache.get_or_create(ticker)
                 info = stock.info
                 return info.get('currentPrice', info.get('regularMarketPrice', 0))
             
@@ -2070,7 +2070,7 @@ async def get_candlestick_data(ticker: str, period: str = "3mo"):
     """Get OHLC candlestick data for a stock"""
     try:
         def fetch_candlestick():
-            stock = yf.Ticker(ticker.upper())
+            stock = ticker_cache.get_or_create(ticker.upper())
             hist = stock.history(period=period)
             
             if hist.empty:
@@ -2101,7 +2101,7 @@ async def get_technical_indicators(ticker: str, period: str = "1y"):
     """Get technical indicators (RSI, MACD, SMA, EMA) for a stock"""
     try:
         def calculate_indicators():
-            stock = yf.Ticker(ticker.upper())
+            stock = ticker_cache.get_or_create(ticker.upper())
             hist = stock.history(period=period)
             
             if hist.empty or len(hist) < 26:
@@ -2188,7 +2188,7 @@ async def get_five_signals_analysis(ticker: str):
     """
     try:
         def fetch_signals_data():
-            stock = yf.Ticker(ticker)
+            stock = ticker_cache.get_or_create(ticker)
             info = stock.info
             
             # Get financial data
@@ -2481,7 +2481,7 @@ async def get_earnings_intelligence(ticker: str):
     """
     try:
         def fetch_earnings_intel():
-            stock = yf.Ticker(ticker)
+            stock = ticker_cache.get_or_create(ticker)
             info = stock.info
             
             report = {
@@ -2675,7 +2675,7 @@ async def get_smart_earnings(ticker: str):
     """
     try:
         def fetch_smart_earnings():
-            stock = yf.Ticker(ticker)
+            stock = ticker_cache.get_or_create(ticker)
             info = stock.info
             
             report = {
@@ -3042,7 +3042,7 @@ async def get_why_moving(ticker: str):
     """
     try:
         def analyze_movement():
-            stock = yf.Ticker(ticker)
+            stock = ticker_cache.get_or_create(ticker)
             info = stock.info
             hist = stock.history(period="5d")
             
@@ -3219,7 +3219,7 @@ async def get_insider_alerts(ticker: str):
     """
     try:
         def fetch_insider_data():
-            stock = yf.Ticker(ticker)
+            stock = ticker_cache.get_or_create(ticker)
             info = stock.info
             
             result = {
@@ -3338,7 +3338,7 @@ async def get_whale_watch(ticker: str):
     """
     try:
         def fetch_institutional_data():
-            stock = yf.Ticker(ticker)
+            stock = ticker_cache.get_or_create(ticker)
             info = stock.info
             
             result = {
@@ -3449,7 +3449,7 @@ async def get_similar_stocks(ticker: str):
     """
     try:
         def find_similar():
-            stock = yf.Ticker(ticker)
+            stock = ticker_cache.get_or_create(ticker)
             info = stock.info
             
             result = {

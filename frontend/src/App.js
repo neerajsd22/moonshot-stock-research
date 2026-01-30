@@ -766,15 +766,7 @@ const HomePage = () => {
   };
 
   // Get categories based on selected market and enabled preferences
-  const categories = selectedMarket === 'us' 
-    ? filterCategories(usCategories)
-    : selectedMarket === 'india' 
-      ? filterCategories(indiaCategories)
-      : filterCategories([...usCategories, ...indiaCategories]);
-
-  const handleCategoryClick = (slug) => {
-    navigate(`/category/${slug}`);
-  };
+  // (categories now managed in CategoriesPage)
 
   return (
     <div className="min-h-screen bg-background relative">

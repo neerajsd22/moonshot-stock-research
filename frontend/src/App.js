@@ -561,6 +561,21 @@ const HomePage = () => {
     toast.success(`${ticker} removed`);
   };
 
+  // Function to dismiss all stocks at once
+  const dismissAllStocks = () => {
+    setStackedStocks([]);
+    setSelectedStock(null);
+    setStockQuote(null);
+    setHistoricalData([]);
+    setEarningsLink(null);
+    setBullBearSentiment(null);
+    setNewsArticles([]);
+    setHealthReport(null);
+    setCategoriesCollapsed(false);
+    localStorage.removeItem('moonshot_stacked_stocks');
+    toast.success('All stocks cleared');
+  };
+
   const pinStock = async (ticker, companyName) => {
     try {
       await axios.post(`${API}/pinned-stocks`, {

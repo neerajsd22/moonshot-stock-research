@@ -137,18 +137,31 @@ GET  /api/custom-categories           - List custom categories
     - New endpoints: `/api/stocks/{ticker}/five-signals`, `/api/stocks/{ticker}/earnings-intelligence`, `/api/stocks/{ticker}/why-moving`
     - New component: `/app/frontend/src/components/IntelligenceHub.js`
 
+20. **Intelligence Hub Phase 2 - Complete (3 New Features)** ✅:
+    - **Insider Alerts**: Tracks insider buying/selling activity, detects cluster buying patterns, identifies CEO/executive purchases
+    - **Whale Watch**: Institutional ownership analysis, identifies major fund holders (Vanguard, BlackRock, etc.), whale signals
+    - **Similar Stocks**: Peer comparison by sector/industry, similarity scoring, P/E premium/discount analysis
+    - New endpoints: `/api/stocks/{ticker}/insider-alerts`, `/api/stocks/{ticker}/whale-watch`, `/api/stocks/{ticker}/similar-stocks`
+    - **UI Improvements**: All 6 tabs now visible in compact Intelligence Hub with icons and responsive design
+
+21. **Header & UI Refinements** ✅:
+    - "Categories" button prominently placed in header (scrolls to category section)
+    - Consistent button styling across header (Categories, Dense, Menu)
+    - Collapsible sidebar for secondary navigation
+
 ## Backlog (Future Features)
 ### P1 - COMPLETED ✅
 - ~~Persist stacked stocks across sessions (localStorage)~~
 - ~~Export stacked stocks to CSV~~
 - ~~Compare charts overlay~~
 - ~~Intelligence Hub (5 Signals, Earnings Intel, Why Moving)~~
+- ~~Intelligence Hub Phase 2 (Insider Alerts, Whale Watch, Similar Stocks)~~
 
 ### P2
-- Custom columns in Dense view
 - Drag-and-drop reordering of stacked stocks
-- Price alerts notifications
-- Watchlist sync across devices
+- Keyboard shortcuts (`/` to focus search, `Esc` to close modals)
+- Confirmation dialog for "Dismiss All" button
+- Compact view mode (ticker + sparkline + price)
 
 ### P3 (Refactoring Opportunities)
 - Extract chart components (HistoricalChart, ComparisonSelectors)
@@ -157,4 +170,4 @@ GET  /api/custom-categories           - List custom categories
 - Further reduce App.js to ~1000 lines
 
 ---
-*Last Updated: Jan 30, 2026 (Intelligence Hub features implemented)*
+*Last Updated: Jan 30, 2026 (Intelligence Hub Phase 2 complete - all 6 analysis tabs working)*

@@ -178,7 +178,6 @@ const HomePage = () => {
       setHealthReport(lastStock.healthReport);
       setBullBearSentiment(lastStock.bullBearSentiment);
       setNewsArticles(lastStock.newsArticles || []);
-      setCategoriesCollapsed(true);
     }
   }, []);
 

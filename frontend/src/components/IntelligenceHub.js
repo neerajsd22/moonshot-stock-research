@@ -402,6 +402,7 @@ const IntelligenceHub = ({ ticker }) => {
           <CardTitle className="text-base text-white flex items-center gap-2" style={{ fontFamily: 'Outfit, sans-serif' }}>
             <Brain className="w-4 h-4 text-[#d946ef]" />
             Intelligence Hub
+            <span className="text-[10px] text-[#d946ef] bg-[rgba(217,70,239,0.15)] px-1.5 py-0.5 rounded font-medium">(Beta)</span>
           </CardTitle>
           <Button
             variant="ghost"

@@ -1009,52 +1009,52 @@ const HomePage = () => {
             
             {/* Search Bar */}
             <div className="relative mt-5">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-            <Input
-              data-testid="stock-search-input"
-              type="text"
-              placeholder="Search by ticker or company name (e.g., AAPL, Microsoft)..."
-              value={searchQuery}
-              onChange={(e) => {
-                setSearchQuery(e.target.value);
-                searchStocks(e.target.value);
-              }}
-              className="pl-12 h-14 text-base input-premium rounded-xl"
-              style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}
-            />
-            
-            {/* Search Results Dropdown */}
-            {searchResults.length > 0 && (
-              <Card className="absolute top-full mt-2 w-full z-50 max-h-[300px] overflow-y-auto" data-testid="search-results-dropdown">
-                <CardContent className="p-2">
-                  {searchResults.map((result) => (
-                    <button
-                      key={result.ticker}
-                      data-testid={`search-result-${result.ticker}`}
-                      onClick={() => selectStock(result.ticker)}
-                      className="w-full text-left p-3 hover:bg-accent rounded-lg transition-colors duration-200"
-                    >
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <div className="font-semibold" style={{ fontFamily: 'Outfit, sans-serif' }}>
-                            {result.ticker}
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Input
+                data-testid="stock-search-input"
+                type="text"
+                placeholder="Search by ticker or company name (e.g., AAPL, Microsoft)..."
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  searchStocks(e.target.value);
+                }}
+                className="pl-12 h-14 text-base input-premium rounded-xl"
+                style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}
+              />
+              
+              {/* Search Results Dropdown */}
+              {searchResults.length > 0 && (
+                <Card className="absolute top-full mt-2 w-full z-50 max-h-[300px] overflow-y-auto" data-testid="search-results-dropdown">
+                  <CardContent className="p-2">
+                    {searchResults.map((result) => (
+                      <button
+                        key={result.ticker}
+                        data-testid={`search-result-${result.ticker}`}
+                        onClick={() => selectStock(result.ticker)}
+                        className="w-full text-left p-3 hover:bg-accent rounded-lg transition-colors duration-200"
+                      >
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <div className="font-semibold" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                              {result.ticker}
+                            </div>
+                            <div className="text-sm text-muted-foreground">{result.name}</div>
                           </div>
-                          <div className="text-sm text-muted-foreground">{result.name}</div>
+                          {result.exchange && (
+                            <Badge variant="outline" className="text-xs">
+                              {result.exchange}
+                            </Badge>
+                          )}
                         </div>
-                        {result.exchange && (
-                          <Badge variant="outline" className="text-xs">
-                            {result.exchange}
-                          </Badge>
-                        )}
-                      </div>
-                    </button>
-                  ))}
-                </CardContent>
-              </Card>
-            )}
+                      </button>
+                    ))}
+                  </CardContent>
+                </Card>
+              )}
+            </div>
           </div>
-        </div>
-      </header>
+        </header>
 
       {/* Main Content */}
       <main className="max-w-[1600px] mx-auto px-6 py-8 lg:px-8 lg:py-10 relative z-10">

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import '@/App.css';
 import axios from 'axios';
-import { Search, TrendingUp, Pin, X, LayoutList, ExternalLink, List, Bell, BarChart3, Settings, BrainCircuit, Cpu, CalendarDays, RefreshCw, Menu, ChevronLeft } from 'lucide-react';
+import { Search, TrendingUp, Pin, X, LayoutList, ExternalLink, Plus, List, Bell, BarChart3, Settings, BrainCircuit, Cpu, ChevronDown, CalendarDays, RefreshCw, Menu, ChevronLeft } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -15,6 +15,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import CategoryPage from './CategoryPage';
 import CategoriesPage from './CategoriesPage';
+import CreateCategoryDialog from './components/CreateCategoryDialog';
 import WatchlistManager from './components/WatchlistManager';
 import PriceAlertManager from './components/PriceAlertManager';
 import AdvancedChart from './components/AdvancedChart';

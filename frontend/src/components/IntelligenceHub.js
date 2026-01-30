@@ -668,11 +668,11 @@ const IntelligenceHub = ({ ticker }) => {
           {expandedSection === 'signals' && <FiveSignalsContent data={fiveSignals} />}
         </div>
 
-        {/* Smart Earnings Analysis */}
+        {/* Pre-Earnings Intelligence Report */}
         <div>
           <AccordionHeader
             icon={BarChart3}
-            title="Smart Earnings"
+            title="Pre-Earnings Intelligence"
             summary={getSmartEarningsSummary()}
             badge={getSmartEarningsBadge()}
             badgeColor={getSmartEarningsBadgeColor()}

@@ -121,6 +121,15 @@ GET  /api/custom-categories           - List custom categories
     - Displays toast notification on success
     - Tested: 100% pass rate (11/11 backend tests, all frontend features verified)
 
+### Jan 30, 2026
+18. **S&P 500 AI Deep Analysis Comprehensive Test** ✅:
+    - Fixed bug: None-safe comparisons in scoring logic (ROE, debt_to_equity)
+    - Tested all 502 S&P 500 tickers against health-report API
+    - **Pass rate: 95.2%** (478/502 tickers)
+    - 12 tickers unavailable due to delisting/mergers (ANSS, CTLT, FI, FLT, HES, IPG, JNPR, MRO, PARA, PXD, WBA, DFS)
+    - App gracefully handles unavailable stocks with "AVOID" verdict and 0/10 score
+    - Test report: `/app/test_reports/sp500_ai_analysis_test.json`
+
 ## Backlog (Future Features)
 ### P1 - COMPLETED ✅
 - ~~Persist stacked stocks across sessions (localStorage)~~

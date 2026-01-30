@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 
-// Option 1: Particles with Connections (Original)
+// Option 1: Particles with Connections (Original - KEEP)
 export const ParticleNetwork = () => {
   const canvasRef = useRef(null);
 
@@ -28,7 +28,6 @@ export const ParticleNetwork = () => {
 
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      // Draw connections
       for (let i = 0; i < particles.length; i++) {
         for (let j = i + 1; j < particles.length; j++) {
           const dx = particles[i].x - particles[j].x, dy = particles[i].y - particles[j].y;
@@ -41,7 +40,6 @@ export const ParticleNetwork = () => {
           }
         }
       }
-      // Draw and update particles
       particles.forEach(p => {
         ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fillStyle = `hsla(${p.hue}, 70%, 60%, ${p.opacity})`; ctx.fill();
@@ -64,44 +62,8 @@ export const ParticleNetwork = () => {
   return <canvas ref={canvasRef} className="fixed inset-0 pointer-events-none z-0" />;
 };
 
-// Option 2: Floating Orbs / Gradient Blobs
-export const FloatingOrbs = () => {
-  return (
-    <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-      <div className="absolute w-[600px] h-[600px] rounded-full bg-gradient-to-br from-purple-600/20 to-pink-500/10 blur-3xl animate-float-slow -top-40 -left-40" />
-      <div className="absolute w-[500px] h-[500px] rounded-full bg-gradient-to-tr from-fuchsia-500/15 to-violet-600/10 blur-3xl animate-float-medium top-1/3 right-0" />
-      <div className="absolute w-[400px] h-[400px] rounded-full bg-gradient-to-bl from-pink-400/15 to-purple-700/10 blur-3xl animate-float-fast bottom-0 left-1/4" />
-      <div className="absolute w-[300px] h-[300px] rounded-full bg-gradient-to-r from-violet-500/10 to-fuchsia-400/15 blur-2xl animate-float-reverse top-20 right-1/3" />
-    </div>
-  );
-};
-
-// Option 3: Subtle Grid with Glow
-export const GridGlow = () => {
-  return (
-    <div className="fixed inset-0 pointer-events-none z-0">
-      {/* Grid pattern */}
-      <div 
-        className="absolute inset-0 opacity-[0.03]"
-        style={{
-          backgroundImage: `
-            linear-gradient(rgba(217, 70, 239, 0.3) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(217, 70, 239, 0.3) 1px, transparent 1px)
-          `,
-          backgroundSize: '60px 60px',
-        }}
-      />
-      {/* Radial glow in center */}
-      <div className="absolute inset-0 bg-gradient-radial from-purple-500/5 via-transparent to-transparent" />
-      {/* Corner accents */}
-      <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-fuchsia-500/10 to-transparent blur-3xl" />
-      <div className="absolute bottom-0 right-0 w-96 h-96 bg-gradient-to-tl from-purple-500/10 to-transparent blur-3xl" />
-    </div>
-  );
-};
-
-// Option 4: Starfield / Space Theme
-export const Starfield = () => {
+// Option A: Aurora Borealis - Slow-moving northern lights effect
+export const AuroraBorealis = () => {
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -109,85 +71,342 @@ export const Starfield = () => {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     let animationFrameId;
-    let stars = [];
+    let time = 0;
 
-    const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
-    const createStars = () => {
-      stars = [];
-      const count = Math.floor((canvas.width * canvas.height) / 3000);
+    const resize = () => { 
+      canvas.width = window.innerWidth; 
+      canvas.height = window.innerHeight; 
+    };
+
+    const animate = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Create multiple aurora layers
+      for (let layer = 0; layer < 3; layer++) {
+        const layerOffset = layer * 0.3;
+        const yOffset = canvas.height * (0.2 + layer * 0.15);
+        
+        ctx.beginPath();
+        ctx.moveTo(0, canvas.height);
+        
+        for (let x = 0; x <= canvas.width; x += 10) {
+          const y = yOffset + 
+            Math.sin((x * 0.003) + time * 0.01 + layerOffset) * 80 +
+            Math.sin((x * 0.007) + time * 0.015 + layerOffset) * 40 +
+            Math.sin((x * 0.001) + time * 0.005) * 60;
+          ctx.lineTo(x, y);
+        }
+        
+        ctx.lineTo(canvas.width, canvas.height);
+        ctx.closePath();
+        
+        const gradient = ctx.createLinearGradient(0, yOffset - 100, 0, canvas.height);
+        if (layer === 0) {
+          gradient.addColorStop(0, 'rgba(34, 197, 94, 0.08)');
+          gradient.addColorStop(0.5, 'rgba(139, 92, 246, 0.05)');
+          gradient.addColorStop(1, 'transparent');
+        } else if (layer === 1) {
+          gradient.addColorStop(0, 'rgba(217, 70, 239, 0.06)');
+          gradient.addColorStop(0.5, 'rgba(34, 197, 94, 0.04)');
+          gradient.addColorStop(1, 'transparent');
+        } else {
+          gradient.addColorStop(0, 'rgba(59, 130, 246, 0.05)');
+          gradient.addColorStop(0.5, 'rgba(217, 70, 239, 0.03)');
+          gradient.addColorStop(1, 'transparent');
+        }
+        
+        ctx.fillStyle = gradient;
+        ctx.fill();
+      }
+      
+      time++;
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    resize();
+    animate();
+    window.addEventListener('resize', resize);
+    return () => { 
+      cancelAnimationFrame(animationFrameId); 
+      window.removeEventListener('resize', resize); 
+    };
+  }, []);
+
+  return <canvas ref={canvasRef} className="fixed inset-0 pointer-events-none z-0" />;
+};
+
+// Option B: Matrix Rain - Subtle falling code/numbers (finance-themed)
+export const MatrixRain = () => {
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let animationFrameId;
+
+    const resize = () => { 
+      canvas.width = window.innerWidth; 
+      canvas.height = window.innerHeight; 
+    };
+
+    resize();
+    
+    const chars = '0123456789$€£¥%+-×÷=<>αβγδ∑∏∫'.split('');
+    const fontSize = 14;
+    const columns = Math.floor(canvas.width / fontSize);
+    const drops = Array(columns).fill(1);
+    const speeds = Array(columns).fill(0).map(() => Math.random() * 0.5 + 0.2);
+
+    const animate = () => {
+      ctx.fillStyle = 'rgba(10, 10, 15, 0.05)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      ctx.font = `${fontSize}px monospace`;
+      
+      for (let i = 0; i < drops.length; i++) {
+        const char = chars[Math.floor(Math.random() * chars.length)];
+        const x = i * fontSize;
+        const y = drops[i] * fontSize;
+        
+        // Gradient effect - brighter at head
+        const alpha = Math.random() * 0.08 + 0.02;
+        const hue = Math.random() > 0.8 ? 280 : 160; // Purple or green
+        ctx.fillStyle = `hsla(${hue}, 70%, 50%, ${alpha})`;
+        ctx.fillText(char, x, y);
+        
+        if (y > canvas.height && Math.random() > 0.98) {
+          drops[i] = 0;
+        }
+        drops[i] += speeds[i];
+      }
+      
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    animate();
+    window.addEventListener('resize', resize);
+    return () => { 
+      cancelAnimationFrame(animationFrameId); 
+      window.removeEventListener('resize', resize); 
+    };
+  }, []);
+
+  return <canvas ref={canvasRef} className="fixed inset-0 pointer-events-none z-0" style={{ opacity: 0.7 }} />;
+};
+
+// Option C: Bokeh Blur - Out-of-focus light circles
+export const BokehBlur = () => {
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let animationFrameId;
+    let bokehCircles = [];
+
+    const resize = () => { 
+      canvas.width = window.innerWidth; 
+      canvas.height = window.innerHeight;
+      createBokeh();
+    };
+
+    const createBokeh = () => {
+      bokehCircles = [];
+      const count = Math.floor((canvas.width * canvas.height) / 40000);
       for (let i = 0; i < count; i++) {
-        stars.push({
-          x: Math.random() * canvas.width, y: Math.random() * canvas.height,
-          size: Math.random() * 1.5 + 0.3,
-          twinkleSpeed: Math.random() * 0.02 + 0.005,
-          twinklePhase: Math.random() * Math.PI * 2,
-          color: Math.random() > 0.8 ? '#d946ef' : Math.random() > 0.5 ? '#a855f7' : '#ffffff',
+        bokehCircles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          size: Math.random() * 80 + 30,
+          speedX: (Math.random() - 0.5) * 0.3,
+          speedY: (Math.random() - 0.5) * 0.2,
+          hue: Math.random() > 0.6 ? 280 + Math.random() * 40 : 200 + Math.random() * 60,
+          opacity: Math.random() * 0.06 + 0.02,
+          pulse: Math.random() * Math.PI * 2,
+          pulseSpeed: Math.random() * 0.02 + 0.005,
         });
       }
     };
 
-    let time = 0;
     const animate = () => {
-      ctx.fillStyle = 'rgba(10, 10, 15, 0.1)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
       
-      stars.forEach(s => {
-        const twinkle = Math.sin(time * s.twinkleSpeed + s.twinklePhase) * 0.5 + 0.5;
-        ctx.beginPath(); ctx.arc(s.x, s.y, s.size * twinkle, 0, Math.PI * 2);
-        ctx.fillStyle = s.color; ctx.globalAlpha = 0.3 + twinkle * 0.7;
-        ctx.fill(); ctx.globalAlpha = 1;
+      bokehCircles.forEach(b => {
+        b.pulse += b.pulseSpeed;
+        const pulseFactor = Math.sin(b.pulse) * 0.3 + 1;
+        const currentSize = b.size * pulseFactor;
+        
+        const gradient = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, currentSize);
+        gradient.addColorStop(0, `hsla(${b.hue}, 60%, 60%, ${b.opacity * 1.5})`);
+        gradient.addColorStop(0.5, `hsla(${b.hue}, 60%, 50%, ${b.opacity * 0.5})`);
+        gradient.addColorStop(1, 'transparent');
+        
+        ctx.beginPath();
+        ctx.arc(b.x, b.y, currentSize, 0, Math.PI * 2);
+        ctx.fillStyle = gradient;
+        ctx.fill();
+        
+        b.x += b.speedX;
+        b.y += b.speedY;
+        
+        if (b.x < -b.size) b.x = canvas.width + b.size;
+        if (b.x > canvas.width + b.size) b.x = -b.size;
+        if (b.y < -b.size) b.y = canvas.height + b.size;
+        if (b.y > canvas.height + b.size) b.y = -b.size;
       });
       
-      // Occasional shooting star
-      if (Math.random() < 0.002) {
-        const sx = Math.random() * canvas.width, sy = Math.random() * canvas.height * 0.5;
-        ctx.beginPath(); ctx.moveTo(sx, sy); ctx.lineTo(sx + 100, sy + 50);
-        ctx.strokeStyle = 'rgba(217, 70, 239, 0.6)'; ctx.lineWidth = 2; ctx.stroke();
-      }
-      
-      time++; animationFrameId = requestAnimationFrame(animate);
+      animationFrameId = requestAnimationFrame(animate);
     };
 
-    resize(); createStars(); animate();
-    window.addEventListener('resize', () => { resize(); createStars(); });
-    return () => { cancelAnimationFrame(animationFrameId); };
+    resize();
+    animate();
+    window.addEventListener('resize', resize);
+    return () => { 
+      cancelAnimationFrame(animationFrameId); 
+      window.removeEventListener('resize', resize); 
+    };
   }, []);
 
-  return <canvas ref={canvasRef} className="fixed inset-0 pointer-events-none z-0" style={{ background: 'transparent' }} />;
+  return <canvas ref={canvasRef} className="fixed inset-0 pointer-events-none z-0" />;
 };
 
-// Option 5: Minimal Gradient Waves
-export const GradientWaves = () => {
-  return (
-    <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-      <svg className="absolute inset-0 w-full h-full opacity-30" viewBox="0 0 1920 1080" preserveAspectRatio="none">
-        <defs>
-          <linearGradient id="wave1" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#d946ef" stopOpacity="0.1" />
-            <stop offset="50%" stopColor="#a855f7" stopOpacity="0.2" />
-            <stop offset="100%" stopColor="#d946ef" stopOpacity="0.1" />
-          </linearGradient>
-          <linearGradient id="wave2" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#a855f7" stopOpacity="0.05" />
-            <stop offset="50%" stopColor="#ec4899" stopOpacity="0.15" />
-            <stop offset="100%" stopColor="#a855f7" stopOpacity="0.05" />
-          </linearGradient>
-        </defs>
-        <path className="animate-wave-slow" fill="url(#wave1)" d="M0,600 C320,500 640,700 960,600 C1280,500 1600,700 1920,600 L1920,1080 L0,1080 Z" />
-        <path className="animate-wave-medium" fill="url(#wave2)" d="M0,700 C320,800 640,600 960,700 C1280,800 1600,600 1920,700 L1920,1080 L0,1080 Z" />
-      </svg>
-      <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-[#0a0a0f] to-transparent" />
-    </div>
-  );
+// Option D: Noise Gradient - Static grainy texture with subtle color shifts
+export const NoiseGradient = () => {
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let animationFrameId;
+    let time = 0;
+
+    const resize = () => { 
+      canvas.width = window.innerWidth; 
+      canvas.height = window.innerHeight; 
+    };
+
+    const animate = () => {
+      // Create gradient background
+      const gradient = ctx.createRadialGradient(
+        canvas.width * 0.3 + Math.sin(time * 0.005) * 100,
+        canvas.height * 0.3 + Math.cos(time * 0.007) * 50,
+        0,
+        canvas.width * 0.5,
+        canvas.height * 0.5,
+        canvas.width * 0.8
+      );
+      gradient.addColorStop(0, 'rgba(139, 92, 246, 0.08)');
+      gradient.addColorStop(0.5, 'rgba(217, 70, 239, 0.04)');
+      gradient.addColorStop(1, 'transparent');
+      
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      // Add noise
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const data = imageData.data;
+      
+      for (let i = 0; i < data.length; i += 4) {
+        const noise = (Math.random() - 0.5) * 15;
+        data[i] = Math.max(0, Math.min(255, data[i] + noise));
+        data[i + 1] = Math.max(0, Math.min(255, data[i + 1] + noise));
+        data[i + 2] = Math.max(0, Math.min(255, data[i + 2] + noise));
+      }
+      
+      ctx.putImageData(imageData, 0, 0);
+      
+      time++;
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    resize();
+    animate();
+    window.addEventListener('resize', resize);
+    return () => { 
+      cancelAnimationFrame(animationFrameId); 
+      window.removeEventListener('resize', resize); 
+    };
+  }, []);
+
+  return <canvas ref={canvasRef} className="fixed inset-0 pointer-events-none z-0" style={{ opacity: 0.6 }} />;
 };
 
-// Default export map for easy selection
+// Option E: Mesh Gradient - Smooth animated color blobs (modern SaaS look)
+export const MeshGradient = () => {
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let animationFrameId;
+    let time = 0;
+
+    const blobs = [
+      { x: 0.2, y: 0.3, size: 0.4, hue: 280, speedX: 0.0003, speedY: 0.0002 },
+      { x: 0.7, y: 0.2, size: 0.35, hue: 320, speedX: -0.0002, speedY: 0.0003 },
+      { x: 0.5, y: 0.7, size: 0.45, hue: 260, speedX: 0.0002, speedY: -0.0002 },
+      { x: 0.8, y: 0.6, size: 0.3, hue: 200, speedX: -0.0003, speedY: -0.0001 },
+    ];
+
+    const resize = () => { 
+      canvas.width = window.innerWidth; 
+      canvas.height = window.innerHeight; 
+    };
+
+    const animate = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      blobs.forEach(blob => {
+        blob.x += blob.speedX + Math.sin(time * 0.001) * 0.0001;
+        blob.y += blob.speedY + Math.cos(time * 0.001) * 0.0001;
+        
+        // Bounce off edges
+        if (blob.x < 0 || blob.x > 1) blob.speedX *= -1;
+        if (blob.y < 0 || blob.y > 1) blob.speedY *= -1;
+        
+        const x = blob.x * canvas.width;
+        const y = blob.y * canvas.height;
+        const size = blob.size * Math.min(canvas.width, canvas.height);
+        
+        const gradient = ctx.createRadialGradient(x, y, 0, x, y, size);
+        gradient.addColorStop(0, `hsla(${blob.hue}, 70%, 50%, 0.12)`);
+        gradient.addColorStop(0.4, `hsla(${blob.hue}, 60%, 40%, 0.06)`);
+        gradient.addColorStop(1, 'transparent');
+        
+        ctx.beginPath();
+        ctx.arc(x, y, size, 0, Math.PI * 2);
+        ctx.fillStyle = gradient;
+        ctx.fill();
+      });
+      
+      time++;
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    resize();
+    animate();
+    window.addEventListener('resize', resize);
+    return () => { 
+      cancelAnimationFrame(animationFrameId); 
+      window.removeEventListener('resize', resize); 
+    };
+  }, []);
+
+  return <canvas ref={canvasRef} className="fixed inset-0 pointer-events-none z-0" style={{ filter: 'blur(60px)' }} />;
+};
+
+// Default export map
 const backgrounds = {
   particles: ParticleNetwork,
-  orbs: FloatingOrbs,
-  grid: GridGlow,
-  stars: Starfield,
-  waves: GradientWaves,
+  aurora: AuroraBorealis,
+  matrix: MatrixRain,
+  bokeh: BokehBlur,
+  noise: NoiseGradient,
+  mesh: MeshGradient,
 };
 
 export default backgrounds;

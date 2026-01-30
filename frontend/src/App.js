@@ -1095,6 +1095,136 @@ const HomePage = () => {
           </div>
         )}
 
+        {/* Categories Section - Collapsible */}
+        <div className="mb-10" data-testid="categories-section" id="categories-section">
+          <div className="flex items-center justify-between mb-6">
+            <button
+              onClick={() => setCategoriesCollapsed(!categoriesCollapsed)}
+              className="flex items-center gap-2 group"
+              data-testid="categories-toggle"
+            >
+              <ChevronDown 
+                className={`w-5 h-5 text-[#d946ef] transition-transform duration-300 ${categoriesCollapsed ? '-rotate-90' : ''}`}
+              />
+              <h2
+                className="text-xl font-semibold text-white section-title-gold group-hover:text-[#f0abfc] transition-colors"
+                style={{ fontFamily: 'Outfit, sans-serif' }}
+              >
+                Explore by Category
+              </h2>
+              {categoriesCollapsed && (
+                <span className="text-xs text-gray-500 ml-2">(click to expand)</span>
+              )}
+            </button>
+            
+            {/* Market Selector - Hide when collapsed */}
+            {!categoriesCollapsed && (
+              <div className="flex gap-1 bg-[rgba(255,255,255,0.03)] p-1.5 rounded-xl border border-[rgba(255,255,255,0.06)]" data-testid="market-selector">
+                <Button
+                  size="sm"
+                  variant={selectedMarket === 'all' ? 'default' : 'ghost'}
+                  onClick={() => setSelectedMarket('all')}
+                  data-testid="market-all"
+                  className={`text-xs rounded-lg ${selectedMarket === 'all' ? 'bg-[#d946ef] text-[#0a0a0f] hover:bg-[#f0abfc]' : 'text-gray-400 hover:text-white'}`}
+                >
+                  🌍 All
+                </Button>
+                <Button
+                  size="sm"
+                  variant={selectedMarket === 'us' ? 'default' : 'ghost'}
+                  onClick={() => setSelectedMarket('us')}
+                  data-testid="market-us"
+                  className={`text-xs rounded-lg ${selectedMarket === 'us' ? 'bg-[#d946ef] text-[#0a0a0f] hover:bg-[#f0abfc]' : 'text-gray-400 hover:text-white'}`}
+                >
+                  🇺🇸 US
+                </Button>
+                <Button
+                  size="sm"
+                  variant={selectedMarket === 'india' ? 'default' : 'ghost'}
+                  onClick={() => setSelectedMarket('india')}
+                  data-testid="market-india"
+                  className={`text-xs rounded-lg ${selectedMarket === 'india' ? 'bg-[#d946ef] text-[#0a0a0f] hover:bg-[#f0abfc]' : 'text-gray-400 hover:text-white'}`}
+                >
+                  🇮🇳 India
+                </Button>
+              </div>
+            )}
+          </div>
+          
+          {/* Collapsible content */}
+          <div 
+            className={`transition-all duration-400 ease-out overflow-hidden ${categoriesCollapsed ? 'max-h-0 opacity-0' : 'max-h-[2000px] opacity-100'}`}
+          >
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-5 stagger-children">
+              {categories.map((category) => (
+                <Card
+                  key={category.slug}
+                  className="premium-card gold-gradient-border cursor-pointer card-hover-lift"
+                  onClick={() => handleCategoryClick(category.slug)}
+                  data-testid={`category-${category.slug}`}
+                >
+                  <CardContent className="p-6 text-center">
+                    <CategoryIcon icon={category.icon} isLucide={category.isLucide} />
+                    <div className="text-sm font-semibold text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                      {category.name}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+              
+              {/* Custom Categories */}
+              {customCategories.map((category) => (
+                <Card
+                  key={category.id}
+                  className="premium-card gold-gradient-border cursor-pointer card-hover-lift relative group"
+                  onClick={() => handleCategoryClick(`custom-${category.id}`)}
+                  data-testid={`category-custom-${category.id}`}
+                >
+                  <button
+                    className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-red-500/20 rounded z-10"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDeleteCategory(category.id);
+                    }}
+                    data-testid={`delete-category-${category.id}`}
+                  >
+                    <X className="w-4 h-4 text-red-400" />
+                  </button>
+                  <CardContent className="p-6 text-center">
+                    <div className="text-4xl mb-3">⭐</div>
+                    <div className="text-sm font-semibold text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                      {category.name}
+                    </div>
+                    <div className="text-xs text-gray-400 mt-1">
+                      {category.tickers.length} stocks
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+              
+              {/* Create Custom Category Button */}
+              <Card
+                className="bg-[rgba(255,255,255,0.02)] border-2 border-dashed border-[rgba(212,175,55,0.3)] hover:border-[#d946ef] transition-all duration-300 cursor-pointer hover:-translate-y-1"
+                onClick={() => setShowCreateDialog(true)}
+                data-testid="create-category-button"
+              >
+                <CardContent className="p-6 text-center flex flex-col items-center justify-center h-full">
+                  <Plus className="w-8 h-8 text-primary mb-2" />
+                  <div className="text-sm font-semibold text-primary" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                    Custom
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+
+        <CreateCategoryDialog
+          isOpen={showCreateDialog}
+          onClose={() => setShowCreateDialog(false)}
+          onCreateCategory={handleCreateCategory}
+        />
+
         {/* Fun Loading Animation when fetching stock data */}
         {loadingTicker && <LoadingAnimation ticker={loadingTicker} />}
 

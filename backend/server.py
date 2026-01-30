@@ -2120,6 +2120,677 @@ async def get_technical_indicators(ticker: str, period: str = "1y"):
         raise HTTPException(status_code=404, detail=f"Technical indicators for {ticker} not available")
 
 
+# ============================================================================
+# INTELLIGENCE HUB - Advanced Analysis Features
+# ============================================================================
+
+# A. Five Signals Framework - Enhanced AI Analysis
+@api_router.get("/stocks/{ticker}/five-signals")
+async def get_five_signals_analysis(ticker: str):
+    """
+    Enhanced AI Analysis using the 5 Signals Framework:
+    1. Cash Generation (FCF trends, quality)
+    2. Competitive Position (margins, efficiency)
+    3. Smart Money Confidence (insider/institutional)
+    4. Growth Quality (acceleration metrics)
+    5. Valuation Sanity (PEG, EV/FCF)
+    """
+    try:
+        def fetch_signals_data():
+            stock = yf.Ticker(ticker)
+            info = stock.info
+            
+            # Get financial data
+            cashflow = stock.quarterly_cashflow
+            financials = stock.quarterly_financials
+            balance = stock.quarterly_balance_sheet
+            
+            # Initialize signals
+            signals = {
+                "ticker": ticker.upper(),
+                "company_name": info.get('longName', ticker.upper()),
+                "analysis_date": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
+                "signals": {},
+                "overall_score": 0,
+                "verdict": "NEUTRAL"
+            }
+            
+            # 1. CASH GENERATION (25 points max)
+            cash_score = 0
+            cash_details = {}
+            
+            try:
+                if cashflow is not None and not cashflow.empty:
+                    # Free Cash Flow trend
+                    if 'Free Cash Flow' in cashflow.index:
+                        fcf_values = cashflow.loc['Free Cash Flow'].dropna().values[:4]
+                        if len(fcf_values) >= 2:
+                            fcf_latest = safe_float(fcf_values[0], 0)
+                            fcf_prev = safe_float(fcf_values[1], 0)
+                            fcf_trend = "improving" if fcf_latest > fcf_prev else "declining"
+                            cash_details["fcf_latest"] = fcf_latest
+                            cash_details["fcf_trend"] = fcf_trend
+                            if fcf_latest > 0:
+                                cash_score += 10
+                            if fcf_trend == "improving":
+                                cash_score += 5
+                    
+                    # FCF vs Net Income (quality check)
+                    if 'Free Cash Flow' in cashflow.index and financials is not None and 'Net Income' in financials.index:
+                        fcf = safe_float(cashflow.loc['Free Cash Flow'].dropna().values[0], 0) if len(cashflow.loc['Free Cash Flow'].dropna()) > 0 else 0
+                        net_income = safe_float(financials.loc['Net Income'].dropna().values[0], 0) if len(financials.loc['Net Income'].dropna()) > 0 else 0
+                        if net_income > 0 and fcf > net_income:
+                            cash_score += 5
+                            cash_details["fcf_quality"] = "excellent"
+                        elif net_income > 0 and fcf > 0:
+                            cash_score += 3
+                            cash_details["fcf_quality"] = "good"
+                        else:
+                            cash_details["fcf_quality"] = "weak"
+                    
+                    # CapEx efficiency
+                    if 'Capital Expenditure' in cashflow.index:
+                        capex_values = cashflow.loc['Capital Expenditure'].dropna().values[:4]
+                        if len(capex_values) >= 2:
+                            capex_trend = "efficient" if abs(safe_float(capex_values[0], 0)) <= abs(safe_float(capex_values[1], 0)) else "increasing"
+                            cash_details["capex_trend"] = capex_trend
+                            if capex_trend == "efficient":
+                                cash_score += 5
+            except Exception as e:
+                cash_details["error"] = str(e)
+            
+            signals["signals"]["cash_generation"] = {
+                "score": min(cash_score, 25),
+                "max_score": 25,
+                "details": cash_details,
+                "grade": "A" if cash_score >= 20 else "B" if cash_score >= 15 else "C" if cash_score >= 10 else "D"
+            }
+            
+            # 2. COMPETITIVE POSITION (25 points max)
+            position_score = 0
+            position_details = {}
+            
+            try:
+                # Gross margin
+                gross_margin = safe_float(info.get('grossMargins'), 0) * 100
+                position_details["gross_margin"] = round(gross_margin, 1)
+                if gross_margin > 50:
+                    position_score += 10
+                elif gross_margin > 30:
+                    position_score += 6
+                elif gross_margin > 15:
+                    position_score += 3
+                
+                # Operating margin
+                op_margin = safe_float(info.get('operatingMargins'), 0) * 100
+                position_details["operating_margin"] = round(op_margin, 1)
+                if op_margin > 20:
+                    position_score += 8
+                elif op_margin > 10:
+                    position_score += 5
+                elif op_margin > 0:
+                    position_score += 2
+                
+                # Revenue per employee (efficiency)
+                revenue = safe_float(info.get('totalRevenue'), 0)
+                employees = safe_float(info.get('fullTimeEmployees'), 1)
+                if employees > 0:
+                    rev_per_employee = revenue / employees
+                    position_details["revenue_per_employee"] = round(rev_per_employee, 0)
+                    if rev_per_employee > 500000:
+                        position_score += 7
+                    elif rev_per_employee > 250000:
+                        position_score += 4
+                    elif rev_per_employee > 100000:
+                        position_score += 2
+            except Exception as e:
+                position_details["error"] = str(e)
+            
+            signals["signals"]["competitive_position"] = {
+                "score": min(position_score, 25),
+                "max_score": 25,
+                "details": position_details,
+                "grade": "A" if position_score >= 20 else "B" if position_score >= 15 else "C" if position_score >= 10 else "D"
+            }
+            
+            # 3. SMART MONEY CONFIDENCE (20 points max)
+            smart_money_score = 0
+            smart_money_details = {}
+            
+            try:
+                # Institutional holdings
+                inst_hold = safe_float(info.get('heldPercentInstitutions'), 0) * 100
+                smart_money_details["institutional_ownership"] = round(inst_hold, 1)
+                if inst_hold > 70:
+                    smart_money_score += 8
+                elif inst_hold > 50:
+                    smart_money_score += 5
+                elif inst_hold > 30:
+                    smart_money_score += 3
+                
+                # Insider holdings
+                insider_hold = safe_float(info.get('heldPercentInsiders'), 0) * 100
+                smart_money_details["insider_ownership"] = round(insider_hold, 1)
+                if insider_hold > 10:
+                    smart_money_score += 6
+                elif insider_hold > 5:
+                    smart_money_score += 4
+                elif insider_hold > 1:
+                    smart_money_score += 2
+                
+                # Short interest (lower is better)
+                short_ratio = safe_float(info.get('shortRatio'), 10)
+                smart_money_details["short_ratio"] = round(short_ratio, 1)
+                if short_ratio < 2:
+                    smart_money_score += 6
+                elif short_ratio < 5:
+                    smart_money_score += 3
+            except Exception as e:
+                smart_money_details["error"] = str(e)
+            
+            signals["signals"]["smart_money"] = {
+                "score": min(smart_money_score, 20),
+                "max_score": 20,
+                "details": smart_money_details,
+                "grade": "A" if smart_money_score >= 16 else "B" if smart_money_score >= 12 else "C" if smart_money_score >= 8 else "D"
+            }
+            
+            # 4. GROWTH QUALITY (20 points max)
+            growth_score = 0
+            growth_details = {}
+            
+            try:
+                # Revenue growth
+                rev_growth = safe_float(info.get('revenueGrowth'), 0) * 100
+                growth_details["revenue_growth"] = round(rev_growth, 1)
+                if rev_growth > 25:
+                    growth_score += 8
+                elif rev_growth > 15:
+                    growth_score += 6
+                elif rev_growth > 5:
+                    growth_score += 3
+                
+                # Earnings growth
+                earnings_growth = safe_float(info.get('earningsGrowth'), 0) * 100
+                growth_details["earnings_growth"] = round(earnings_growth, 1)
+                if earnings_growth > 25:
+                    growth_score += 6
+                elif earnings_growth > 10:
+                    growth_score += 4
+                elif earnings_growth > 0:
+                    growth_score += 2
+                
+                # Revenue acceleration (QoQ comparison)
+                if financials is not None and 'Total Revenue' in financials.index:
+                    rev_values = financials.loc['Total Revenue'].dropna().values[:4]
+                    if len(rev_values) >= 3:
+                        growth_q1 = (safe_float(rev_values[0], 0) - safe_float(rev_values[1], 1)) / max(abs(safe_float(rev_values[1], 1)), 1)
+                        growth_q2 = (safe_float(rev_values[1], 0) - safe_float(rev_values[2], 1)) / max(abs(safe_float(rev_values[2], 1)), 1)
+                        if growth_q1 > growth_q2:
+                            growth_score += 6
+                            growth_details["revenue_acceleration"] = "accelerating"
+                        else:
+                            growth_details["revenue_acceleration"] = "decelerating"
+            except Exception as e:
+                growth_details["error"] = str(e)
+            
+            signals["signals"]["growth_quality"] = {
+                "score": min(growth_score, 20),
+                "max_score": 20,
+                "details": growth_details,
+                "grade": "A" if growth_score >= 16 else "B" if growth_score >= 12 else "C" if growth_score >= 8 else "D"
+            }
+            
+            # 5. VALUATION SANITY (10 points max)
+            valuation_score = 0
+            valuation_details = {}
+            
+            try:
+                # PEG ratio
+                peg = safe_float(info.get('pegRatio'), 99)
+                valuation_details["peg_ratio"] = round(peg, 2) if peg < 99 else None
+                if peg < 1:
+                    valuation_score += 5
+                elif peg < 1.5:
+                    valuation_score += 4
+                elif peg < 2:
+                    valuation_score += 2
+                
+                # Forward P/E vs trailing P/E
+                forward_pe = safe_float(info.get('forwardPE'), 0)
+                trailing_pe = safe_float(info.get('trailingPE'), 0)
+                valuation_details["forward_pe"] = round(forward_pe, 1) if forward_pe else None
+                valuation_details["trailing_pe"] = round(trailing_pe, 1) if trailing_pe else None
+                if forward_pe > 0 and trailing_pe > 0 and forward_pe < trailing_pe:
+                    valuation_score += 3
+                    valuation_details["pe_trend"] = "improving"
+                
+                # Price to FCF
+                market_cap = safe_float(info.get('marketCap'), 0)
+                if cashflow is not None and 'Free Cash Flow' in cashflow.index:
+                    fcf = safe_float(cashflow.loc['Free Cash Flow'].dropna().values[0], 0) if len(cashflow.loc['Free Cash Flow'].dropna()) > 0 else 0
+                    if fcf > 0:
+                        price_to_fcf = market_cap / (fcf * 4)  # Annualized
+                        valuation_details["price_to_fcf"] = round(price_to_fcf, 1)
+                        if price_to_fcf < 15:
+                            valuation_score += 2
+            except Exception as e:
+                valuation_details["error"] = str(e)
+            
+            signals["signals"]["valuation_sanity"] = {
+                "score": min(valuation_score, 10),
+                "max_score": 10,
+                "details": valuation_details,
+                "grade": "A" if valuation_score >= 8 else "B" if valuation_score >= 6 else "C" if valuation_score >= 4 else "D"
+            }
+            
+            # Calculate overall score
+            total_score = sum(s["score"] for s in signals["signals"].values())
+            signals["overall_score"] = total_score
+            signals["max_score"] = 100
+            
+            # Determine verdict
+            if total_score >= 80:
+                signals["verdict"] = "STRONG BUY"
+                signals["verdict_color"] = "green"
+            elif total_score >= 65:
+                signals["verdict"] = "BUY"
+                signals["verdict_color"] = "green"
+            elif total_score >= 50:
+                signals["verdict"] = "HOLD"
+                signals["verdict_color"] = "yellow"
+            elif total_score >= 35:
+                signals["verdict"] = "CAUTION"
+                signals["verdict_color"] = "orange"
+            else:
+                signals["verdict"] = "AVOID"
+                signals["verdict_color"] = "red"
+            
+            return signals
+        
+        from starlette.concurrency import run_in_threadpool
+        result = await run_in_threadpool(fetch_signals_data)
+        return result
+        
+    except Exception as e:
+        logger.error(f"Error fetching 5 signals for {ticker}: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# B. Pre-Earnings Intelligence Report
+@api_router.get("/stocks/{ticker}/earnings-intelligence")
+async def get_earnings_intelligence(ticker: str):
+    """
+    Pre-Earnings Intelligence Report:
+    - Historical earnings surprise pattern
+    - Analyst estimate revisions
+    - Insider activity (90 days)
+    - Options implied move
+    - Sector read-through
+    """
+    try:
+        def fetch_earnings_intel():
+            stock = yf.Ticker(ticker)
+            info = stock.info
+            
+            report = {
+                "ticker": ticker.upper(),
+                "company_name": info.get('longName', ticker.upper()),
+                "report_date": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
+                "next_earnings": None,
+                "historical_surprises": [],
+                "estimate_revisions": {},
+                "insider_activity": {},
+                "implied_move": None,
+                "sector_signals": {},
+                "earnings_prediction": {}
+            }
+            
+            # Next earnings date
+            try:
+                calendar = stock.calendar
+                if calendar is not None and not calendar.empty:
+                    if 'Earnings Date' in calendar.index:
+                        earnings_dates = calendar.loc['Earnings Date']
+                        if hasattr(earnings_dates, 'iloc') and len(earnings_dates) > 0:
+                            next_date = earnings_dates.iloc[0]
+                            if pd.notna(next_date):
+                                report["next_earnings"] = str(next_date)[:10]
+            except:
+                pass
+            
+            # Historical earnings surprises
+            try:
+                earnings_hist = stock.earnings_history
+                if earnings_hist is not None and not earnings_hist.empty:
+                    surprises = []
+                    beat_count = 0
+                    miss_count = 0
+                    
+                    for idx, row in earnings_hist.iterrows():
+                        actual = safe_float(row.get('epsActual'), 0)
+                        estimate = safe_float(row.get('epsEstimate'), 0)
+                        surprise_pct = ((actual - estimate) / abs(estimate) * 100) if estimate != 0 else 0
+                        
+                        surprise_data = {
+                            "date": str(idx)[:10] if pd.notna(idx) else None,
+                            "actual": actual,
+                            "estimate": estimate,
+                            "surprise_pct": round(surprise_pct, 1),
+                            "beat": actual > estimate
+                        }
+                        surprises.append(surprise_data)
+                        
+                        if actual > estimate:
+                            beat_count += 1
+                        elif actual < estimate:
+                            miss_count += 1
+                    
+                    report["historical_surprises"] = surprises[:8]  # Last 8 quarters
+                    report["beat_rate"] = round(beat_count / max(len(surprises), 1) * 100, 0)
+            except:
+                pass
+            
+            # Analyst estimates and revisions
+            try:
+                report["estimate_revisions"] = {
+                    "current_eps_estimate": safe_float(info.get('forwardEps'), None),
+                    "current_year_estimate": safe_float(info.get('forwardEps'), None),
+                    "next_year_estimate": None,
+                    "target_price_mean": safe_float(info.get('targetMeanPrice'), None),
+                    "target_price_low": safe_float(info.get('targetLowPrice'), None),
+                    "target_price_high": safe_float(info.get('targetHighPrice'), None),
+                    "recommendation": info.get('recommendationKey', 'none'),
+                    "num_analysts": safe_float(info.get('numberOfAnalystOpinions'), 0)
+                }
+            except:
+                pass
+            
+            # Insider activity summary
+            try:
+                insider_txns = stock.insider_transactions
+                if insider_txns is not None and not insider_txns.empty:
+                    buys = 0
+                    sells = 0
+                    buy_value = 0
+                    sell_value = 0
+                    
+                    for idx, row in insider_txns.iterrows():
+                        shares = safe_float(row.get('Shares'), 0)
+                        value = safe_float(row.get('Value'), 0)
+                        
+                        if shares > 0:
+                            buys += 1
+                            buy_value += abs(value)
+                        elif shares < 0:
+                            sells += 1
+                            sell_value += abs(value)
+                    
+                    report["insider_activity"] = {
+                        "total_buys": buys,
+                        "total_sells": sells,
+                        "buy_value": buy_value,
+                        "sell_value": sell_value,
+                        "net_sentiment": "bullish" if buys > sells else "bearish" if sells > buys else "neutral"
+                    }
+            except:
+                pass
+            
+            # Implied move from options (approximation using volatility)
+            try:
+                implied_vol = safe_float(info.get('impliedVolatility'), 0)
+                if implied_vol > 0:
+                    # Approximate 1-day implied move
+                    implied_daily_move = implied_vol / math.sqrt(252) * 100
+                    report["implied_move"] = {
+                        "implied_volatility": round(implied_vol * 100, 1),
+                        "expected_daily_move_pct": round(implied_daily_move, 1),
+                        "expected_earnings_move_pct": round(implied_daily_move * 2, 1)  # Earnings typically 2x daily
+                    }
+            except:
+                pass
+            
+            # Sector analysis
+            try:
+                sector = info.get('sector', 'Unknown')
+                industry = info.get('industry', 'Unknown')
+                report["sector_signals"] = {
+                    "sector": sector,
+                    "industry": industry,
+                    "sector_pe": safe_float(info.get('sectorPE'), None),
+                    "industry_pe": safe_float(info.get('industryPE'), None)
+                }
+            except:
+                pass
+            
+            # Generate prediction summary
+            beat_rate = report.get("beat_rate", 50)
+            insider_sentiment = report.get("insider_activity", {}).get("net_sentiment", "neutral")
+            recommendation = report.get("estimate_revisions", {}).get("recommendation", "none")
+            
+            prediction_score = 50  # Base score
+            if beat_rate >= 75:
+                prediction_score += 15
+            elif beat_rate >= 50:
+                prediction_score += 5
+            
+            if insider_sentiment == "bullish":
+                prediction_score += 10
+            elif insider_sentiment == "bearish":
+                prediction_score -= 10
+            
+            if recommendation in ["buy", "strong_buy"]:
+                prediction_score += 10
+            elif recommendation in ["sell", "strong_sell"]:
+                prediction_score -= 10
+            
+            report["earnings_prediction"] = {
+                "beat_probability": min(max(prediction_score, 10), 90),
+                "confidence": "high" if abs(prediction_score - 50) > 20 else "medium" if abs(prediction_score - 50) > 10 else "low",
+                "key_factors": []
+            }
+            
+            # Add key factors
+            factors = []
+            if beat_rate >= 75:
+                factors.append(f"Strong beat history ({int(beat_rate)}% of last 8 quarters)")
+            if insider_sentiment == "bullish":
+                factors.append("Recent insider buying activity")
+            elif insider_sentiment == "bearish":
+                factors.append("Recent insider selling activity")
+            if recommendation in ["buy", "strong_buy"]:
+                factors.append(f"Analyst consensus: {recommendation.replace('_', ' ').title()}")
+            
+            report["earnings_prediction"]["key_factors"] = factors
+            
+            return report
+        
+        from starlette.concurrency import run_in_threadpool
+        result = await run_in_threadpool(fetch_earnings_intel)
+        return result
+        
+    except Exception as e:
+        logger.error(f"Error fetching earnings intelligence for {ticker}: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# D. "Why Is This Moving?" Analysis
+@api_router.get("/stocks/{ticker}/why-moving")
+async def get_why_moving(ticker: str):
+    """
+    Analyze why a stock is moving significantly.
+    Checks: News, earnings, insider activity, sector movement, technical levels.
+    """
+    try:
+        def analyze_movement():
+            stock = yf.Ticker(ticker)
+            info = stock.info
+            hist = stock.history(period="5d")
+            
+            analysis = {
+                "ticker": ticker.upper(),
+                "company_name": info.get('longName', ticker.upper()),
+                "analysis_time": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S"),
+                "current_price": safe_float(info.get('currentPrice') or info.get('regularMarketPrice'), 0),
+                "change_today": {},
+                "potential_catalysts": [],
+                "movement_strength": "normal",
+                "ai_summary": ""
+            }
+            
+            # Calculate today's movement
+            if not hist.empty and len(hist) >= 1:
+                today_close = safe_float(hist['Close'].iloc[-1], 0)
+                today_open = safe_float(hist['Open'].iloc[-1], 0)
+                prev_close = safe_float(hist['Close'].iloc[-2], today_open) if len(hist) >= 2 else today_open
+                
+                change_pct = ((today_close - prev_close) / prev_close * 100) if prev_close != 0 else 0
+                intraday_change = ((today_close - today_open) / today_open * 100) if today_open != 0 else 0
+                
+                analysis["change_today"] = {
+                    "price": round(today_close, 2),
+                    "change_pct": round(change_pct, 2),
+                    "intraday_change_pct": round(intraday_change, 2),
+                    "direction": "up" if change_pct > 0 else "down" if change_pct < 0 else "flat",
+                    "volume": safe_float(hist['Volume'].iloc[-1], 0),
+                    "avg_volume": safe_float(info.get('averageVolume'), 0)
+                }
+                
+                # Determine movement strength
+                abs_change = abs(change_pct)
+                if abs_change >= 10:
+                    analysis["movement_strength"] = "extreme"
+                elif abs_change >= 5:
+                    analysis["movement_strength"] = "significant"
+                elif abs_change >= 3:
+                    analysis["movement_strength"] = "notable"
+                else:
+                    analysis["movement_strength"] = "normal"
+                
+                # Volume analysis
+                avg_vol = safe_float(info.get('averageVolume'), 1)
+                current_vol = safe_float(hist['Volume'].iloc[-1], 0)
+                vol_ratio = current_vol / avg_vol if avg_vol > 0 else 1
+                analysis["change_today"]["volume_vs_avg"] = round(vol_ratio, 1)
+            
+            catalysts = []
+            
+            # Check for recent news
+            try:
+                news = stock.news
+                if news and len(news) > 0:
+                    recent_news = []
+                    for article in news[:5]:
+                        pub_time = article.get('providerPublishTime', 0)
+                        hours_ago = (datetime.now().timestamp() - pub_time) / 3600 if pub_time else 999
+                        
+                        if hours_ago < 24:  # News from last 24 hours
+                            recent_news.append({
+                                "title": article.get('title', ''),
+                                "publisher": article.get('publisher', ''),
+                                "hours_ago": round(hours_ago, 1)
+                            })
+                    
+                    if recent_news:
+                        catalysts.append({
+                            "type": "news",
+                            "impact": "high" if len(recent_news) >= 3 else "medium",
+                            "description": f"{len(recent_news)} news article(s) in last 24 hours",
+                            "details": recent_news[:3]
+                        })
+            except:
+                pass
+            
+            # Check for earnings
+            try:
+                calendar = stock.calendar
+                if calendar is not None and not calendar.empty:
+                    if 'Earnings Date' in calendar.index:
+                        earnings_date = calendar.loc['Earnings Date']
+                        if hasattr(earnings_date, 'iloc') and len(earnings_date) > 0:
+                            next_earnings = earnings_date.iloc[0]
+                            if pd.notna(next_earnings):
+                                days_to_earnings = (next_earnings - datetime.now()).days
+                                if -2 <= days_to_earnings <= 7:
+                                    catalysts.append({
+                                        "type": "earnings",
+                                        "impact": "high",
+                                        "description": f"Earnings {'just reported' if days_to_earnings < 0 else f'in {days_to_earnings} days'}",
+                                        "date": str(next_earnings)[:10]
+                                    })
+            except:
+                pass
+            
+            # Check volume spike
+            vol_ratio = analysis["change_today"].get("volume_vs_avg", 1)
+            if vol_ratio > 2:
+                catalysts.append({
+                    "type": "volume_spike",
+                    "impact": "medium" if vol_ratio < 3 else "high",
+                    "description": f"Volume {vol_ratio:.1f}x above average",
+                    "volume_ratio": vol_ratio
+                })
+            
+            # Technical level checks
+            try:
+                high_52 = safe_float(info.get('fiftyTwoWeekHigh'), 0)
+                low_52 = safe_float(info.get('fiftyTwoWeekLow'), 0)
+                current = analysis["current_price"]
+                
+                if high_52 > 0 and current >= high_52 * 0.95:
+                    catalysts.append({
+                        "type": "technical",
+                        "impact": "medium",
+                        "description": "Near 52-week high",
+                        "level": round(high_52, 2)
+                    })
+                elif low_52 > 0 and current <= low_52 * 1.05:
+                    catalysts.append({
+                        "type": "technical",
+                        "impact": "medium",
+                        "description": "Near 52-week low",
+                        "level": round(low_52, 2)
+                    })
+            except:
+                pass
+            
+            analysis["potential_catalysts"] = catalysts
+            
+            # Generate AI summary
+            direction = analysis["change_today"].get("direction", "flat")
+            change_pct = analysis["change_today"].get("change_pct", 0)
+            strength = analysis["movement_strength"]
+            
+            summary_parts = []
+            summary_parts.append(f"{ticker.upper()} is {direction} {abs(change_pct):.1f}% today")
+            
+            if strength in ["extreme", "significant"]:
+                summary_parts.append(f"({strength} movement)")
+            
+            if catalysts:
+                catalyst_types = [c["type"] for c in catalysts]
+                if "news" in catalyst_types:
+                    summary_parts.append("driven by recent news coverage")
+                if "earnings" in catalyst_types:
+                    summary_parts.append("related to earnings activity")
+                if "volume_spike" in catalyst_types:
+                    summary_parts.append("with heavy trading volume")
+            else:
+                summary_parts.append("with no obvious catalyst identified")
+            
+            analysis["ai_summary"] = " ".join(summary_parts) + "."
+            
+            return analysis
+        
+        from starlette.concurrency import run_in_threadpool
+        result = await run_in_threadpool(analyze_movement)
+        return result
+        
+    except Exception as e:
+        logger.error(f"Error analyzing movement for {ticker}: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 app.include_router(api_router)
 
 app.add_middleware(

@@ -554,7 +554,6 @@ const HomePage = () => {
         setEarningsLink(null);
         setBullBearSentiment(null);
         setNewsArticles([]);
-        setCategoriesCollapsed(false);
       }
     }
     

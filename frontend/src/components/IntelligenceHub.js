@@ -295,6 +295,222 @@ const SimilarContent = ({ data }) => {
   );
 };
 
+// Smart Earnings Analysis Component
+const SmartEarningsContent = ({ data }) => {
+  if (!data) return <div className="text-sm text-gray-400 p-2">No data available</div>;
+
+  const { historical_fundamentals, peir_active, peir_message, peir_data, upcoming_earnings_date, days_until_earnings } = data;
+
+  return (
+    <div className="p-3 space-y-4">
+      {/* Upcoming Earnings Date Banner */}
+      <div className={`p-3 rounded-lg ${upcoming_earnings_date ? 'bg-[rgba(217,70,239,0.15)] border border-[rgba(217,70,239,0.3)]' : 'bg-[rgba(255,255,255,0.03)]'}`}>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Calendar className="w-4 h-4 text-[#d946ef]" />
+            <span className="text-sm font-medium text-white">Next Earnings</span>
+          </div>
+          {upcoming_earnings_date ? (
+            <div className="text-right">
+              <div className="text-sm font-bold text-[#d946ef]">{upcoming_earnings_date}</div>
+              {days_until_earnings !== null && (
+                <div className="text-[10px] text-gray-400">
+                  {days_until_earnings === 0 ? 'Today!' : days_until_earnings === 1 ? 'Tomorrow' : `${days_until_earnings} days away`}
+                </div>
+              )}
+            </div>
+          ) : (
+            <span className="text-xs text-gray-400">Date not announced</span>
+          )}
+        </div>
+      </div>
+
+      {/* Historical Fundamentals Section */}
+      <div className="space-y-2">
+        <div className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Historical Performance</div>
+        
+        {/* Key Metrics */}
+        {historical_fundamentals?.key_metrics && (
+          <div className="grid grid-cols-4 gap-2">
+            <div className="p-2 bg-[rgba(255,255,255,0.03)] rounded text-center">
+              <div className="text-[10px] text-gray-400">Fwd P/E</div>
+              <div className="text-sm font-bold text-white">{historical_fundamentals.key_metrics.forward_pe || 'N/A'}</div>
+            </div>
+            <div className="p-2 bg-[rgba(255,255,255,0.03)] rounded text-center">
+              <div className="text-[10px] text-gray-400">EPS Growth</div>
+              <div className={`text-sm font-bold ${historical_fundamentals.key_metrics.earnings_growth > 0 ? 'text-green-400' : 'text-red-400'}`}>
+                {historical_fundamentals.key_metrics.earnings_growth ? `${historical_fundamentals.key_metrics.earnings_growth}%` : 'N/A'}
+              </div>
+            </div>
+            <div className="p-2 bg-[rgba(255,255,255,0.03)] rounded text-center">
+              <div className="text-[10px] text-gray-400">Beat Rate</div>
+              <div className="text-sm font-bold text-green-400">{historical_fundamentals.beat_rate}%</div>
+            </div>
+            <div className="p-2 bg-[rgba(255,255,255,0.03)] rounded text-center">
+              <div className="text-[10px] text-gray-400">Avg Surprise</div>
+              <div className={`text-sm font-bold ${historical_fundamentals.average_surprise_pct >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                {historical_fundamentals.average_surprise_pct >= 0 ? '+' : ''}{historical_fundamentals.average_surprise_pct}%
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Recent Earnings History */}
+        {historical_fundamentals?.earnings_history?.length > 0 && (
+          <div className="space-y-1">
+            <div className="text-[10px] text-gray-500 mb-1">Recent Quarters</div>
+            {historical_fundamentals.earnings_history.slice(0, 4).map((e, i) => (
+              <div key={i} className="flex items-center justify-between p-1.5 bg-[rgba(255,255,255,0.02)] rounded text-xs">
+                <span className="text-gray-400">{e.date}</span>
+                <div className="flex items-center gap-3">
+                  <span className="text-gray-300">EPS: ${e.actual_eps}</span>
+                  <span className={`font-medium ${e.beat ? 'text-green-400' : 'text-red-400'}`}>
+                    {e.beat ? '✓ Beat' : '✗ Miss'} ({e.surprise_pct > 0 ? '+' : ''}{e.surprise_pct}%)
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* PEIR Section */}
+      <div className="border-t border-[rgba(255,255,255,0.06)] pt-3">
+        <div className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Pre-Earnings Intelligence</div>
+        
+        {!peir_active ? (
+          <div className="p-3 bg-[rgba(255,255,255,0.02)] rounded-lg text-center">
+            <AlertTriangle className="w-5 h-5 text-yellow-500 mx-auto mb-2" />
+            <p className="text-xs text-gray-400">{peir_message}</p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {/* Active PEIR Banner */}
+            <div className="p-2 bg-green-500/10 border border-green-500/30 rounded text-xs text-green-300 flex items-center gap-2">
+              <Zap className="w-3 h-3" />
+              {peir_message}
+            </div>
+
+            {/* Surprise Patterns */}
+            {peir_data?.surprise_patterns && (
+              <div className="p-2 bg-[rgba(255,255,255,0.03)] rounded">
+                <div className="text-[10px] text-gray-500 mb-1">📊 Surprise Patterns</div>
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div>
+                    <span className="text-gray-400">Avg Beat Reaction: </span>
+                    <span className={peir_data.surprise_patterns.avg_beat_reaction >= 0 ? 'text-green-400' : 'text-red-400'}>
+                      {peir_data.surprise_patterns.avg_beat_reaction !== null ? `${peir_data.surprise_patterns.avg_beat_reaction > 0 ? '+' : ''}${peir_data.surprise_patterns.avg_beat_reaction}%` : 'N/A'}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-gray-400">Avg Miss Reaction: </span>
+                    <span className={peir_data.surprise_patterns.avg_miss_reaction >= 0 ? 'text-green-400' : 'text-red-400'}>
+                      {peir_data.surprise_patterns.avg_miss_reaction !== null ? `${peir_data.surprise_patterns.avg_miss_reaction}%` : 'N/A'}
+                    </span>
+                  </div>
+                </div>
+                {peir_data.surprise_patterns.pattern_summary && (
+                  <div className="text-[10px] text-[#d946ef] mt-1">{peir_data.surprise_patterns.pattern_summary}</div>
+                )}
+              </div>
+            )}
+
+            {/* Volatility Gap */}
+            {peir_data?.volatility_gap?.implied_earnings_move_pct && (
+              <div className="p-2 bg-[rgba(255,255,255,0.03)] rounded">
+                <div className="text-[10px] text-gray-500 mb-1">📈 Volatility Gap</div>
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div>
+                    <span className="text-gray-400">Options Implied: </span>
+                    <span className="text-white">±{peir_data.volatility_gap.implied_earnings_move_pct}%</span>
+                  </div>
+                  <div>
+                    <span className="text-gray-400">Historical Avg: </span>
+                    <span className="text-white">±{peir_data.volatility_gap.historical_avg_move_pct || 'N/A'}%</span>
+                  </div>
+                </div>
+                {peir_data.volatility_gap.signal && (
+                  <div className="text-[10px] text-yellow-400 mt-1">{peir_data.volatility_gap.signal}</div>
+                )}
+              </div>
+            )}
+
+            {/* Insider Sentiment */}
+            {peir_data?.insider_sentiment && (
+              <div className="p-2 bg-[rgba(255,255,255,0.03)] rounded">
+                <div className="text-[10px] text-gray-500 mb-1">👤 Insider Sentiment (90 days)</div>
+                <div className="flex items-center justify-between text-xs">
+                  <div>
+                    <span className="text-green-400">{peir_data.insider_sentiment.total_buys} buys</span>
+                    <span className="text-gray-500 mx-1">/</span>
+                    <span className="text-red-400">{peir_data.insider_sentiment.total_sells} sells</span>
+                  </div>
+                  <Badge className={`text-[10px] px-1.5 ${
+                    peir_data.insider_sentiment.sentiment === 'bullish' ? 'bg-green-500/20 text-green-300' :
+                    peir_data.insider_sentiment.sentiment === 'bearish' ? 'bg-red-500/20 text-red-300' :
+                    'bg-gray-500/20 text-gray-300'
+                  }`}>
+                    {peir_data.insider_sentiment.sentiment}
+                  </Badge>
+                </div>
+                {peir_data.insider_sentiment.summary && (
+                  <div className="text-[10px] text-[#d946ef] mt-1">{peir_data.insider_sentiment.summary}</div>
+                )}
+              </div>
+            )}
+
+            {/* Revision Momentum */}
+            {peir_data?.revision_momentum && (
+              <div className="p-2 bg-[rgba(255,255,255,0.03)] rounded">
+                <div className="text-[10px] text-gray-500 mb-1">📝 Analyst Revisions</div>
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-gray-400">{peir_data.revision_momentum.num_analysts} analysts</span>
+                  <span className={`font-medium ${
+                    peir_data.revision_momentum.trend === 'positive' ? 'text-green-400' :
+                    peir_data.revision_momentum.trend === 'negative' ? 'text-red-400' :
+                    'text-gray-300'
+                  }`}>
+                    {peir_data.revision_momentum.recommendation?.replace(/([A-Z])/g, ' $1').trim()}
+                  </span>
+                </div>
+                {peir_data.revision_momentum.upside_pct && (
+                  <div className="text-[10px] text-gray-400 mt-1">
+                    Target upside: <span className={peir_data.revision_momentum.upside_pct > 0 ? 'text-green-400' : 'text-red-400'}>
+                      {peir_data.revision_momentum.upside_pct > 0 ? '+' : ''}{peir_data.revision_momentum.upside_pct}%
+                    </span>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Peer Read-Through */}
+            {peir_data?.peer_read_through?.peers?.length > 0 && (
+              <div className="p-2 bg-[rgba(255,255,255,0.03)] rounded">
+                <div className="text-[10px] text-gray-500 mb-1">🏢 Peer Read-Through ({peir_data.peer_read_through.sector})</div>
+                <div className="text-xs text-gray-300 mb-1">{peir_data.peer_read_through.summary}</div>
+                <div className="space-y-1">
+                  {peir_data.peer_read_through.peers.slice(0, 3).map((peer, i) => (
+                    <div key={i} className="flex items-center justify-between text-[10px]">
+                      <span className="text-gray-400">{peer.ticker}</span>
+                      {peer.latest_earnings ? (
+                        <span className={peer.latest_earnings.beat ? 'text-green-400' : 'text-red-400'}>
+                          {peer.latest_earnings.beat ? '✓' : '✗'} {peer.latest_earnings.surprise_pct > 0 ? '+' : ''}{peer.latest_earnings.surprise_pct}%
+                        </span>
+                      ) : (
+                        <span className="text-gray-500">Pending</span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
 // Main Intelligence Hub Component - Accordion Style
 const IntelligenceHub = ({ ticker }) => {
   const [expandedSection, setExpandedSection] = useState('signals');
@@ -304,6 +520,7 @@ const IntelligenceHub = ({ ticker }) => {
   const [insiderAlerts, setInsiderAlerts] = useState(null);
   const [whaleWatch, setWhaleWatch] = useState(null);
   const [similarStocks, setSimilarStocks] = useState(null);
+  const [smartEarnings, setSmartEarnings] = useState(null);
   const [loading, setLoading] = useState({});
 
   const fetchData = async (type) => {
@@ -317,7 +534,8 @@ const IntelligenceHub = ({ ticker }) => {
         moving: 'why-moving',
         insider: 'insider-alerts',
         whale: 'whale-watch',
-        similar: 'similar-stocks'
+        similar: 'similar-stocks',
+        smartEarnings: 'smart-earnings'
       };
       
       const res = await axios.get(`${API}/api/stocks/${ticker}/${endpoints[type]}`);

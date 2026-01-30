@@ -210,8 +210,14 @@ const StockCardWithChart = ({
                     dy={8}
                   />
                   <YAxis
-                    hide
                     domain={['dataMin', 'dataMax']}
+                    stroke="rgba(255,255,255,0.15)"
+                    tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 10, fontFamily: 'system-ui' }}
+                    tickFormatter={(value) => `$${value.toFixed(0)}`}
+                    axisLine={{ stroke: 'rgba(255,255,255,0.1)' }}
+                    tickLine={false}
+                    width={45}
+                    dx={-5}
                   />
                   <Tooltip
                     contentStyle={{

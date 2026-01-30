@@ -184,11 +184,11 @@ const StockCardWithChart = ({
             </div>
           </div>
           
-          {/* Mini Chart */}
-          <div ref={chartRef} className="h-[120px]" data-testid={`stock-chart-${ticker}`}>
+          {/* Chart - 30% larger */}
+          <div ref={chartRef} className="h-[160px]" data-testid={`stock-chart-${ticker}`}>
             {historicalData.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
-                <ComposedChart data={historicalData} margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
+                <ComposedChart data={historicalData} margin={{ top: 10, right: 10, left: 10, bottom: 5 }}>
                   <defs>
                     <linearGradient id={`areaGradient-${ticker}`} x1="0" y1="0" x2="0" y2="1">
                       <stop offset="0%" stopColor={chartColor} stopOpacity={0.3} />
@@ -197,12 +197,13 @@ const StockCardWithChart = ({
                   </defs>
                   <XAxis
                     dataKey="date"
-                    stroke="rgba(255,255,255,0.2)"
-                    tick={{ fill: 'rgba(255,255,255,0.4)', fontSize: 9 }}
+                    stroke="rgba(255,255,255,0.15)"
+                    tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 10 }}
                     tickFormatter={formatXAxisTick}
-                    interval="preserveStartEnd"
-                    axisLine={false}
+                    interval={getTickInterval()}
+                    axisLine={{ stroke: 'rgba(255,255,255,0.1)' }}
                     tickLine={false}
+                    dy={5}
                   />
                   <YAxis
                     hide

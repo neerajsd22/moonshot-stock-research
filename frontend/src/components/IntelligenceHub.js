@@ -547,6 +547,8 @@ const IntelligenceHub = ({ ticker }) => {
         case 'insider': setInsiderAlerts(res.data); break;
         case 'whale': setWhaleWatch(res.data); break;
         case 'similar': setSimilarStocks(res.data); break;
+        case 'smartEarnings': setSmartEarnings(res.data); break;
+        default: break;
       }
     } catch (error) {
       console.error(`Error fetching ${type}:`, error);
@@ -557,7 +559,7 @@ const IntelligenceHub = ({ ticker }) => {
 
   useEffect(() => {
     if (ticker) {
-      ['signals', 'earnings', 'moving', 'insider', 'whale', 'similar'].forEach(fetchData);
+      ['signals', 'smartEarnings', 'moving', 'insider', 'whale', 'similar'].forEach(fetchData);
     }
   }, [ticker]);
 
@@ -566,7 +568,7 @@ const IntelligenceHub = ({ ticker }) => {
   };
 
   const refreshAll = () => {
-    ['signals', 'earnings', 'moving', 'insider', 'whale', 'similar'].forEach(fetchData);
+    ['signals', 'smartEarnings', 'moving', 'insider', 'whale', 'similar'].forEach(fetchData);
   };
 
   if (!ticker) return null;

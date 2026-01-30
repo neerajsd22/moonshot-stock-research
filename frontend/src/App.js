@@ -969,6 +969,9 @@ const HomePage = () => {
                 <h1 className="text-xl font-bold gold-text leading-tight" style={{ fontFamily: 'Outfit, sans-serif' }} data-testid="app-title">
                   Moonshot
                 </h1>
+                <p className="text-[10px] text-gray-400 leading-tight" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                  Discover Your Next Big Win
+                </p>
               </div>
             </div>
             

@@ -600,10 +600,27 @@ const HomePage = () => {
     }
   };
 
-  const handlePeriodChange = async (newPeriod) => {
+  const handlePeriodChange = async (newPeriod, ticker = null) => {
     setPeriod(newPeriod);
     setComparisonPoints([]);
-    if (selectedStock) {
+    
+    // If a specific ticker is provided, update that stock's historical data
+    if (ticker) {
+      try {
+        const historyRes = await axios.get(`${API}/stocks/${ticker}/history?period=${newPeriod}`);
+        setStackedStocks(prev => prev.map(stock => 
+          stock.ticker === ticker 
+            ? { ...stock, historicalData: historyRes.data, period: newPeriod }
+            : stock
+        ));
+        // Also update the main historical data if this is the selected stock
+        if (selectedStock === ticker) {
+          setHistoricalData(historyRes.data);
+        }
+      } catch (error) {
+        console.error(`Error fetching history for ${ticker}:`, error);
+      }
+    } else if (selectedStock) {
       await fetchHistoricalData(selectedStock, newPeriod);
     }
   };

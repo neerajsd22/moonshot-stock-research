@@ -1743,13 +1743,13 @@ const HomePage = () => {
                     Latest News
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="px-4 pb-4">
                   {loadingNews ? (
-                    <div className="space-y-3">
+                    <div className="space-y-2">
                       {[...Array(3)].map((_, i) => (
-                        <div key={i} className="flex gap-3">
-                          <div className="w-14 h-14 loading-skeleton rounded flex-shrink-0" />
-                          <div className="flex-1 space-y-2">
+                        <div key={i} className="flex gap-2">
+                          <div className="w-12 h-12 loading-skeleton rounded flex-shrink-0" />
+                          <div className="flex-1 space-y-1.5">
                             <div className="h-3 loading-skeleton rounded w-full" />
                             <div className="h-3 loading-skeleton rounded w-2/3" />
                           </div>
@@ -1757,29 +1757,29 @@ const HomePage = () => {
                       ))}
                     </div>
                   ) : newsArticles.length > 0 ? (
-                    <div className="space-y-3 stagger-children">
+                    <div className="space-y-2 stagger-children">
                       {newsArticles.map((article, index) => (
                         <a
                           key={index}
                           href={article.link}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex gap-3 p-2 rounded-lg news-card transition-all duration-300 group"
+                          className="flex gap-2 p-2 rounded-lg news-card transition-all duration-300 group"
                           data-testid={`news-article-${index}`}
                         >
                           {article.thumbnail && (
                             <img
                               src={article.thumbnail}
                               alt={article.title}
-                              className="w-14 h-14 object-cover rounded flex-shrink-0"
+                              className="w-12 h-12 object-cover rounded flex-shrink-0"
                               onError={(e) => e.target.style.display = 'none'}
                             />
                           )}
                           <div className="flex-1 min-w-0">
-                            <h3 className="font-semibold text-xs text-white group-hover:text-[#d946ef] transition-colors line-clamp-2 mb-1">
+                            <h3 className="font-semibold text-[11px] text-white group-hover:text-[#d946ef] transition-colors line-clamp-2 mb-0.5">
                               {article.title}
                             </h3>
-                            <div className="flex items-center gap-1 text-xs text-gray-500">
+                            <div className="flex items-center gap-1 text-[10px] text-gray-500">
                               <span className="truncate">{article.publisher}</span>
                             </div>
                           </div>
@@ -1787,7 +1787,7 @@ const HomePage = () => {
                       ))}
                     </div>
                   ) : (
-                    <div className="text-center py-8 text-gray-400 text-sm">
+                    <div className="text-center py-6 text-gray-400 text-xs">
                       No news available
                     </div>
                   )}
@@ -1797,16 +1797,16 @@ const HomePage = () => {
 
             {/* AI Deep Analysis - Full Width Health Report */}
             <Card className="premium-card gold-gradient-border" data-testid="ai-deep-analysis">
-              <CardHeader className="pb-4">
+              <CardHeader className="pb-3 pt-4 px-4">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <CardTitle className="text-lg text-white section-title-gold flex items-center gap-2" style={{ fontFamily: 'Outfit, sans-serif' }}>
-                      <BrainCircuit className="w-5 h-5 text-[#d946ef]" />
+                  <div className="flex items-center gap-2">
+                    <CardTitle className="text-sm font-semibold text-white section-title-gold flex items-center gap-2" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                      <BrainCircuit className="w-4 h-4 text-[#d946ef]" />
                       AI Deep Analysis
                     </CardTitle>
                     {healthReport && healthReport.verdict && (
                       <Badge 
-                        className={`text-sm px-3 py-1 ${
+                        className={`text-xs px-2 py-0.5 ${
                           healthReport.verdict === 'BUY' ? 'bg-green-500/20 text-green-400 border-green-500/30' :
                           healthReport.verdict === 'HOLD' ? 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' :
                           'bg-red-500/20 text-red-400 border-red-500/30'

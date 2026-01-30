@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import '@/App.css';
 import axios from 'axios';
-import { Search, TrendingUp, Pin, X, LayoutGrid, LayoutList, ExternalLink, Plus, List, Bell, BarChart3, Settings, BrainCircuit, Cpu, ChevronDown, CalendarDays, RefreshCw, Menu, ChevronLeft } from 'lucide-react';
+import { Search, TrendingUp, Pin, X, LayoutGrid, LayoutList, ExternalLink, List, Bell, BarChart3, Settings, BrainCircuit, Cpu, CalendarDays, RefreshCw, Menu, ChevronLeft } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';

@@ -202,12 +202,12 @@ const StockCardWithChart = ({
                   <XAxis
                     dataKey="date"
                     stroke="rgba(255,255,255,0.15)"
-                    tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 10 }}
+                    tick={{ fill: 'rgba(255,255,255,0.6)', fontSize: 11, fontFamily: 'system-ui' }}
                     tickFormatter={formatXAxisTick}
                     interval={getTickInterval()}
                     axisLine={{ stroke: 'rgba(255,255,255,0.1)' }}
                     tickLine={false}
-                    dy={5}
+                    dy={8}
                   />
                   <YAxis
                     hide

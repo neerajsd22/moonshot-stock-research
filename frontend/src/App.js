@@ -1686,29 +1686,29 @@ const HomePage = () => {
 
               {/* Column 2: Analysis Section */}
               <Card className="premium-card gold-gradient-border h-fit">
-                <CardHeader className="pb-4">
-                  <CardTitle className="text-base text-white section-title-gold" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                <CardHeader className="pb-3 pt-4 px-4">
+                  <CardTitle className="text-sm font-semibold text-white section-title-gold" style={{ fontFamily: 'Outfit, sans-serif' }}>
                     Analysis
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-3 px-4 pb-4">
                   {/* Bull vs Bear Sentiment */}
                   <div data-testid="bull-bear-sentiment">
-                    <div className="text-sm font-semibold mb-3 text-white">Bull vs Bear Sentiment</div>
+                    <div className="text-xs font-semibold mb-2 text-white">Bull vs Bear Sentiment</div>
                     {loadingBullBear ? (
                       <div className="space-y-2">
                         <div className="loading-skeleton h-4 w-full rounded" />
                         <div className="loading-skeleton h-4 w-3/4 rounded" />
                       </div>
                     ) : bullBearSentiment ? (
-                      <div className="space-y-4">
+                      <div className="space-y-3">
                         <div>
-                          <div className="text-xs font-medium text-green-400 mb-2 flex items-center gap-1">
+                          <div className="text-[11px] font-medium text-green-400 mb-1.5 flex items-center gap-1">
                             📈 Bull Case
                           </div>
-                          <ul className="space-y-1.5">
+                          <ul className="space-y-1">
                             {bullBearSentiment.bull_points.map((point, idx) => (
-                              <li key={idx} className="text-xs text-gray-400 flex gap-2">
+                              <li key={idx} className="text-[11px] text-gray-400 flex gap-2">
                                 <span className="text-green-400">•</span>
                                 <span>{point}</span>
                               </li>
@@ -1716,12 +1716,12 @@ const HomePage = () => {
                           </ul>
                         </div>
                         <div>
-                          <div className="text-xs font-medium text-red-400 mb-2 flex items-center gap-1">
+                          <div className="text-[11px] font-medium text-red-400 mb-1.5 flex items-center gap-1">
                             📉 Bear Case
                           </div>
-                          <ul className="space-y-1.5">
+                          <ul className="space-y-1">
                             {bullBearSentiment.bear_points.map((point, idx) => (
-                              <li key={idx} className="text-xs text-gray-400 flex gap-2">
+                              <li key={idx} className="text-[11px] text-gray-400 flex gap-2">
                                 <span className="text-red-400">•</span>
                                 <span>{point}</span>
                               </li>
@@ -1738,8 +1738,8 @@ const HomePage = () => {
 
               {/* Column 3: Latest News */}
               <Card className="premium-card gold-gradient-border h-fit">
-                <CardHeader className="pb-4">
-                  <CardTitle className="text-base text-white section-title-gold" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                <CardHeader className="pb-3 pt-4 px-4">
+                  <CardTitle className="text-sm font-semibold text-white section-title-gold" style={{ fontFamily: 'Outfit, sans-serif' }}>
                     Latest News
                   </CardTitle>
                 </CardHeader>

@@ -1599,19 +1599,19 @@ const HomePage = () => {
 
           {/* Detailed Analysis sections - show when a stock is selected */}
           {selectedStock && stockQuote && viewMode === 'spacious' && (
-            <div className="space-y-6 fade-in">
+            <div className="space-y-4 fade-in">
             {/* Financials, Analysis & News - 3 Column Layout */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {/* Column 1: Financials Section */}
               <Card className="premium-card gold-gradient-border h-fit">
-                <CardHeader className="pb-4">
-                  <CardTitle className="text-base text-white section-title-gold" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                <CardHeader className="pb-3 pt-4 px-4">
+                  <CardTitle className="text-sm font-semibold text-white section-title-gold" style={{ fontFamily: 'Outfit, sans-serif' }}>
                     Financials
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="px-4 pb-4">
                   {earningsLink ? (
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                       <a
                         data-testid="earnings-link"
                         href={earningsLink.earnings_url}
@@ -1624,16 +1624,16 @@ const HomePage = () => {
                       </a>
                       
                       {/* Earnings Snapshot */}
-                      <div className="pt-4 border-t border-[rgba(255,255,255,0.06)]">
-                        <div className="text-sm font-semibold mb-3 text-white flex items-center gap-2">
+                      <div className="pt-3 border-t border-[rgba(255,255,255,0.06)]">
+                        <div className="text-xs font-semibold mb-2 text-white flex items-center gap-2">
                           <span>📊</span> Earnings Snapshot
                         </div>
                         {earningsSnapshot ? (
                           <div className="grid grid-cols-2 gap-2">
                             {earningsSnapshot.capex && (
                               <div className="p-2 bg-[rgba(255,255,255,0.02)] rounded-lg">
-                                <div className="text-xs text-gray-400">CapEx</div>
-                                <div className="text-sm font-semibold text-white mono-numbers">
+                                <div className="text-[10px] text-gray-400">CapEx</div>
+                                <div className="text-xs font-semibold text-white mono-numbers">
                                   ${(Math.abs(earningsSnapshot.capex) / 1e9).toFixed(2)}B
                                 </div>
                               </div>

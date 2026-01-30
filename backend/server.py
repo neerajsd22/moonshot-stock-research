@@ -2791,6 +2791,402 @@ async def get_why_moving(ticker: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+# 1. Insider Cluster Buy Alerts
+@api_router.get("/stocks/{ticker}/insider-alerts")
+async def get_insider_alerts(ticker: str):
+    """
+    Detect insider cluster buying patterns.
+    Alert when multiple insiders buy within 2 weeks = strong signal.
+    """
+    try:
+        def fetch_insider_data():
+            stock = yf.Ticker(ticker)
+            info = stock.info
+            
+            result = {
+                "ticker": ticker.upper(),
+                "company_name": info.get('longName', ticker.upper()),
+                "analysis_date": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
+                "insider_transactions": [],
+                "cluster_alert": None,
+                "ceo_buying": False,
+                "signal_strength": "none",
+                "summary": ""
+            }
+            
+            try:
+                insider_txns = stock.insider_transactions
+                if insider_txns is not None and not insider_txns.empty:
+                    transactions = []
+                    buy_dates = []
+                    ceo_bought = False
+                    total_buy_value = 0
+                    
+                    for idx, row in insider_txns.head(20).iterrows():
+                        shares = safe_float(row.get('Shares'), 0)
+                        value = safe_float(row.get('Value'), 0)
+                        insider_name = row.get('Insider', 'Unknown')
+                        title = row.get('Position', row.get('Relationship', 'Unknown'))
+                        
+                        txn_date = None
+                        if pd.notna(idx):
+                            try:
+                                txn_date = str(idx)[:10]
+                            except:
+                                pass
+                        
+                        txn_type = "buy" if shares > 0 else "sell"
+                        
+                        transactions.append({
+                            "date": txn_date,
+                            "insider": insider_name,
+                            "title": title,
+                            "type": txn_type,
+                            "shares": abs(int(shares)),
+                            "value": abs(value)
+                        })
+                        
+                        if shares > 0:  # Buy
+                            if txn_date:
+                                buy_dates.append(txn_date)
+                            total_buy_value += abs(value)
+                            if title and any(x in title.lower() for x in ['ceo', 'chief executive', 'president']):
+                                ceo_bought = True
+                    
+                    result["insider_transactions"] = transactions[:10]
+                    result["ceo_buying"] = ceo_bought
+                    
+                    # Check for cluster buying (multiple buys within 14 days)
+                    if len(buy_dates) >= 2:
+                        recent_buys = []
+                        for d in buy_dates[:5]:
+                            try:
+                                parsed = datetime.strptime(d, "%Y-%m-%d")
+                                if (datetime.now() - parsed).days <= 30:
+                                    recent_buys.append(d)
+                            except:
+                                pass
+                        
+                        if len(recent_buys) >= 3:
+                            result["cluster_alert"] = {
+                                "type": "CLUSTER BUY",
+                                "count": len(recent_buys),
+                                "period_days": 30,
+                                "total_value": total_buy_value
+                            }
+                            result["signal_strength"] = "strong"
+                        elif len(recent_buys) >= 2:
+                            result["cluster_alert"] = {
+                                "type": "MULTIPLE BUYS",
+                                "count": len(recent_buys),
+                                "period_days": 30,
+                                "total_value": total_buy_value
+                            }
+                            result["signal_strength"] = "moderate"
+                    
+                    # Generate summary
+                    if result["signal_strength"] == "strong":
+                        result["summary"] = f"🚨 STRONG SIGNAL: {len(buy_dates)} insiders bought in last 30 days"
+                        if ceo_bought:
+                            result["summary"] += " including CEO"
+                    elif result["signal_strength"] == "moderate":
+                        result["summary"] = f"⚠️ MODERATE SIGNAL: Multiple insider buys detected"
+                    elif ceo_bought:
+                        result["summary"] = f"📊 CEO/President buying activity detected"
+                        result["signal_strength"] = "notable"
+                    else:
+                        result["summary"] = "No significant insider buying cluster detected"
+                        
+            except Exception as e:
+                result["error"] = str(e)
+            
+            return result
+        
+        from starlette.concurrency import run_in_threadpool
+        return await run_in_threadpool(fetch_insider_data)
+        
+    except Exception as e:
+        logger.error(f"Error fetching insider alerts for {ticker}: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# 2. Whale Watch - Institutional Holdings Analysis
+@api_router.get("/stocks/{ticker}/whale-watch")
+async def get_whale_watch(ticker: str):
+    """
+    Track institutional investor activity.
+    Identify when top funds are accumulating.
+    """
+    try:
+        def fetch_institutional_data():
+            stock = yf.Ticker(ticker)
+            info = stock.info
+            
+            result = {
+                "ticker": ticker.upper(),
+                "company_name": info.get('longName', ticker.upper()),
+                "analysis_date": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
+                "institutional_summary": {},
+                "top_holders": [],
+                "fund_activity": {},
+                "whale_signal": None,
+                "summary": ""
+            }
+            
+            try:
+                # Institutional holdings summary
+                inst_pct = safe_float(info.get('heldPercentInstitutions'), 0) * 100
+                insider_pct = safe_float(info.get('heldPercentInsiders'), 0) * 100
+                float_shares = safe_float(info.get('floatShares'), 0)
+                shares_outstanding = safe_float(info.get('sharesOutstanding'), 0)
+                
+                result["institutional_summary"] = {
+                    "institutional_ownership_pct": round(inst_pct, 1),
+                    "insider_ownership_pct": round(insider_pct, 1),
+                    "float_shares": float_shares,
+                    "shares_outstanding": shares_outstanding,
+                    "float_pct": round((float_shares / shares_outstanding * 100) if shares_outstanding > 0 else 0, 1)
+                }
+                
+                # Top institutional holders
+                inst_holders = stock.institutional_holders
+                if inst_holders is not None and not inst_holders.empty:
+                    holders = []
+                    for idx, row in inst_holders.head(10).iterrows():
+                        holder_name = row.get('Holder', 'Unknown')
+                        shares = safe_float(row.get('Shares'), 0)
+                        value = safe_float(row.get('Value'), 0)
+                        pct = safe_float(row.get('pctHeld', row.get('% Out', 0)), 0)
+                        if isinstance(pct, str):
+                            pct = 0
+                        
+                        # Check if it's a major fund
+                        is_major = any(x in holder_name.lower() for x in [
+                            'vanguard', 'blackrock', 'state street', 'fidelity', 
+                            'berkshire', 'capital', 'wellington', 't. rowe',
+                            'jpmorgan', 'morgan stanley', 'goldman'
+                        ])
+                        
+                        holders.append({
+                            "name": holder_name,
+                            "shares": int(shares),
+                            "value": value,
+                            "pct_held": round(pct * 100 if pct < 1 else pct, 2),
+                            "is_major_fund": is_major
+                        })
+                    
+                    result["top_holders"] = holders
+                    
+                    # Count major fund holders
+                    major_count = sum(1 for h in holders if h["is_major_fund"])
+                    result["fund_activity"] = {
+                        "major_fund_count": major_count,
+                        "top_10_concentration": round(sum(h["pct_held"] for h in holders), 1)
+                    }
+                    
+                    # Generate whale signal
+                    if major_count >= 5 and inst_pct > 70:
+                        result["whale_signal"] = {
+                            "type": "HEAVILY INSTITUTIONALIZED",
+                            "strength": "strong",
+                            "description": f"{major_count} major funds hold {inst_pct:.0f}% of shares"
+                        }
+                    elif major_count >= 3:
+                        result["whale_signal"] = {
+                            "type": "INSTITUTIONAL FAVORITE",
+                            "strength": "moderate", 
+                            "description": f"{major_count} major funds among top holders"
+                        }
+                
+                # Generate summary
+                if result.get("whale_signal"):
+                    result["summary"] = f"🐋 {result['whale_signal']['type']}: {result['whale_signal']['description']}"
+                elif inst_pct > 80:
+                    result["summary"] = f"High institutional ownership ({inst_pct:.0f}%)"
+                elif inst_pct < 30:
+                    result["summary"] = f"Low institutional ownership ({inst_pct:.0f}%) - potential undiscovered"
+                else:
+                    result["summary"] = f"Moderate institutional ownership ({inst_pct:.0f}%)"
+                    
+            except Exception as e:
+                result["error"] = str(e)
+            
+            return result
+        
+        from starlette.concurrency import run_in_threadpool
+        return await run_in_threadpool(fetch_institutional_data)
+        
+    except Exception as e:
+        logger.error(f"Error fetching whale watch for {ticker}: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# 3. Similar Stocks - Pattern Matching
+@api_router.get("/stocks/{ticker}/similar-stocks")
+async def get_similar_stocks(ticker: str):
+    """
+    Find stocks with similar characteristics to potential winners.
+    Matches by sector, market cap, growth, and valuation metrics.
+    """
+    try:
+        def find_similar():
+            stock = yf.Ticker(ticker)
+            info = stock.info
+            
+            result = {
+                "ticker": ticker.upper(),
+                "company_name": info.get('longName', ticker.upper()),
+                "analysis_date": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
+                "profile": {},
+                "similar_stocks": [],
+                "peer_comparison": {},
+                "summary": ""
+            }
+            
+            # Build profile of the target stock
+            sector = info.get('sector', 'Unknown')
+            industry = info.get('industry', 'Unknown')
+            market_cap = safe_float(info.get('marketCap'), 0)
+            pe_ratio = safe_float(info.get('trailingPE'), 0)
+            revenue_growth = safe_float(info.get('revenueGrowth'), 0)
+            profit_margin = safe_float(info.get('profitMargins'), 0)
+            
+            # Determine market cap tier
+            if market_cap >= 200e9:
+                cap_tier = "mega"
+            elif market_cap >= 10e9:
+                cap_tier = "large"
+            elif market_cap >= 2e9:
+                cap_tier = "mid"
+            elif market_cap >= 300e6:
+                cap_tier = "small"
+            else:
+                cap_tier = "micro"
+            
+            result["profile"] = {
+                "sector": sector,
+                "industry": industry,
+                "market_cap": market_cap,
+                "market_cap_tier": cap_tier,
+                "pe_ratio": round(pe_ratio, 1) if pe_ratio else None,
+                "revenue_growth_pct": round(revenue_growth * 100, 1) if revenue_growth else None,
+                "profit_margin_pct": round(profit_margin * 100, 1) if profit_margin else None
+            }
+            
+            # Define peer groups by sector/industry
+            peer_tickers = {
+                "Technology": ["AAPL", "MSFT", "GOOGL", "META", "NVDA", "AMD", "CRM", "ADBE", "ORCL", "INTC"],
+                "Healthcare": ["JNJ", "UNH", "PFE", "ABBV", "MRK", "LLY", "TMO", "ABT", "DHR", "BMY"],
+                "Financial Services": ["JPM", "BAC", "WFC", "GS", "MS", "C", "BLK", "SCHW", "AXP", "V"],
+                "Consumer Cyclical": ["AMZN", "TSLA", "HD", "NKE", "MCD", "SBUX", "TGT", "LOW", "BKNG", "MAR"],
+                "Communication Services": ["GOOGL", "META", "NFLX", "DIS", "CMCSA", "T", "VZ", "TMUS", "CHTR", "EA"],
+                "Industrials": ["CAT", "DE", "UNP", "HON", "UPS", "BA", "RTX", "LMT", "GE", "MMM"],
+                "Consumer Defensive": ["WMT", "PG", "KO", "PEP", "COST", "PM", "MO", "CL", "KMB", "GIS"],
+                "Energy": ["XOM", "CVX", "COP", "SLB", "EOG", "MPC", "PSX", "VLO", "OXY", "KMI"],
+                "Basic Materials": ["LIN", "APD", "ECL", "SHW", "FCX", "NEM", "NUE", "DOW", "DD", "VMC"],
+                "Real Estate": ["AMT", "PLD", "CCI", "EQIX", "PSA", "SPG", "O", "WELL", "DLR", "AVB"],
+                "Utilities": ["NEE", "DUK", "SO", "D", "AEP", "EXC", "SRE", "XEL", "ED", "WEC"]
+            }
+            
+            # Get peers in same sector
+            sector_peers = peer_tickers.get(sector, [])
+            if ticker.upper() in sector_peers:
+                sector_peers = [p for p in sector_peers if p != ticker.upper()]
+            
+            similar_stocks = []
+            for peer_ticker in sector_peers[:6]:
+                try:
+                    peer = yf.Ticker(peer_ticker)
+                    peer_info = peer.info
+                    
+                    peer_cap = safe_float(peer_info.get('marketCap'), 0)
+                    peer_pe = safe_float(peer_info.get('trailingPE'), 0)
+                    peer_growth = safe_float(peer_info.get('revenueGrowth'), 0)
+                    peer_margin = safe_float(peer_info.get('profitMargins'), 0)
+                    
+                    # Calculate similarity score
+                    similarity = 0
+                    
+                    # Market cap similarity (within 5x)
+                    if market_cap > 0 and peer_cap > 0:
+                        cap_ratio = max(market_cap, peer_cap) / min(market_cap, peer_cap)
+                        if cap_ratio < 2:
+                            similarity += 30
+                        elif cap_ratio < 5:
+                            similarity += 15
+                    
+                    # PE similarity
+                    if pe_ratio > 0 and peer_pe > 0:
+                        pe_diff = abs(pe_ratio - peer_pe) / max(pe_ratio, peer_pe)
+                        if pe_diff < 0.2:
+                            similarity += 25
+                        elif pe_diff < 0.5:
+                            similarity += 10
+                    
+                    # Growth similarity
+                    if revenue_growth and peer_growth:
+                        growth_diff = abs(revenue_growth - peer_growth)
+                        if growth_diff < 0.1:
+                            similarity += 25
+                        elif growth_diff < 0.2:
+                            similarity += 10
+                    
+                    # Same industry bonus
+                    if peer_info.get('industry') == industry:
+                        similarity += 20
+                    
+                    similar_stocks.append({
+                        "ticker": peer_ticker,
+                        "name": peer_info.get('shortName', peer_ticker),
+                        "market_cap": peer_cap,
+                        "pe_ratio": round(peer_pe, 1) if peer_pe else None,
+                        "revenue_growth_pct": round(peer_growth * 100, 1) if peer_growth else None,
+                        "profit_margin_pct": round(peer_margin * 100, 1) if peer_margin else None,
+                        "similarity_score": similarity,
+                        "price": safe_float(peer_info.get('currentPrice') or peer_info.get('regularMarketPrice'), 0),
+                        "change_pct": safe_float(peer_info.get('regularMarketChangePercent'), 0)
+                    })
+                except:
+                    continue
+            
+            # Sort by similarity score
+            similar_stocks.sort(key=lambda x: x["similarity_score"], reverse=True)
+            result["similar_stocks"] = similar_stocks[:5]
+            
+            # Peer comparison summary
+            if similar_stocks:
+                avg_pe = sum(s["pe_ratio"] or 0 for s in similar_stocks) / len(similar_stocks)
+                avg_growth = sum(s["revenue_growth_pct"] or 0 for s in similar_stocks) / len(similar_stocks)
+                
+                result["peer_comparison"] = {
+                    "your_pe": round(pe_ratio, 1) if pe_ratio else None,
+                    "peer_avg_pe": round(avg_pe, 1),
+                    "pe_premium_pct": round((pe_ratio - avg_pe) / avg_pe * 100, 1) if avg_pe > 0 and pe_ratio else None,
+                    "your_growth": round(revenue_growth * 100, 1) if revenue_growth else None,
+                    "peer_avg_growth": round(avg_growth, 1)
+                }
+                
+                # Generate summary
+                if result["peer_comparison"]["pe_premium_pct"]:
+                    if result["peer_comparison"]["pe_premium_pct"] < -20:
+                        result["summary"] = f"📉 Trading at {abs(result['peer_comparison']['pe_premium_pct']):.0f}% discount to peers"
+                    elif result["peer_comparison"]["pe_premium_pct"] > 20:
+                        result["summary"] = f"📈 Trading at {result['peer_comparison']['pe_premium_pct']:.0f}% premium to peers"
+                    else:
+                        result["summary"] = f"Trading in line with {sector} peers"
+                else:
+                    result["summary"] = f"Found {len(similar_stocks)} similar stocks in {sector}"
+            
+            return result
+        
+        from starlette.concurrency import run_in_threadpool
+        return await run_in_threadpool(find_similar)
+        
+    except Exception as e:
+        logger.error(f"Error finding similar stocks for {ticker}: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 app.include_router(api_router)
 
 app.add_middleware(

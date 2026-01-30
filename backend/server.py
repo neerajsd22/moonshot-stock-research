@@ -2614,6 +2614,374 @@ async def get_earnings_intelligence(ticker: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+# Smart Earnings Analysis Module
+@api_router.get("/stocks/{ticker}/smart-earnings")
+async def get_smart_earnings(ticker: str):
+    """
+    Smart Earnings Analysis with two sub-sections:
+    1. Historical Fundamentals - Analysis of latest publicly available earnings
+    2. Pre-Earnings Intelligence Report (PEIR) - Only active 3-5 days before earnings
+    """
+    try:
+        def fetch_smart_earnings():
+            stock = yf.Ticker(ticker)
+            info = stock.info
+            
+            report = {
+                "ticker": ticker.upper(),
+                "company_name": info.get('longName', ticker.upper()),
+                "report_date": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
+                "upcoming_earnings_date": None,
+                "days_until_earnings": None,
+                "peir_active": False,
+                "peir_message": "Pre-Earnings Intelligence will be available 3-5 days before the next earnings date.",
+                "historical_fundamentals": {},
+                "peir_data": None
+            }
+            
+            # Get upcoming earnings date
+            next_earnings = None
+            try:
+                calendar = stock.calendar
+                if calendar is not None and not calendar.empty:
+                    if 'Earnings Date' in calendar.index:
+                        earnings_dates = calendar.loc['Earnings Date']
+                        if hasattr(earnings_dates, 'iloc') and len(earnings_dates) > 0:
+                            next_date = earnings_dates.iloc[0]
+                            if pd.notna(next_date):
+                                next_earnings = pd.to_datetime(next_date)
+                                report["upcoming_earnings_date"] = str(next_date)[:10]
+            except:
+                pass
+            
+            # Calculate days until earnings
+            if next_earnings:
+                today = pd.Timestamp.now(tz='UTC').normalize()
+                next_earnings_tz = next_earnings.tz_localize('UTC') if next_earnings.tzinfo is None else next_earnings
+                days_diff = (next_earnings_tz - today).days
+                report["days_until_earnings"] = days_diff
+                
+                # PEIR active if 3-5 days before earnings
+                if 0 <= days_diff <= 5:
+                    report["peir_active"] = True
+                    report["peir_message"] = f"Pre-Earnings Intelligence Report active - {days_diff} day(s) until earnings"
+            
+            # ====== HISTORICAL FUNDAMENTALS ======
+            historical = {
+                "earnings_history": [],
+                "beat_rate": 0,
+                "average_surprise_pct": 0,
+                "price_reactions": [],
+                "key_metrics": {}
+            }
+            
+            # Historical earnings surprises with price reactions
+            try:
+                earnings_hist = stock.earnings_history
+                hist_prices = stock.history(period="5y")
+                
+                if earnings_hist is not None and not earnings_hist.empty:
+                    surprises = []
+                    beat_count = 0
+                    total_surprise = 0
+                    
+                    for idx, row in earnings_hist.iterrows():
+                        actual = safe_float(row.get('epsActual'), 0)
+                        estimate = safe_float(row.get('epsEstimate'), 0)
+                        surprise_pct = ((actual - estimate) / abs(estimate) * 100) if estimate != 0 else 0
+                        
+                        # Calculate price reaction after earnings
+                        price_reaction = None
+                        if not hist_prices.empty and pd.notna(idx):
+                            try:
+                                earnings_date = pd.to_datetime(idx)
+                                # Find the closest trading day after earnings
+                                future_prices = hist_prices[hist_prices.index >= earnings_date]
+                                past_prices = hist_prices[hist_prices.index < earnings_date]
+                                
+                                if len(future_prices) >= 2 and len(past_prices) >= 1:
+                                    pre_price = past_prices['Close'].iloc[-1]
+                                    post_price = future_prices['Close'].iloc[1] if len(future_prices) > 1 else future_prices['Close'].iloc[0]
+                                    price_reaction = round(((post_price - pre_price) / pre_price) * 100, 2)
+                            except:
+                                pass
+                        
+                        surprise_data = {
+                            "date": str(idx)[:10] if pd.notna(idx) else None,
+                            "actual_eps": round(actual, 2),
+                            "estimated_eps": round(estimate, 2),
+                            "surprise_pct": round(surprise_pct, 1),
+                            "beat": actual > estimate,
+                            "price_reaction_pct": price_reaction
+                        }
+                        surprises.append(surprise_data)
+                        total_surprise += surprise_pct
+                        
+                        if actual > estimate:
+                            beat_count += 1
+                    
+                    historical["earnings_history"] = surprises[:8]
+                    historical["beat_rate"] = round(beat_count / max(len(surprises), 1) * 100, 0)
+                    historical["average_surprise_pct"] = round(total_surprise / max(len(surprises), 1), 1)
+                    
+                    # Calculate correlation between surprise and price reaction
+                    valid_reactions = [s for s in surprises if s["price_reaction_pct"] is not None]
+                    if len(valid_reactions) >= 3:
+                        beats_up = sum(1 for s in valid_reactions if s["beat"] and s["price_reaction_pct"] > 0)
+                        misses_down = sum(1 for s in valid_reactions if not s["beat"] and s["price_reaction_pct"] < 0)
+                        historical["price_reaction_correlation"] = round((beats_up + misses_down) / len(valid_reactions) * 100, 0)
+            except:
+                pass
+            
+            # Key metrics
+            try:
+                historical["key_metrics"] = {
+                    "forward_pe": safe_round(info.get('forwardPE'), 1),
+                    "trailing_pe": safe_round(info.get('trailingPE'), 1),
+                    "peg_ratio": safe_round(info.get('pegRatio'), 2),
+                    "forward_eps": safe_round(info.get('forwardEps'), 2),
+                    "trailing_eps": safe_round(info.get('trailingEps'), 2),
+                    "revenue_growth": safe_round(info.get('revenueGrowth', 0) * 100 if info.get('revenueGrowth') else None, 1),
+                    "earnings_growth": safe_round(info.get('earningsGrowth', 0) * 100 if info.get('earningsGrowth') else None, 1),
+                    "profit_margin": safe_round(info.get('profitMargins', 0) * 100 if info.get('profitMargins') else None, 1)
+                }
+            except:
+                pass
+            
+            report["historical_fundamentals"] = historical
+            
+            # ====== PRE-EARNINGS INTELLIGENCE REPORT (PEIR) ======
+            if report["peir_active"]:
+                peir = {
+                    "surprise_patterns": {},
+                    "volatility_gap": {},
+                    "insider_sentiment": {},
+                    "revision_momentum": {},
+                    "peer_read_through": []
+                }
+                
+                # 1. Surprise Patterns - Correlate EPS beats/misses with price reaction
+                try:
+                    earnings_data = historical.get("earnings_history", [])
+                    if earnings_data:
+                        beat_reactions = [e["price_reaction_pct"] for e in earnings_data if e["beat"] and e["price_reaction_pct"] is not None]
+                        miss_reactions = [e["price_reaction_pct"] for e in earnings_data if not e["beat"] and e["price_reaction_pct"] is not None]
+                        
+                        peir["surprise_patterns"] = {
+                            "avg_beat_reaction": round(sum(beat_reactions) / max(len(beat_reactions), 1), 1) if beat_reactions else None,
+                            "avg_miss_reaction": round(sum(miss_reactions) / max(len(miss_reactions), 1), 1) if miss_reactions else None,
+                            "beat_count": len([e for e in earnings_data if e["beat"]]),
+                            "miss_count": len([e for e in earnings_data if not e["beat"]]),
+                            "pattern_summary": ""
+                        }
+                        
+                        # Generate pattern summary
+                        if beat_reactions and miss_reactions:
+                            avg_beat = peir["surprise_patterns"]["avg_beat_reaction"]
+                            avg_miss = peir["surprise_patterns"]["avg_miss_reaction"]
+                            if avg_beat and avg_beat > 2:
+                                peir["surprise_patterns"]["pattern_summary"] = f"Stock typically rallies {avg_beat}% on beats"
+                            elif avg_miss and avg_miss < -2:
+                                peir["surprise_patterns"]["pattern_summary"] = f"Stock typically drops {abs(avg_miss)}% on misses"
+                            else:
+                                peir["surprise_patterns"]["pattern_summary"] = "Muted price reactions to earnings"
+                except:
+                    pass
+                
+                # 2. Volatility Gap - Options implied move vs historical move
+                try:
+                    implied_vol = safe_float(info.get('impliedVolatility'), 0)
+                    historical_reactions = [abs(e["price_reaction_pct"]) for e in earnings_data if e["price_reaction_pct"] is not None]
+                    avg_historical_move = round(sum(historical_reactions) / max(len(historical_reactions), 1), 1) if historical_reactions else None
+                    
+                    if implied_vol > 0:
+                        implied_earnings_move = round(implied_vol / math.sqrt(252) * 100 * 2, 1)  # Approx earnings move
+                        
+                        peir["volatility_gap"] = {
+                            "implied_volatility_pct": round(implied_vol * 100, 1),
+                            "implied_earnings_move_pct": implied_earnings_move,
+                            "historical_avg_move_pct": avg_historical_move,
+                            "gap_pct": round(implied_earnings_move - (avg_historical_move or 0), 1) if avg_historical_move else None,
+                            "signal": ""
+                        }
+                        
+                        if avg_historical_move:
+                            gap = implied_earnings_move - avg_historical_move
+                            if gap > 2:
+                                peir["volatility_gap"]["signal"] = "Options pricing in LARGER move than historical average"
+                            elif gap < -2:
+                                peir["volatility_gap"]["signal"] = "Options pricing in SMALLER move than historical average"
+                            else:
+                                peir["volatility_gap"]["signal"] = "Options pricing aligned with historical moves"
+                except:
+                    pass
+                
+                # 3. Insider Sentiment - SEC Form 4 filings (last 90 days)
+                try:
+                    insider_txns = stock.insider_transactions
+                    if insider_txns is not None and not insider_txns.empty:
+                        recent_buys = 0
+                        recent_sells = 0
+                        buy_value = 0
+                        sell_value = 0
+                        executive_trades = []
+                        
+                        for idx, row in insider_txns.iterrows():
+                            shares = safe_float(row.get('Shares'), 0)
+                            value = safe_float(row.get('Value'), 0)
+                            insider_name = row.get('Insider', 'Unknown')
+                            
+                            trade_info = {
+                                "insider": str(insider_name)[:30],
+                                "shares": int(abs(shares)),
+                                "value": abs(value),
+                                "type": "buy" if shares > 0 else "sell"
+                            }
+                            
+                            if shares > 0:
+                                recent_buys += 1
+                                buy_value += abs(value)
+                            elif shares < 0:
+                                recent_sells += 1
+                                sell_value += abs(value)
+                            
+                            executive_trades.append(trade_info)
+                        
+                        net_value = buy_value - sell_value
+                        peir["insider_sentiment"] = {
+                            "total_buys": recent_buys,
+                            "total_sells": recent_sells,
+                            "buy_value": buy_value,
+                            "sell_value": sell_value,
+                            "net_value": net_value,
+                            "sentiment": "bullish" if net_value > 0 else "bearish" if net_value < 0 else "neutral",
+                            "anomaly_detected": abs(net_value) > 1000000,
+                            "recent_trades": executive_trades[:5],
+                            "summary": ""
+                        }
+                        
+                        if recent_buys > recent_sells * 2:
+                            peir["insider_sentiment"]["summary"] = f"Unusual insider BUYING: {recent_buys} buys vs {recent_sells} sells"
+                        elif recent_sells > recent_buys * 2:
+                            peir["insider_sentiment"]["summary"] = f"Unusual insider SELLING: {recent_sells} sells vs {recent_buys} buys"
+                        else:
+                            peir["insider_sentiment"]["summary"] = "Normal insider trading activity"
+                except:
+                    pass
+                
+                # 4. Revision Momentum - Analyst estimate trends
+                try:
+                    current_estimate = safe_float(info.get('forwardEps'), None)
+                    target_mean = safe_float(info.get('targetMeanPrice'), None)
+                    target_high = safe_float(info.get('targetHighPrice'), None)
+                    target_low = safe_float(info.get('targetLowPrice'), None)
+                    num_analysts = int(safe_float(info.get('numberOfAnalystOpinions'), 0))
+                    recommendation = info.get('recommendationKey', 'none')
+                    
+                    peir["revision_momentum"] = {
+                        "current_eps_estimate": current_estimate,
+                        "target_price_mean": target_mean,
+                        "target_price_high": target_high,
+                        "target_price_low": target_low,
+                        "num_analysts": num_analysts,
+                        "recommendation": recommendation,
+                        "upside_pct": round(((target_mean - info.get('currentPrice', 0)) / info.get('currentPrice', 1)) * 100, 1) if target_mean and info.get('currentPrice') else None,
+                        "trend": "",
+                        "summary": ""
+                    }
+                    
+                    # Determine trend based on recommendation
+                    if recommendation in ['strongBuy', 'buy']:
+                        peir["revision_momentum"]["trend"] = "positive"
+                        peir["revision_momentum"]["summary"] = f"Analysts bullish: {num_analysts} analysts recommend {recommendation.replace('_', ' ')}"
+                    elif recommendation in ['strongSell', 'sell']:
+                        peir["revision_momentum"]["trend"] = "negative"
+                        peir["revision_momentum"]["summary"] = f"Analysts bearish: {num_analysts} analysts recommend {recommendation.replace('_', ' ')}"
+                    else:
+                        peir["revision_momentum"]["trend"] = "neutral"
+                        peir["revision_momentum"]["summary"] = f"{num_analysts} analysts with mixed views"
+                except:
+                    pass
+                
+                # 5. Peer Read-Through - Competitor earnings results
+                try:
+                    sector = info.get('sector', '')
+                    industry = info.get('industry', '')
+                    
+                    # Get peer tickers based on sector
+                    sector_peers = {
+                        'Technology': ['AAPL', 'MSFT', 'GOOGL', 'META', 'NVDA', 'AMD', 'CRM', 'ORCL'],
+                        'Financial Services': ['JPM', 'BAC', 'WFC', 'GS', 'MS', 'C', 'BLK', 'SCHW'],
+                        'Healthcare': ['JNJ', 'UNH', 'PFE', 'ABBV', 'MRK', 'LLY', 'TMO', 'ABT'],
+                        'Consumer Cyclical': ['AMZN', 'TSLA', 'HD', 'NKE', 'MCD', 'SBUX', 'TGT', 'LOW'],
+                        'Communication Services': ['GOOGL', 'META', 'DIS', 'NFLX', 'CMCSA', 'VZ', 'T', 'TMUS'],
+                        'Energy': ['XOM', 'CVX', 'COP', 'SLB', 'EOG', 'MPC', 'PSX', 'VLO'],
+                        'Industrials': ['CAT', 'DE', 'UNP', 'BA', 'HON', 'GE', 'MMM', 'LMT'],
+                        'Consumer Defensive': ['PG', 'KO', 'PEP', 'WMT', 'COST', 'PM', 'MO', 'CL'],
+                    }
+                    
+                    peer_list = sector_peers.get(sector, [])[:5]
+                    peer_list = [p for p in peer_list if p != ticker.upper()][:4]
+                    
+                    peer_results = []
+                    for peer_ticker in peer_list:
+                        try:
+                            peer_stock = yf.Ticker(peer_ticker)
+                            peer_info = peer_stock.info
+                            peer_earnings = peer_stock.earnings_history
+                            
+                            latest_earnings = None
+                            if peer_earnings is not None and not peer_earnings.empty:
+                                latest = peer_earnings.iloc[0]
+                                actual = safe_float(latest.get('epsActual'), 0)
+                                estimate = safe_float(latest.get('epsEstimate'), 0)
+                                surprise = ((actual - estimate) / abs(estimate) * 100) if estimate != 0 else 0
+                                latest_earnings = {
+                                    "actual": round(actual, 2),
+                                    "estimate": round(estimate, 2),
+                                    "surprise_pct": round(surprise, 1),
+                                    "beat": actual > estimate
+                                }
+                            
+                            peer_results.append({
+                                "ticker": peer_ticker,
+                                "name": peer_info.get('shortName', peer_ticker),
+                                "latest_earnings": latest_earnings,
+                                "recommendation": peer_info.get('recommendationKey', 'none')
+                            })
+                        except:
+                            continue
+                    
+                    # Summarize peer results
+                    beats = sum(1 for p in peer_results if p.get("latest_earnings", {}).get("beat", False))
+                    total = len([p for p in peer_results if p.get("latest_earnings")])
+                    
+                    peir["peer_read_through"] = {
+                        "sector": sector,
+                        "industry": industry,
+                        "peers_analyzed": len(peer_results),
+                        "peers_beat": beats,
+                        "peers_missed": total - beats,
+                        "sector_signal": "positive" if beats > total / 2 else "negative" if beats < total / 2 else "mixed",
+                        "peers": peer_results,
+                        "summary": f"{beats}/{total} sector peers beat estimates this quarter" if total > 0 else "No peer data available"
+                    }
+                except:
+                    pass
+                
+                report["peir_data"] = peir
+            
+            return report
+        
+        from starlette.concurrency import run_in_threadpool
+        result = await run_in_threadpool(fetch_smart_earnings)
+        return result
+        
+    except Exception as e:
+        logger.error(f"Error fetching smart earnings for {ticker}: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 # D. "Why Is This Moving?" Analysis
 @api_router.get("/stocks/{ticker}/why-moving")
 async def get_why_moving(ticker: str):

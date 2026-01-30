@@ -978,18 +978,6 @@ const HomePage = () => {
             
             {/* Right side buttons - pushed to far right */}
             <div className="flex items-center gap-2 flex-shrink-0 ml-auto">
-              {/* Categories Button - Navigate to categories page */}
-              <Button
-                data-testid="explore-categories-button"
-                variant="outline"
-                size="sm"
-                onClick={() => navigate('/categories')}
-                className="h-11 px-4 flex items-center gap-2 btn-outline-gold"
-              >
-                <LayoutGrid className="w-4 h-4" />
-                <span className="hidden sm:inline">Categories</span>
-              </Button>
-              
               {/* View Mode Toggle */}
               <Button
                 data-testid="view-mode-toggle"

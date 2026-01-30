@@ -1248,8 +1248,8 @@ const HomePage = () => {
                   onUnpin={unpinStock}
                   onDismiss={dismissStock}
                   getCurrencySymbol={getCurrencySymbol}
-                  currentPeriod={period}
-                  onPeriodChange={(newPeriod) => handlePeriodChange(newPeriod)}
+                  currentPeriod={stock.period || period}
+                  onPeriodChange={(newPeriod) => handlePeriodChange(newPeriod, stock.ticker)}
                   onAdvancedChart={() => {
                     setSelectedStock(stock.ticker);
                     setShowAdvancedChart(true);

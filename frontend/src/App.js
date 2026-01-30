@@ -1219,7 +1219,7 @@ const HomePage = () => {
 
         {/* Spacious View - Combined stock cards with chart */}
         {viewMode === 'spacious' && stackedStocks.length > 0 && (
-          <div className="space-y-3" data-testid="stacked-stocks-container">
+          <div className="space-y-4" data-testid="stacked-stocks-container">
             {/* Dismiss All Button - Only show when multiple stocks */}
             {stackedStocks.length > 1 && (
               <div className="flex justify-end">

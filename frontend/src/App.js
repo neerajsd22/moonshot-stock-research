@@ -1832,6 +1832,9 @@ const HomePage = () => {
               </Card>
             </div>
 
+            {/* Intelligence Hub - New Advanced Analysis Section */}
+            <IntelligenceHub ticker={selectedStock} />
+
             {/* AI Deep Analysis - Full Width Health Report */}
             <Card className="premium-card gold-gradient-border" data-testid="ai-deep-analysis">
               <CardHeader className="pb-3 pt-4 px-4">

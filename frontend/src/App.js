@@ -1026,18 +1026,12 @@ const HomePage = () => {
             
             {/* Right side buttons - pushed to far right */}
             <div className="flex items-center gap-2 flex-shrink-0 ml-auto">
-              {/* Explore by Category Button */}
+              {/* Categories Button - Navigate to categories page */}
               <Button
                 data-testid="explore-categories-button"
                 variant="outline"
                 size="sm"
-                onClick={() => {
-                  const categoriesSection = document.getElementById('categories-section');
-                  if (categoriesSection) {
-                    categoriesSection.scrollIntoView({ behavior: 'smooth' });
-                  }
-                  setCategoriesCollapsed(false);
-                }}
+                onClick={() => navigate('/categories')}
                 className="h-11 px-4 flex items-center gap-2 btn-outline-gold"
               >
                 <LayoutGrid className="w-4 h-4" />

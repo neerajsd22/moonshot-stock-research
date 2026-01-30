@@ -146,10 +146,24 @@ GET  /api/custom-categories           - List custom categories
 21. **UI/UX Improvements - Phase 3** ✅:
     - **Accordion-Style Intelligence Hub**: Compact design, expand one section at a time, key metrics shown in headers
     - **Fixed Truncated Text**: All names (insiders, fund holders, companies) now display in full
-    - **Dedicated Categories Page**: Moved "Explore by Category" to `/categories` route
-    - **Cleaner Home Page**: Removed category grid from home, now focused on stock analysis
-    - **Categories Button**: Now navigates to dedicated categories page with search & filtering
+    - **Explore by Category section**: Restored on home page with collapsible UI
     - New file: `/app/frontend/src/CategoriesPage.js`
+
+22. **Smart Earnings Analysis Module** ✅:
+    - **New Tab in Intelligence Hub**: Replaces old "Earnings" tab with comprehensive earnings analysis
+    - **Sub-section 1: Historical Fundamentals**:
+      - Fwd P/E, EPS Growth, Beat Rate, Average Surprise metrics
+      - Recent quarters with EPS actuals vs estimates
+      - Upcoming earnings date prominently displayed
+    - **Sub-section 2: Pre-Earnings Intelligence Report (PEIR)**:
+      - **Trigger**: Auto-activates 3-5 days before earnings, shows waiting message otherwise
+      - **Surprise Patterns**: Correlates past EPS beats/misses with stock price reaction
+      - **Volatility Gap**: Compares options-implied move vs historical 1-day post-earnings move
+      - **Insider Sentiment**: SEC Form 4 filings from last 90 days for anomalous executive trading
+      - **Revision Momentum**: Analyst estimate trends (upward/downward)
+      - **Peer Read-Through**: Competitor earnings results from same sector this quarter
+    - New endpoint: `/api/stocks/{ticker}/smart-earnings`
+    - Data sources: yfinance for earnings calendar, options data, insider transactions, peer data
 
 ## Backlog (Future Features)
 ### P1 - COMPLETED ✅
@@ -159,7 +173,7 @@ GET  /api/custom-categories           - List custom categories
 - ~~Intelligence Hub (5 Signals, Earnings Intel, Why Moving)~~
 - ~~Intelligence Hub Phase 2 (Insider Alerts, Whale Watch, Similar Stocks)~~
 - ~~Accordion-style Intelligence Hub UI~~
-- ~~Dedicated Categories Page~~
+- ~~Smart Earnings Analysis Module with PEIR~~
 
 ### P2
 - Drag-and-drop reordering of stacked stocks
@@ -173,4 +187,4 @@ GET  /api/custom-categories           - List custom categories
 - Further reduce App.js to ~1000 lines
 
 ---
-*Last Updated: Jan 30, 2026 (UI/UX Phase 3 - Accordion Hub, Categories Page, Fixed Truncation)*
+*Last Updated: Jan 30, 2026 (Smart Earnings Analysis Module with PEIR implemented)*

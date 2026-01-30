@@ -1200,9 +1200,9 @@ const HomePage = () => {
           />
         )}
 
-        {/* Spacious View - Combined stock card with header + key stats */}
+        {/* Spacious View - Combined stock cards with chart */}
         {viewMode === 'spacious' && stackedStocks.length > 0 && (
-          <div className="space-y-4" data-testid="stacked-stocks-container">
+          <div className="space-y-3" data-testid="stacked-stocks-container">
             {/* Dismiss All Button - Only show when multiple stocks */}
             {stackedStocks.length > 1 && (
               <div className="flex justify-end">
@@ -1224,13 +1224,28 @@ const HomePage = () => {
                 className={`${index === stackedStocks.length - 1 && stockAnimating ? 'stock-slide-in' : 'fade-in'}`}
                 data-testid={`stock-details-${stock.ticker}`}
               >
-                <StockCard
+                <StockCardWithChart
                   stock={stock}
                   isStockPinned={isStockPinned}
                   onPin={pinStock}
                   onUnpin={unpinStock}
                   onDismiss={dismissStock}
                   getCurrencySymbol={getCurrencySymbol}
+                  currentPeriod={period}
+                  onPeriodChange={(newPeriod) => handlePeriodChange(newPeriod)}
+                  onAdvancedChart={() => {
+                    setSelectedStock(stock.ticker);
+                    setShowAdvancedChart(true);
+                  }}
+                  isSelected={selectedStock === stock.ticker}
+                  onSelect={(ticker) => {
+                    setSelectedStock(ticker);
+                    const stockData = stackedStocks.find(s => s.ticker === ticker);
+                    if (stockData) {
+                      setStockQuote(stockData.quote);
+                      setHistoricalData(stockData.historicalData);
+                    }
+                  }}
                 />
               </div>
             ))}

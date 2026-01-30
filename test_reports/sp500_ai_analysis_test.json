@@ -1,0 +1,4144 @@
+{
+  "summary": {
+    "total": 502,
+    "passed": 478,
+    "failed": 24,
+    "pass_rate": "95.2%"
+  },
+  "failed_tickers": [
+    {
+      "ticker": "ANSS",
+      "status": "FAIL",
+      "error": "No quarterly data",
+      "time": 0.6975598335266113,
+      "verdict": "AVOID",
+      "score": 0
+    },
+    {
+      "ticker": "CTLT",
+      "status": "FAIL",
+      "error": "No quarterly data",
+      "time": 0.62691330909729,
+      "verdict": "AVOID",
+      "score": 0
+    },
+    {
+      "ticker": "CVX",
+      "status": "FAIL",
+      "error": "Timeout (>30s)"
+    },
+    {
+      "ticker": "CZR",
+      "status": "FAIL",
+      "error": "Timeout (>30s)"
+    },
+    {
+      "ticker": "D",
+      "status": "FAIL",
+      "error": "Timeout (>30s)"
+    },
+    {
+      "ticker": "DE",
+      "status": "FAIL",
+      "error": "Timeout (>30s)"
+    },
+    {
+      "ticker": "DFS",
+      "status": "FAIL",
+      "error": "Timeout (>30s)"
+    },
+    {
+      "ticker": "DG",
+      "status": "FAIL",
+      "error": "Timeout (>30s)"
+    },
+    {
+      "ticker": "FI",
+      "status": "FAIL",
+      "error": "No quarterly data",
+      "time": 0.6195130348205566,
+      "verdict": "AVOID",
+      "score": 0
+    },
+    {
+      "ticker": "FLT",
+      "status": "FAIL",
+      "error": "No quarterly data",
+      "time": 4.594916820526123,
+      "verdict": "AVOID",
+      "score": 0
+    },
+    {
+      "ticker": "DLR",
+      "status": "FAIL",
+      "error": "Timeout (>30s)"
+    },
+    {
+      "ticker": "HES",
+      "status": "FAIL",
+      "error": "No quarterly data",
+      "time": 0.7098865509033203,
+      "verdict": "AVOID",
+      "score": 0
+    },
+    {
+      "ticker": "IPG",
+      "status": "FAIL",
+      "error": "No quarterly data",
+      "time": 1.0077428817749023,
+      "verdict": "AVOID",
+      "score": 0
+    },
+    {
+      "ticker": "HUBB",
+      "status": "FAIL",
+      "error": "Timeout (>30s)"
+    },
+    {
+      "ticker": "HUM",
+      "status": "FAIL",
+      "error": "Timeout (>30s)"
+    },
+    {
+      "ticker": "IBM",
+      "status": "FAIL",
+      "error": "Timeout (>30s)"
+    },
+    {
+      "ticker": "ICE",
+      "status": "FAIL",
+      "error": "Timeout (>30s)"
+    },
+    {
+      "ticker": "JNPR",
+      "status": "FAIL",
+      "error": "No quarterly data",
+      "time": 0.5994892120361328,
+      "verdict": "AVOID",
+      "score": 0
+    },
+    {
+      "ticker": "MRO",
+      "status": "FAIL",
+      "error": "No quarterly data",
+      "time": 0.5986423492431641,
+      "verdict": "AVOID",
+      "score": 0
+    },
+    {
+      "ticker": "MO",
+      "status": "FAIL",
+      "error": "HTTP 503",
+      "time": 4.5553507804870605
+    },
+    {
+      "ticker": "PARA",
+      "status": "FAIL",
+      "error": "No quarterly data",
+      "time": 0.7049968242645264,
+      "verdict": "AVOID",
+      "score": 0
+    },
+    {
+      "ticker": "PXD",
+      "status": "FAIL",
+      "error": "No quarterly data",
+      "time": 0.5129256248474121,
+      "verdict": "AVOID",
+      "score": 0
+    },
+    {
+      "ticker": "IRM",
+      "status": "FAIL",
+      "error": "Timeout (>30s)"
+    },
+    {
+      "ticker": "WBA",
+      "status": "FAIL",
+      "error": "No quarterly data",
+      "time": 0.8722429275512695,
+      "verdict": "AVOID",
+      "score": 0
+    }
+  ],
+  "all_results": [
+    {
+      "ticker": "ABBV",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 0.5859146118164062
+    },
+    {
+      "ticker": "ACN",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 10,
+      "quarters": 7,
+      "time": 0.8121428489685059
+    },
+    {
+      "ticker": "AEE",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 6,
+      "time": 0.9429230690002441
+    },
+    {
+      "ticker": "ADP",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 7,
+      "time": 0.9757413864135742
+    },
+    {
+      "ticker": "ADSK",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 10,
+      "quarters": 7,
+      "time": 1.0014643669128418
+    },
+    {
+      "ticker": "AAPL",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 5,
+      "time": 1.00467848777771
+    },
+    {
+      "ticker": "ADI",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 7,
+      "time": 1.0500118732452393
+    },
+    {
+      "ticker": "ADBE",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 10,
+      "quarters": 7,
+      "time": 1.0782139301300049
+    },
+    {
+      "ticker": "ADM",
+      "status": "PASS",
+      "verdict": "AVOID",
+      "score": 3,
+      "quarters": 6,
+      "time": 1.156839370727539
+    },
+    {
+      "ticker": "ABT",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 6,
+      "time": 1.327911138534546
+    },
+    {
+      "ticker": "AIG",
+      "status": "PASS",
+      "verdict": "AVOID",
+      "score": 3,
+      "quarters": 6,
+      "time": 0.5262091159820557
+    },
+    {
+      "ticker": "AEP",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 4,
+      "quarters": 6,
+      "time": 0.9830951690673828
+    },
+    {
+      "ticker": "AFL",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 4,
+      "quarters": 6,
+      "time": 0.6389894485473633
+    },
+    {
+      "ticker": "AES",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 6,
+      "time": 0.7999157905578613
+    },
+    {
+      "ticker": "AJG",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 0.6317825317382812
+    },
+    {
+      "ticker": "AKAM",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 6,
+      "time": 0.6780686378479004
+    },
+    {
+      "ticker": "AIZ",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 6,
+      "time": 0.7521464824676514
+    },
+    {
+      "ticker": "ALB",
+      "status": "PASS",
+      "verdict": "AVOID",
+      "score": 3,
+      "quarters": 6,
+      "time": 0.7738351821899414
+    },
+    {
+      "ticker": "ALGN",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 6,
+      "time": 0.9332582950592041
+    },
+    {
+      "ticker": "AMAT",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 5,
+      "time": 0.5974287986755371
+    },
+    {
+      "ticker": "AMCR",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 5,
+      "time": 0.5968503952026367
+    },
+    {
+      "ticker": "ALLE",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 0.689704418182373
+    },
+    {
+      "ticker": "AMD",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 6,
+      "time": 0.616823673248291
+    },
+    {
+      "ticker": "ALL",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 6,
+      "time": 0.9743907451629639
+    },
+    {
+      "ticker": "AMGN",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 5,
+      "time": 0.7017257213592529
+    },
+    {
+      "ticker": "AME",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 5,
+      "time": 0.8685145378112793
+    },
+    {
+      "ticker": "AMP",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 5,
+      "time": 0.8913207054138184
+    },
+    {
+      "ticker": "AMT",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 0.9241909980773926
+    },
+    {
+      "ticker": "AMZN",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 5,
+      "time": 0.704920768737793
+    },
+    {
+      "ticker": "ANET",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 5,
+      "time": 0.6713156700134277
+    },
+    {
+      "ticker": "AON",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 0.6597354412078857
+    },
+    {
+      "ticker": "ANSS",
+      "status": "FAIL",
+      "error": "No quarterly data",
+      "time": 0.6975598335266113,
+      "verdict": "AVOID",
+      "score": 0
+    },
+    {
+      "ticker": "AOS",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 4,
+      "quarters": 6,
+      "time": 0.6963765621185303
+    },
+    {
+      "ticker": "APA",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 6,
+      "time": 0.8228154182434082
+    },
+    {
+      "ticker": "APD",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 4,
+      "quarters": 6,
+      "time": 0.7302982807159424
+    },
+    {
+      "ticker": "APTV",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 6,
+      "time": 0.7086358070373535
+    },
+    {
+      "ticker": "ATO",
+      "status": "PASS",
+      "verdict": "AVOID",
+      "score": 3,
+      "quarters": 6,
+      "time": 0.590233564376831
+    },
+    {
+      "ticker": "APH",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 6,
+      "time": 0.9131484031677246
+    },
+    {
+      "ticker": "ARE",
+      "status": "PASS",
+      "verdict": "AVOID",
+      "score": 3,
+      "quarters": 7,
+      "time": 0.6687591075897217
+    },
+    {
+      "ticker": "AVGO",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 5,
+      "time": 0.6813473701477051
+    },
+    {
+      "ticker": "AVB",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 0.7598888874053955
+    },
+    {
+      "ticker": "AVY",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 6,
+      "time": 0.8152737617492676
+    },
+    {
+      "ticker": "AWK",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 4,
+      "quarters": 6,
+      "time": 0.7959494590759277
+    },
+    {
+      "ticker": "BAC",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 4,
+      "quarters": 6,
+      "time": 0.3936035633087158
+    },
+    {
+      "ticker": "AXP",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 6,
+      "time": 0.7539355754852295
+    },
+    {
+      "ticker": "AZO",
+      "status": "PASS",
+      "verdict": "AVOID",
+      "score": 2,
+      "quarters": 7,
+      "time": 0.5905864238739014
+    },
+    {
+      "ticker": "AXON",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 5,
+      "time": 0.8718197345733643
+    },
+    {
+      "ticker": "BA",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 7,
+      "time": 0.6468689441680908
+    },
+    {
+      "ticker": "BALL",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 6,
+      "time": 0.7233593463897705
+    },
+    {
+      "ticker": "BBWI",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 7,
+      "time": 0.6147663593292236
+    },
+    {
+      "ticker": "BAX",
+      "status": "PASS",
+      "verdict": "AVOID",
+      "score": 2,
+      "quarters": 6,
+      "time": 0.7927041053771973
+    },
+    {
+      "ticker": "BBY",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 0.6720864772796631
+    },
+    {
+      "ticker": "BEN",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 0.6927938461303711
+    },
+    {
+      "ticker": "BDX",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 0.8060858249664307
+    },
+    {
+      "ticker": "BG",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 4,
+      "quarters": 5,
+      "time": 0.6322841644287109
+    },
+    {
+      "ticker": "BF-B",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 4,
+      "quarters": 5,
+      "time": 0.6787674427032471
+    },
+    {
+      "ticker": "BIO",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 5,
+      "time": 0.6757464408874512
+    },
+    {
+      "ticker": "BIIB",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 6,
+      "time": 0.7547872066497803
+    },
+    {
+      "ticker": "BK",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 4,
+      "quarters": 7,
+      "time": 0.7127649784088135
+    },
+    {
+      "ticker": "BKNG",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 5,
+      "time": 0.7289562225341797
+    },
+    {
+      "ticker": "BKR",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 7,
+      "time": 0.7043368816375732
+    },
+    {
+      "ticker": "BLDR",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 4,
+      "quarters": 5,
+      "time": 0.7186055183410645
+    },
+    {
+      "ticker": "BLK",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 6,
+      "time": 0.6241006851196289
+    },
+    {
+      "ticker": "BR",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 5,
+      "time": 0.6471335887908936
+    },
+    {
+      "ticker": "BMY",
+      "status": "PASS",
+      "verdict": "AVOID",
+      "score": 3,
+      "quarters": 6,
+      "time": 0.758880615234375
+    },
+    {
+      "ticker": "BRK-B",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 6,
+      "time": 0.7581491470336914
+    },
+    {
+      "ticker": "BRO",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 7,
+      "time": 0.7645955085754395
+    },
+    {
+      "ticker": "BSX",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 6,
+      "time": 0.756617546081543
+    },
+    {
+      "ticker": "BX",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 5,
+      "time": 0.6955463886260986
+    },
+    {
+      "ticker": "BWA",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 0.7717013359069824
+    },
+    {
+      "ticker": "BXP",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 7,
+      "time": 0.6763367652893066
+    },
+    {
+      "ticker": "C",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 4,
+      "quarters": 7,
+      "time": 0.6722328662872314
+    },
+    {
+      "ticker": "CAH",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 6,
+      "time": 0.7165091037750244
+    },
+    {
+      "ticker": "CAG",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 7,
+      "time": 0.8477144241333008
+    },
+    {
+      "ticker": "CAT",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 0.6837539672851562
+    },
+    {
+      "ticker": "CARR",
+      "status": "PASS",
+      "verdict": "AVOID",
+      "score": 3,
+      "quarters": 6,
+      "time": 0.9111950397491455
+    },
+    {
+      "ticker": "CBOE",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 4,
+      "quarters": 6,
+      "time": 0.7221388816833496
+    },
+    {
+      "ticker": "CB",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 6,
+      "time": 0.7864282131195068
+    },
+    {
+      "ticker": "CBRE",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 6,
+      "time": 0.6403112411499023
+    },
+    {
+      "ticker": "CCI",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 6,
+      "time": 0.6394510269165039
+    },
+    {
+      "ticker": "CCL",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 7,
+      "time": 0.7989909648895264
+    },
+    {
+      "ticker": "CDNS",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 10,
+      "quarters": 6,
+      "time": 0.7895240783691406
+    },
+    {
+      "ticker": "CE",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 4,
+      "quarters": 6,
+      "time": 0.7801072597503662
+    },
+    {
+      "ticker": "CF",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 4,
+      "quarters": 5,
+      "time": 0.571481466293335
+    },
+    {
+      "ticker": "CFG",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 7,
+      "time": 0.5716879367828369
+    },
+    {
+      "ticker": "CEG",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 6,
+      "time": 0.7785921096801758
+    },
+    {
+      "ticker": "CDW",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 5,
+      "time": 0.9574644565582275
+    },
+    {
+      "ticker": "CHD",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 10,
+      "quarters": 5,
+      "time": 0.7255527973175049
+    },
+    {
+      "ticker": "CHTR",
+      "status": "PASS",
+      "verdict": "AVOID",
+      "score": 3,
+      "quarters": 6,
+      "time": 0.7426106929779053
+    },
+    {
+      "ticker": "CHRW",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 7,
+      "time": 0.7812998294830322
+    },
+    {
+      "ticker": "CI",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 6,
+      "time": 0.7520980834960938
+    },
+    {
+      "ticker": "CINF",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 5,
+      "time": 0.7266974449157715
+    },
+    {
+      "ticker": "CLX",
+      "status": "PASS",
+      "verdict": "AVOID",
+      "score": 3,
+      "quarters": 6,
+      "time": 0.6075260639190674
+    },
+    {
+      "ticker": "CMA",
+      "status": "PASS",
+      "verdict": "AVOID",
+      "score": 2,
+      "quarters": 7,
+      "time": 0.5869941711425781
+    },
+    {
+      "ticker": "CL",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 0.6440434455871582
+    },
+    {
+      "ticker": "CMCSA",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 6,
+      "time": 0.7387864589691162
+    },
+    {
+      "ticker": "CMG",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 5,
+      "time": 0.60282301902771
+    },
+    {
+      "ticker": "CME",
+      "status": "PASS",
+      "verdict": "AVOID",
+      "score": 3,
+      "quarters": 5,
+      "time": 0.8030462265014648
+    },
+    {
+      "ticker": "CMI",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 4,
+      "quarters": 6,
+      "time": 0.8020784854888916
+    },
+    {
+      "ticker": "CNP",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 6,
+      "time": 0.7048683166503906
+    },
+    {
+      "ticker": "CMS",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 6,
+      "time": 0.9324488639831543
+    },
+    {
+      "ticker": "COF",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 7,
+      "time": 0.6522116661071777
+    },
+    {
+      "ticker": "CNC",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 6,
+      "time": 0.786853551864624
+    },
+    {
+      "ticker": "COP",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 6,
+      "time": 0.7256965637207031
+    },
+    {
+      "ticker": "COO",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 5,
+      "time": 0.8221464157104492
+    },
+    {
+      "ticker": "COR",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 5,
+      "time": 0.7827587127685547
+    },
+    {
+      "ticker": "COST",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 7,
+      "time": 0.8303916454315186
+    },
+    {
+      "ticker": "CPAY",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 6,
+      "time": 0.8239200115203857
+    },
+    {
+      "ticker": "CPRT",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 6,
+      "time": 0.5762796401977539
+    },
+    {
+      "ticker": "CPB",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 4,
+      "quarters": 6,
+      "time": 0.756350040435791
+    },
+    {
+      "ticker": "CRL",
+      "status": "PASS",
+      "verdict": "AVOID",
+      "score": 3,
+      "quarters": 6,
+      "time": 0.6723697185516357
+    },
+    {
+      "ticker": "CRM",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 5,
+      "time": 0.7244257926940918
+    },
+    {
+      "ticker": "CSCO",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 10,
+      "quarters": 5,
+      "time": 0.7200748920440674
+    },
+    {
+      "ticker": "CPT",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 6,
+      "time": 0.9534156322479248
+    },
+    {
+      "ticker": "CSGP",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 0.7467086315155029
+    },
+    {
+      "ticker": "CSX",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 7,
+      "time": 0.7295608520507812
+    },
+    {
+      "ticker": "CTLT",
+      "status": "FAIL",
+      "error": "No quarterly data",
+      "time": 0.62691330909729,
+      "verdict": "AVOID",
+      "score": 0
+    },
+    {
+      "ticker": "CTRA",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 6,
+      "time": 0.6703505516052246
+    },
+    {
+      "ticker": "CTAS",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 5,
+      "time": 0.9145407676696777
+    },
+    {
+      "ticker": "CTSH",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 6,
+      "time": 0.7519190311431885
+    },
+    {
+      "ticker": "CTVA",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 6,
+      "time": 0.6906833648681641
+    },
+    {
+      "ticker": "CVS",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 6,
+      "time": 0.7775905132293701
+    },
+    {
+      "ticker": "DAY",
+      "status": "PASS",
+      "verdict": "AVOID",
+      "score": 3,
+      "quarters": 6,
+      "time": 20.00631856918335
+    },
+    {
+      "ticker": "DAL",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 7,
+      "time": 20.155911684036255
+    },
+    {
+      "ticker": "DHI",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 5,
+      "time": 0.6182658672332764
+    },
+    {
+      "ticker": "DHR",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 7,
+      "time": 0.5619814395904541
+    },
+    {
+      "ticker": "DGX",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 5,
+      "time": 4.719515323638916
+    },
+    {
+      "ticker": "DD",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 6,
+      "time": 28.28295588493347
+    },
+    {
+      "ticker": "DECK",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 5,
+      "time": 28.299680948257446
+    },
+    {
+      "ticker": "DOC",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 4,
+      "quarters": 6,
+      "time": 0.6296162605285645
+    },
+    {
+      "ticker": "DOV",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 5,
+      "time": 0.5917589664459229
+    },
+    {
+      "ticker": "CVX",
+      "status": "FAIL",
+      "error": "Timeout (>30s)"
+    },
+    {
+      "ticker": "CZR",
+      "status": "FAIL",
+      "error": "Timeout (>30s)"
+    },
+    {
+      "ticker": "D",
+      "status": "FAIL",
+      "error": "Timeout (>30s)"
+    },
+    {
+      "ticker": "DE",
+      "status": "FAIL",
+      "error": "Timeout (>30s)"
+    },
+    {
+      "ticker": "DFS",
+      "status": "FAIL",
+      "error": "Timeout (>30s)"
+    },
+    {
+      "ticker": "DPZ",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 5,
+      "time": 0.6132254600524902
+    },
+    {
+      "ticker": "DOW",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 4,
+      "quarters": 6,
+      "time": 0.6559710502624512
+    },
+    {
+      "ticker": "DG",
+      "status": "FAIL",
+      "error": "Timeout (>30s)"
+    },
+    {
+      "ticker": "DTE",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 6,
+      "time": 0.5995304584503174
+    },
+    {
+      "ticker": "DUK",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 6,
+      "time": 0.6069390773773193
+    },
+    {
+      "ticker": "DVA",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 6,
+      "time": 0.5931885242462158
+    },
+    {
+      "ticker": "DXCM",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 10,
+      "quarters": 5,
+      "time": 0.6390233039855957
+    },
+    {
+      "ticker": "EA",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 6,
+      "time": 0.6482090950012207
+    },
+    {
+      "ticker": "ED",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 4,
+      "quarters": 6,
+      "time": 0.6372296810150146
+    },
+    {
+      "ticker": "DRI",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 1.6943943500518799
+    },
+    {
+      "ticker": "EFX",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 5,
+      "time": 0.5411107540130615
+    },
+    {
+      "ticker": "EG",
+      "status": "PASS",
+      "verdict": "AVOID",
+      "score": 3,
+      "quarters": 5,
+      "time": 0.6868093013763428
+    },
+    {
+      "ticker": "ELV",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 7,
+      "time": 0.5570602416992188
+    },
+    {
+      "ticker": "EMN",
+      "status": "PASS",
+      "verdict": "AVOID",
+      "score": 3,
+      "quarters": 6,
+      "time": 0.7474291324615479
+    },
+    {
+      "ticker": "EMR",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 0.5518984794616699
+    },
+    {
+      "ticker": "ENPH",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 0.6023149490356445
+    },
+    {
+      "ticker": "DIS",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 6,
+      "time": 11.874448537826538
+    },
+    {
+      "ticker": "EOG",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 6,
+      "time": 0.5611410140991211
+    },
+    {
+      "ticker": "EPAM",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 5,
+      "time": 0.7070474624633789
+    },
+    {
+      "ticker": "EQR",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 6,
+      "time": 0.5931558609008789
+    },
+    {
+      "ticker": "DVN",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 6,
+      "time": 3.6686959266662598
+    },
+    {
+      "ticker": "ES",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 6,
+      "time": 0.6490926742553711
+    },
+    {
+      "ticker": "ECL",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 5,
+      "time": 3.706186294555664
+    },
+    {
+      "ticker": "ESS",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 6,
+      "time": 0.5454165935516357
+    },
+    {
+      "ticker": "ETR",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 5,
+      "time": 0.5967116355895996
+    },
+    {
+      "ticker": "ETSY",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 6,
+      "time": 0.6121904850006104
+    },
+    {
+      "ticker": "EVRG",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 6,
+      "time": 0.5975949764251709
+    },
+    {
+      "ticker": "EL",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 6,
+      "time": 7.74450945854187
+    },
+    {
+      "ticker": "EXPD",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 4,
+      "quarters": 6,
+      "time": 0.5377554893493652
+    },
+    {
+      "ticker": "EXPE",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 0.5824985504150391
+    },
+    {
+      "ticker": "EXR",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 5,
+      "time": 0.5248410701751709
+    },
+    {
+      "ticker": "EXC",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 4,
+      "quarters": 5,
+      "time": 5.7189552783966064
+    },
+    {
+      "ticker": "F",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 6,
+      "time": 0.5767152309417725
+    },
+    {
+      "ticker": "FANG",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 6,
+      "time": 0.6097259521484375
+    },
+    {
+      "ticker": "FAST",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 4,
+      "quarters": 6,
+      "time": 0.5906293392181396
+    },
+    {
+      "ticker": "FDS",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 7,
+      "time": 0.6109590530395508
+    },
+    {
+      "ticker": "FDX",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 7,
+      "time": 0.5504355430603027
+    },
+    {
+      "ticker": "EQT",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 6,
+      "time": 11.838489055633545
+    },
+    {
+      "ticker": "FFIV",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 6,
+      "time": 0.6140782833099365
+    },
+    {
+      "ticker": "FI",
+      "status": "FAIL",
+      "error": "No quarterly data",
+      "time": 0.6195130348205566,
+      "verdict": "AVOID",
+      "score": 0
+    },
+    {
+      "ticker": "DLTR",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 6,
+      "time": 20.046432733535767
+    },
+    {
+      "ticker": "FIS",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 5,
+      "time": 0.6330230236053467
+    },
+    {
+      "ticker": "FITB",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 7,
+      "time": 0.6180722713470459
+    },
+    {
+      "ticker": "EBAY",
+      "status": "PASS",
+      "verdict": "AVOID",
+      "score": 3,
+      "quarters": 5,
+      "time": 19.99174213409424
+    },
+    {
+      "ticker": "EIX",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 20.169586658477783
+    },
+    {
+      "ticker": "FOX",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 6,
+      "time": 0.5925593376159668
+    },
+    {
+      "ticker": "FOXA",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 6,
+      "time": 0.5769968032836914
+    },
+    {
+      "ticker": "FRT",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 6,
+      "time": 0.6675724983215332
+    },
+    {
+      "ticker": "FSLR",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 6,
+      "time": 0.5744149684906006
+    },
+    {
+      "ticker": "FLT",
+      "status": "FAIL",
+      "error": "No quarterly data",
+      "time": 4.594916820526123,
+      "verdict": "AVOID",
+      "score": 0
+    },
+    {
+      "ticker": "FTNT",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 5,
+      "time": 0.6375970840454102
+    },
+    {
+      "ticker": "ETN",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 5,
+      "time": 20.271108865737915
+    },
+    {
+      "ticker": "DLR",
+      "status": "FAIL",
+      "error": "Timeout (>30s)"
+    },
+    {
+      "ticker": "FTV",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 6,
+      "time": 0.5712094306945801
+    },
+    {
+      "ticker": "FMC",
+      "status": "PASS",
+      "verdict": "AVOID",
+      "score": 2,
+      "quarters": 6,
+      "time": 4.705306768417358
+    },
+    {
+      "ticker": "GD",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 7,
+      "time": 0.5145988464355469
+    },
+    {
+      "ticker": "GDDY",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 0.5377881526947021
+    },
+    {
+      "ticker": "EW",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 20.13190269470215
+    },
+    {
+      "ticker": "GE",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 7,
+      "time": 0.5785644054412842
+    },
+    {
+      "ticker": "GEHC",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 6,
+      "time": 0.5469372272491455
+    },
+    {
+      "ticker": "GEN",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 6,
+      "time": 0.5669276714324951
+    },
+    {
+      "ticker": "GEV",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 7,
+      "time": 0.57688307762146
+    },
+    {
+      "ticker": "GL",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 5,
+      "time": 0.5454998016357422
+    },
+    {
+      "ticker": "GLW",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 6,
+      "time": 0.5617425441741943
+    },
+    {
+      "ticker": "GIS",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 0.6336483955383301
+    },
+    {
+      "ticker": "GILD",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 6,
+      "time": 0.8433070182800293
+    },
+    {
+      "ticker": "GM",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 4,
+      "quarters": 7,
+      "time": 0.632239818572998
+    },
+    {
+      "ticker": "GNRC",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 0.6205167770385742
+    },
+    {
+      "ticker": "GOOG",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 6,
+      "time": 0.6337597370147705
+    },
+    {
+      "ticker": "GOOGL",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 6,
+      "time": 0.6086030006408691
+    },
+    {
+      "ticker": "GPC",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 5,
+      "time": 0.6203000545501709
+    },
+    {
+      "ticker": "GPN",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 0.5655603408813477
+    },
+    {
+      "ticker": "GRMN",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 4,
+      "quarters": 5,
+      "time": 0.5752890110015869
+    },
+    {
+      "ticker": "GS",
+      "status": "PASS",
+      "verdict": "AVOID",
+      "score": 2,
+      "quarters": 7,
+      "time": 0.5948548316955566
+    },
+    {
+      "ticker": "GWW",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 5,
+      "time": 0.5833005905151367
+    },
+    {
+      "ticker": "HAS",
+      "status": "PASS",
+      "verdict": "AVOID",
+      "score": 2,
+      "quarters": 6,
+      "time": 0.5760207176208496
+    },
+    {
+      "ticker": "HAL",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 6,
+      "time": 0.6030733585357666
+    },
+    {
+      "ticker": "HBAN",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 7,
+      "time": 0.60209059715271
+    },
+    {
+      "ticker": "HCA",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 7,
+      "time": 0.5169398784637451
+    },
+    {
+      "ticker": "HD",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 5,
+      "time": 0.6172218322753906
+    },
+    {
+      "ticker": "HII",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 0.550128698348999
+    },
+    {
+      "ticker": "HES",
+      "status": "FAIL",
+      "error": "No quarterly data",
+      "time": 0.7098865509033203,
+      "verdict": "AVOID",
+      "score": 0
+    },
+    {
+      "ticker": "HLT",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 4,
+      "quarters": 6,
+      "time": 0.6029024124145508
+    },
+    {
+      "ticker": "HOLX",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 6,
+      "time": 0.5758099555969238
+    },
+    {
+      "ticker": "HON",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 0.6127214431762695
+    },
+    {
+      "ticker": "HPE",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 7,
+      "time": 0.6148266792297363
+    },
+    {
+      "ticker": "HPQ",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 4,
+      "quarters": 6,
+      "time": 0.6642501354217529
+    },
+    {
+      "ticker": "HRL",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 5,
+      "time": 0.6646466255187988
+    },
+    {
+      "ticker": "HSIC",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 6,
+      "time": 0.6254000663757324
+    },
+    {
+      "ticker": "HST",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 5,
+      "time": 0.5526981353759766
+    },
+    {
+      "ticker": "HSY",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 0.6035082340240479
+    },
+    {
+      "ticker": "EQIX",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 4,
+      "quarters": 6,
+      "time": 28.303447246551514
+    },
+    {
+      "ticker": "FCX",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 7,
+      "time": 19.812244415283203
+    },
+    {
+      "ticker": "HIG",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 5,
+      "time": 5.727271556854248
+    },
+    {
+      "ticker": "FE",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 4,
+      "quarters": 6,
+      "time": 19.929587364196777
+    },
+    {
+      "ticker": "FICO",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 7,
+      "time": 20.11237072944641
+    },
+    {
+      "ticker": "IDXX",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 5,
+      "time": 15.984888076782227
+    },
+    {
+      "ticker": "HWM",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 10,
+      "quarters": 6,
+      "time": 20.15098810195923
+    },
+    {
+      "ticker": "INCY",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 6,
+      "time": 15.788875818252563
+    },
+    {
+      "ticker": "ILMN",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 6,
+      "time": 20.094340324401855
+    },
+    {
+      "ticker": "INVH",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 5,
+      "time": 0.6571173667907715
+    },
+    {
+      "ticker": "INTU",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 7,
+      "time": 4.74068021774292
+    },
+    {
+      "ticker": "IP",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 6,
+      "time": 0.5593557357788086
+    },
+    {
+      "ticker": "IQV",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 5,
+      "time": 0.656543493270874
+    },
+    {
+      "ticker": "IPG",
+      "status": "FAIL",
+      "error": "No quarterly data",
+      "time": 1.0077428817749023,
+      "verdict": "AVOID",
+      "score": 0
+    },
+    {
+      "ticker": "IR",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 2.6016886234283447
+    },
+    {
+      "ticker": "IT",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 6,
+      "time": 0.5637655258178711
+    },
+    {
+      "ticker": "HUBB",
+      "status": "FAIL",
+      "error": "Timeout (>30s)"
+    },
+    {
+      "ticker": "HUM",
+      "status": "FAIL",
+      "error": "Timeout (>30s)"
+    },
+    {
+      "ticker": "IBM",
+      "status": "FAIL",
+      "error": "Timeout (>30s)"
+    },
+    {
+      "ticker": "ICE",
+      "status": "FAIL",
+      "error": "Timeout (>30s)"
+    },
+    {
+      "ticker": "IVZ",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 7,
+      "time": 0.5969500541687012
+    },
+    {
+      "ticker": "J",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 0.6862719058990479
+    },
+    {
+      "ticker": "JCI",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 6,
+      "time": 0.5764048099517822
+    },
+    {
+      "ticker": "JKHY",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 5,
+      "time": 0.6811094284057617
+    },
+    {
+      "ticker": "JNJ",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 10,
+      "quarters": 7,
+      "time": 0.5913829803466797
+    },
+    {
+      "ticker": "IEX",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 28.51689076423645
+    },
+    {
+      "ticker": "JNPR",
+      "status": "FAIL",
+      "error": "No quarterly data",
+      "time": 0.5994892120361328,
+      "verdict": "AVOID",
+      "score": 0
+    },
+    {
+      "ticker": "JPM",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 7,
+      "time": 0.6040549278259277
+    },
+    {
+      "ticker": "K",
+      "status": "PASS",
+      "verdict": "AVOID",
+      "score": 3,
+      "quarters": 6,
+      "time": 0.6139974594116211
+    },
+    {
+      "ticker": "KDP",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 6,
+      "time": 0.6518509387969971
+    },
+    {
+      "ticker": "IFF",
+      "status": "PASS",
+      "verdict": "AVOID",
+      "score": 3,
+      "quarters": 6,
+      "time": 28.379547595977783
+    },
+    {
+      "ticker": "KEY",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 7,
+      "time": 0.6174650192260742
+    },
+    {
+      "ticker": "KEYS",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 5,
+      "time": 0.6226086616516113
+    },
+    {
+      "ticker": "KHC",
+      "status": "PASS",
+      "verdict": "AVOID",
+      "score": 1,
+      "quarters": 6,
+      "time": 0.5579485893249512
+    },
+    {
+      "ticker": "KIM",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 0.5658924579620361
+    },
+    {
+      "ticker": "KKR",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 5,
+      "time": 0.6073966026306152
+    },
+    {
+      "ticker": "KMB",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 7,
+      "time": 0.5872032642364502
+    },
+    {
+      "ticker": "KMI",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 7,
+      "time": 0.5852186679840088
+    },
+    {
+      "ticker": "ITW",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 5,
+      "time": 5.72599196434021
+    },
+    {
+      "ticker": "KMX",
+      "status": "PASS",
+      "verdict": "AVOID",
+      "score": 2,
+      "quarters": 7,
+      "time": 0.6288652420043945
+    },
+    {
+      "ticker": "KO",
+      "status": "PASS",
+      "verdict": "AVOID",
+      "score": 3,
+      "quarters": 6,
+      "time": 0.6055374145507812
+    },
+    {
+      "ticker": "LDOS",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 0.5844616889953613
+    },
+    {
+      "ticker": "L",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 5,
+      "time": 0.8786346912384033
+    },
+    {
+      "ticker": "LH",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 6,
+      "time": 0.5498714447021484
+    },
+    {
+      "ticker": "LEN",
+      "status": "PASS",
+      "verdict": "AVOID",
+      "score": 3,
+      "quarters": 5,
+      "time": 0.6471250057220459
+    },
+    {
+      "ticker": "KVUE",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 6,
+      "time": 2.631134271621704
+    },
+    {
+      "ticker": "LKQ",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 6,
+      "time": 0.6804711818695068
+    },
+    {
+      "ticker": "JBHT",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 10,
+      "quarters": 6,
+      "time": 7.684866905212402
+    },
+    {
+      "ticker": "LMT",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 0.5733840465545654
+    },
+    {
+      "ticker": "INTC",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 5,
+      "time": 20.266504049301147
+    },
+    {
+      "ticker": "LOW",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 5,
+      "time": 0.6200027465820312
+    },
+    {
+      "ticker": "LRCX",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 10,
+      "quarters": 7,
+      "time": 0.6589736938476562
+    },
+    {
+      "ticker": "LULU",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 4,
+      "quarters": 5,
+      "time": 0.585747480392456
+    },
+    {
+      "ticker": "LUV",
+      "status": "PASS",
+      "verdict": "AVOID",
+      "score": 1,
+      "quarters": 7,
+      "time": 0.570868968963623
+    },
+    {
+      "ticker": "KR",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 6,
+      "time": 7.804987192153931
+    },
+    {
+      "ticker": "LVS",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 6,
+      "time": 0.6003026962280273
+    },
+    {
+      "ticker": "LW",
+      "status": "PASS",
+      "verdict": "AVOID",
+      "score": 3,
+      "quarters": 5,
+      "time": 0.5379307270050049
+    },
+    {
+      "ticker": "JBL",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 11.81190538406372
+    },
+    {
+      "ticker": "LYB",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 4,
+      "quarters": 6,
+      "time": 0.5817005634307861
+    },
+    {
+      "ticker": "LYV",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 6,
+      "time": 0.585125207901001
+    },
+    {
+      "ticker": "MA",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 5,
+      "time": 0.5702409744262695
+    },
+    {
+      "ticker": "LLY",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 6,
+      "time": 5.866966485977173
+    },
+    {
+      "ticker": "MAA",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 0.6545531749725342
+    },
+    {
+      "ticker": "MAR",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 4,
+      "quarters": 5,
+      "time": 0.6480803489685059
+    },
+    {
+      "ticker": "MAS",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 6,
+      "time": 0.6518428325653076
+    },
+    {
+      "ticker": "MCD",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 6,
+      "time": 0.5578203201293945
+    },
+    {
+      "ticker": "MCHP",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 5,
+      "time": 0.6039202213287354
+    },
+    {
+      "ticker": "MCO",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 6,
+      "time": 0.5913000106811523
+    },
+    {
+      "ticker": "MCK",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 6,
+      "time": 0.6817131042480469
+    },
+    {
+      "ticker": "MDLZ",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 6,
+      "time": 0.5912296772003174
+    },
+    {
+      "ticker": "MET",
+      "status": "PASS",
+      "verdict": "AVOID",
+      "score": 2,
+      "quarters": 5,
+      "time": 0.5921492576599121
+    },
+    {
+      "ticker": "MDT",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 7,
+      "time": 0.6681127548217773
+    },
+    {
+      "ticker": "KLAC",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 11.746826410293579
+    },
+    {
+      "ticker": "MGM",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 4,
+      "quarters": 6,
+      "time": 0.6594483852386475
+    },
+    {
+      "ticker": "MHK",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 5,
+      "time": 0.5727055072784424
+    },
+    {
+      "ticker": "MKC",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 6,
+      "time": 0.6239824295043945
+    },
+    {
+      "ticker": "MKTX",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 6,
+      "time": 0.5712761878967285
+    },
+    {
+      "ticker": "LIN",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 6,
+      "time": 9.81851840019226
+    },
+    {
+      "ticker": "MMC",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 5,
+      "time": 0.5954890251159668
+    },
+    {
+      "ticker": "ISRG",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 6,
+      "time": 19.887706756591797
+    },
+    {
+      "ticker": "MLM",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 6,
+      "time": 0.6590244770050049
+    },
+    {
+      "ticker": "MMM",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 7,
+      "time": 0.5392062664031982
+    },
+    {
+      "ticker": "MNST",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 6,
+      "time": 0.5584206581115723
+    },
+    {
+      "ticker": "MOH",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 4,
+      "quarters": 5,
+      "time": 0.6151278018951416
+    },
+    {
+      "ticker": "MPC",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 0.5949306488037109
+    },
+    {
+      "ticker": "MOS",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 5,
+      "time": 0.6335785388946533
+    },
+    {
+      "ticker": "MPWR",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 5,
+      "time": 0.6114375591278076
+    },
+    {
+      "ticker": "MRK",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 10,
+      "quarters": 6,
+      "time": 0.5812382698059082
+    },
+    {
+      "ticker": "META",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 6,
+      "time": 2.6719815731048584
+    },
+    {
+      "ticker": "MRO",
+      "status": "FAIL",
+      "error": "No quarterly data",
+      "time": 0.5986423492431641,
+      "verdict": "AVOID",
+      "score": 0
+    },
+    {
+      "ticker": "MRNA",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 0.658499002456665
+    },
+    {
+      "ticker": "MS",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 7,
+      "time": 0.6351189613342285
+    },
+    {
+      "ticker": "MSCI",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 6,
+      "time": 0.669811487197876
+    },
+    {
+      "ticker": "MSFT",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 5,
+      "time": 0.697277307510376
+    },
+    {
+      "ticker": "LHX",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 6,
+      "time": 11.753554582595825
+    },
+    {
+      "ticker": "MSI",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 6,
+      "time": 0.6229550838470459
+    },
+    {
+      "ticker": "MTB",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 7,
+      "time": 0.6572654247283936
+    },
+    {
+      "ticker": "MU",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 7,
+      "time": 0.5726006031036377
+    },
+    {
+      "ticker": "MTD",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 5,
+      "time": 0.6668195724487305
+    },
+    {
+      "ticker": "MTCH",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 6,
+      "time": 0.7299606800079346
+    },
+    {
+      "ticker": "NCLH",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 0.6037023067474365
+    },
+    {
+      "ticker": "NDAQ",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 0.573655366897583
+    },
+    {
+      "ticker": "NDSN",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 10,
+      "quarters": 6,
+      "time": 0.5855932235717773
+    },
+    {
+      "ticker": "NEE",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 6,
+      "time": 0.5998916625976562
+    },
+    {
+      "ticker": "NFLX",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 5,
+      "time": 0.5673415660858154
+    },
+    {
+      "ticker": "NEM",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 10,
+      "quarters": 6,
+      "time": 0.6203274726867676
+    },
+    {
+      "ticker": "NI",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 4,
+      "quarters": 6,
+      "time": 0.5472114086151123
+    },
+    {
+      "ticker": "NKE",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 5,
+      "time": 0.6017897129058838
+    },
+    {
+      "ticker": "NOC",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 7,
+      "time": 0.5127537250518799
+    },
+    {
+      "ticker": "NOW",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 6,
+      "time": 0.670600175857544
+    },
+    {
+      "ticker": "NRG",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 6,
+      "time": 0.5947630405426025
+    },
+    {
+      "ticker": "NTAP",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 7,
+      "time": 0.6066374778747559
+    },
+    {
+      "ticker": "NSC",
+      "status": "PASS",
+      "verdict": "AVOID",
+      "score": 1,
+      "quarters": 6,
+      "time": 0.6358392238616943
+    },
+    {
+      "ticker": "NTRS",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 4,
+      "quarters": 7,
+      "time": 0.6302127838134766
+    },
+    {
+      "ticker": "NVDA",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 5,
+      "time": 0.5335500240325928
+    },
+    {
+      "ticker": "NUE",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 7,
+      "time": 0.5879619121551514
+    },
+    {
+      "ticker": "NVR",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 7,
+      "time": 0.6085500717163086
+    },
+    {
+      "ticker": "NWS",
+      "status": "PASS",
+      "verdict": "AVOID",
+      "score": 3,
+      "quarters": 6,
+      "time": 0.6521587371826172
+    },
+    {
+      "ticker": "OKE",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 0.522252082824707
+    },
+    {
+      "ticker": "O",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 6,
+      "time": 0.5947003364562988
+    },
+    {
+      "ticker": "NXPI",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 6,
+      "time": 0.6401572227478027
+    },
+    {
+      "ticker": "ODFL",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 5,
+      "time": 0.6138806343078613
+    },
+    {
+      "ticker": "NWSA",
+      "status": "PASS",
+      "verdict": "AVOID",
+      "score": 3,
+      "quarters": 6,
+      "time": 0.6900334358215332
+    },
+    {
+      "ticker": "OMC",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 5,
+      "time": 0.6137452125549316
+    },
+    {
+      "ticker": "MO",
+      "status": "FAIL",
+      "error": "HTTP 503",
+      "time": 4.5553507804870605
+    },
+    {
+      "ticker": "ORCL",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 6,
+      "time": 0.6014325618743896
+    },
+    {
+      "ticker": "ON",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 6,
+      "time": 0.6539406776428223
+    },
+    {
+      "ticker": "ORLY",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 5,
+      "time": 0.6290018558502197
+    },
+    {
+      "ticker": "OXY",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 0.5997433662414551
+    },
+    {
+      "ticker": "PANW",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 6,
+      "time": 0.6575896739959717
+    },
+    {
+      "ticker": "OTIS",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 7,
+      "time": 0.7254114151000977
+    },
+    {
+      "ticker": "LNT",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 6,
+      "time": 11.785471200942993
+    },
+    {
+      "ticker": "PARA",
+      "status": "FAIL",
+      "error": "No quarterly data",
+      "time": 0.7049968242645264,
+      "verdict": "AVOID",
+      "score": 0
+    },
+    {
+      "ticker": "PAYX",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 0.5443336963653564
+    },
+    {
+      "ticker": "PAYC",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 10,
+      "quarters": 5,
+      "time": 0.7057123184204102
+    },
+    {
+      "ticker": "PCAR",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 6,
+      "time": 0.614973783493042
+    },
+    {
+      "ticker": "PEG",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 4,
+      "quarters": 6,
+      "time": 0.600635290145874
+    },
+    {
+      "ticker": "PCG",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 4,
+      "quarters": 6,
+      "time": 0.6305711269378662
+    },
+    {
+      "ticker": "PEP",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 6,
+      "time": 0.6018412113189697
+    },
+    {
+      "ticker": "PFE",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 6,
+      "time": 0.6246063709259033
+    },
+    {
+      "ticker": "PFG",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 6,
+      "time": 0.8182375431060791
+    },
+    {
+      "ticker": "PG",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 6,
+      "time": 0.7519700527191162
+    },
+    {
+      "ticker": "PGR",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 6,
+      "time": 0.6447889804840088
+    },
+    {
+      "ticker": "PH",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 6,
+      "time": 0.6556532382965088
+    },
+    {
+      "ticker": "PHM",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 6,
+      "time": 0.6315279006958008
+    },
+    {
+      "ticker": "PLD",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 0.6115765571594238
+    },
+    {
+      "ticker": "PM",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 6,
+      "time": 0.6012694835662842
+    },
+    {
+      "ticker": "PKG",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 7,
+      "time": 0.7575111389160156
+    },
+    {
+      "ticker": "PNC",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 4,
+      "quarters": 7,
+      "time": 0.8543698787689209
+    },
+    {
+      "ticker": "PNR",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 6,
+      "time": 0.745535135269165
+    },
+    {
+      "ticker": "POOL",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 6,
+      "time": 0.5696523189544678
+    },
+    {
+      "ticker": "PNW",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 4,
+      "quarters": 6,
+      "time": 0.675945520401001
+    },
+    {
+      "ticker": "PPG",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 7,
+      "time": 0.6084010601043701
+    },
+    {
+      "ticker": "PODD",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 10,
+      "quarters": 6,
+      "time": 0.713367223739624
+    },
+    {
+      "ticker": "PPL",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 6,
+      "time": 0.6525421142578125
+    },
+    {
+      "ticker": "PRU",
+      "status": "PASS",
+      "verdict": "AVOID",
+      "score": 2,
+      "quarters": 5,
+      "time": 0.6361050605773926
+    },
+    {
+      "ticker": "PSA",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 5,
+      "time": 0.7945256233215332
+    },
+    {
+      "ticker": "PSX",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 0.6722617149353027
+    },
+    {
+      "ticker": "PTC",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 10,
+      "quarters": 6,
+      "time": 0.6049051284790039
+    },
+    {
+      "ticker": "PXD",
+      "status": "FAIL",
+      "error": "No quarterly data",
+      "time": 0.5129256248474121,
+      "verdict": "AVOID",
+      "score": 0
+    },
+    {
+      "ticker": "PYPL",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 5,
+      "time": 0.5529742240905762
+    },
+    {
+      "ticker": "PWR",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 5,
+      "time": 0.6475679874420166
+    },
+    {
+      "ticker": "QCOM",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 6,
+      "time": 0.6027233600616455
+    },
+    {
+      "ticker": "QRVO",
+      "status": "PASS",
+      "verdict": "AVOID",
+      "score": 3,
+      "quarters": 6,
+      "time": 0.596423864364624
+    },
+    {
+      "ticker": "RCL",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 5,
+      "time": 0.7823865413665771
+    },
+    {
+      "ticker": "REG",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 5,
+      "time": 0.7020745277404785
+    },
+    {
+      "ticker": "RF",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 4,
+      "quarters": 6,
+      "time": 0.5901572704315186
+    },
+    {
+      "ticker": "RL",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 5,
+      "time": 0.5399715900421143
+    },
+    {
+      "ticker": "REGN",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 10,
+      "quarters": 6,
+      "time": 0.680474042892456
+    },
+    {
+      "ticker": "RJF",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 7,
+      "time": 0.6267285346984863
+    },
+    {
+      "ticker": "RMD",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 6,
+      "time": 0.5829620361328125
+    },
+    {
+      "ticker": "ROK",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 10,
+      "quarters": 6,
+      "time": 0.6171696186065674
+    },
+    {
+      "ticker": "ROL",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 10,
+      "quarters": 5,
+      "time": 0.7896318435668945
+    },
+    {
+      "ticker": "ROP",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 7,
+      "time": 0.7478859424591064
+    },
+    {
+      "ticker": "ROST",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 10,
+      "quarters": 7,
+      "time": 0.6047241687774658
+    },
+    {
+      "ticker": "RSG",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 5,
+      "time": 0.5789451599121094
+    },
+    {
+      "ticker": "SBAC",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 5,
+      "time": 0.6137669086456299
+    },
+    {
+      "ticker": "RTX",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 7,
+      "time": 0.6634244918823242
+    },
+    {
+      "ticker": "RVTY",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 6,
+      "time": 0.6989996433258057
+    },
+    {
+      "ticker": "SBUX",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 7,
+      "time": 0.7008271217346191
+    },
+    {
+      "ticker": "SCHW",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 6,
+      "time": 0.8142704963684082
+    },
+    {
+      "ticker": "SHW",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 0.6988861560821533
+    },
+    {
+      "ticker": "SJM",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 4,
+      "quarters": 7,
+      "time": 0.6202414035797119
+    },
+    {
+      "ticker": "SLB",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 6,
+      "time": 0.6202957630157471
+    },
+    {
+      "ticker": "SNA",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 10,
+      "quarters": 6,
+      "time": 0.5839557647705078
+    },
+    {
+      "ticker": "SMCI",
+      "status": "PASS",
+      "verdict": "AVOID",
+      "score": 1,
+      "quarters": 6,
+      "time": 0.702561616897583
+    },
+    {
+      "ticker": "SO",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 4,
+      "quarters": 6,
+      "time": 0.6370537281036377
+    },
+    {
+      "ticker": "SNPS",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 7,
+      "time": 0.7954132556915283
+    },
+    {
+      "ticker": "SOLV",
+      "status": "PASS",
+      "verdict": "AVOID",
+      "score": 3,
+      "quarters": 6,
+      "time": 0.7585792541503906
+    },
+    {
+      "ticker": "SPG",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 5,
+      "time": 0.6933701038360596
+    },
+    {
+      "ticker": "SPGI",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 6,
+      "time": 0.672499418258667
+    },
+    {
+      "ticker": "SRE",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 5,
+      "time": 0.6157677173614502
+    },
+    {
+      "ticker": "STE",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 5,
+      "time": 0.6205892562866211
+    },
+    {
+      "ticker": "STLD",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 7,
+      "time": 0.6423132419586182
+    },
+    {
+      "ticker": "STT",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 4,
+      "quarters": 7,
+      "time": 0.6230976581573486
+    },
+    {
+      "ticker": "STX",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 7,
+      "time": 0.6417133808135986
+    },
+    {
+      "ticker": "STZ",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 7,
+      "time": 0.6599586009979248
+    },
+    {
+      "ticker": "SWK",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 0.7165749073028564
+    },
+    {
+      "ticker": "SWKS",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 6,
+      "time": 0.6595187187194824
+    },
+    {
+      "ticker": "SYF",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 6,
+      "time": 0.6078591346740723
+    },
+    {
+      "ticker": "SYK",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 0.6244926452636719
+    },
+    {
+      "ticker": "T",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 0.5734493732452393
+    },
+    {
+      "ticker": "SYY",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 5,
+      "time": 0.7199761867523193
+    },
+    {
+      "ticker": "TAP",
+      "status": "PASS",
+      "verdict": "AVOID",
+      "score": 1,
+      "quarters": 6,
+      "time": 0.641808271408081
+    },
+    {
+      "ticker": "IRM",
+      "status": "FAIL",
+      "error": "Timeout (>30s)"
+    },
+    {
+      "ticker": "TDY",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 7,
+      "time": 0.6151297092437744
+    },
+    {
+      "ticker": "TDG",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 6,
+      "time": 0.7535626888275146
+    },
+    {
+      "ticker": "TECH",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 0.6491780281066895
+    },
+    {
+      "ticker": "TEL",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 6,
+      "time": 0.6354961395263672
+    },
+    {
+      "ticker": "TER",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 10,
+      "quarters": 6,
+      "time": 0.6457574367523193
+    },
+    {
+      "ticker": "TFX",
+      "status": "PASS",
+      "verdict": "AVOID",
+      "score": 3,
+      "quarters": 5,
+      "time": 0.5644006729125977
+    },
+    {
+      "ticker": "TFC",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 4,
+      "quarters": 6,
+      "time": 0.631718635559082
+    },
+    {
+      "ticker": "TGT",
+      "status": "PASS",
+      "verdict": "AVOID",
+      "score": 3,
+      "quarters": 5,
+      "time": 0.6444475650787354
+    },
+    {
+      "ticker": "TJX",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 5,
+      "time": 0.6751325130462646
+    },
+    {
+      "ticker": "TMO",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 5,
+      "time": 0.7351870536804199
+    },
+    {
+      "ticker": "TMUS",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 0.6959664821624756
+    },
+    {
+      "ticker": "TRMB",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 6,
+      "time": 0.5719988346099854
+    },
+    {
+      "ticker": "TRGP",
+      "status": "PASS",
+      "verdict": "AVOID",
+      "score": 3,
+      "quarters": 6,
+      "time": 0.6765565872192383
+    },
+    {
+      "ticker": "TPR",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 5,
+      "time": 0.8358497619628906
+    },
+    {
+      "ticker": "TROW",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 5,
+      "time": 0.6087946891784668
+    },
+    {
+      "ticker": "TRV",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 4,
+      "quarters": 6,
+      "time": 0.7600200176239014
+    },
+    {
+      "ticker": "TSCO",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 6,
+      "time": 0.7798628807067871
+    },
+    {
+      "ticker": "TSLA",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 7,
+      "time": 0.8131449222564697
+    },
+    {
+      "ticker": "TT",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 6,
+      "time": 0.7698225975036621
+    },
+    {
+      "ticker": "TSN",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 6,
+      "time": 0.8870205879211426
+    },
+    {
+      "ticker": "TTWO",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 4,
+      "quarters": 6,
+      "time": 0.6874957084655762
+    },
+    {
+      "ticker": "TXT",
+      "status": "PASS",
+      "verdict": "AVOID",
+      "score": 3,
+      "quarters": 7,
+      "time": 0.5825750827789307
+    },
+    {
+      "ticker": "TXN",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 4,
+      "quarters": 7,
+      "time": 0.6419947147369385
+    },
+    {
+      "ticker": "UAL",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 7,
+      "time": 0.6974406242370605
+    },
+    {
+      "ticker": "TYL",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 5,
+      "time": 0.779620885848999
+    },
+    {
+      "ticker": "UBER",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 6,
+      "time": 0.771693229675293
+    },
+    {
+      "ticker": "UDR",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 6,
+      "time": 0.776447057723999
+    },
+    {
+      "ticker": "ULTA",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 6,
+      "time": 0.5812714099884033
+    },
+    {
+      "ticker": "UHS",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 5,
+      "time": 0.7210450172424316
+    },
+    {
+      "ticker": "UNP",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 7,
+      "time": 0.6543776988983154
+    },
+    {
+      "ticker": "UNH",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 6,
+      "time": 0.7010626792907715
+    },
+    {
+      "ticker": "UPS",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 6,
+      "time": 0.7356514930725098
+    },
+    {
+      "ticker": "URI",
+      "status": "PASS",
+      "verdict": "AVOID",
+      "score": 3,
+      "quarters": 7,
+      "time": 0.8070487976074219
+    },
+    {
+      "ticker": "USB",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 4,
+      "quarters": 6,
+      "time": 0.8150653839111328
+    },
+    {
+      "ticker": "V",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 10,
+      "quarters": 5,
+      "time": 0.7558176517486572
+    },
+    {
+      "ticker": "VFC",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 6,
+      "time": 0.7016313076019287
+    },
+    {
+      "ticker": "VICI",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 0.6927549839019775
+    },
+    {
+      "ticker": "VLO",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 6,
+      "time": 0.7082099914550781
+    },
+    {
+      "ticker": "VLTO",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 6,
+      "time": 0.6817371845245361
+    },
+    {
+      "ticker": "VMC",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 5,
+      "time": 0.7283637523651123
+    },
+    {
+      "ticker": "VRSK",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 6,
+      "time": 0.7579758167266846
+    },
+    {
+      "ticker": "VRSN",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 5,
+      "time": 0.7977099418640137
+    },
+    {
+      "ticker": "VRTX",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 10,
+      "quarters": 6,
+      "time": 0.7330501079559326
+    },
+    {
+      "ticker": "VTR",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 6,
+      "time": 0.7415592670440674
+    },
+    {
+      "ticker": "VST",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 6,
+      "time": 0.8441364765167236
+    },
+    {
+      "ticker": "VTRS",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 6,
+      "time": 0.7476084232330322
+    },
+    {
+      "ticker": "VZ",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 5,
+      "time": 0.7234320640563965
+    },
+    {
+      "ticker": "WAB",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 0.8433682918548584
+    },
+    {
+      "ticker": "WAT",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 10,
+      "quarters": 5,
+      "time": 0.8753867149353027
+    },
+    {
+      "ticker": "WBD",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 0.7766132354736328
+    },
+    {
+      "ticker": "WBA",
+      "status": "FAIL",
+      "error": "No quarterly data",
+      "time": 0.8722429275512695,
+      "verdict": "AVOID",
+      "score": 0
+    },
+    {
+      "ticker": "WEC",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 5,
+      "time": 0.7839524745941162
+    },
+    {
+      "ticker": "WDC",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 0.839827299118042
+    },
+    {
+      "ticker": "WFC",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 4,
+      "quarters": 6,
+      "time": 0.595583438873291
+    },
+    {
+      "ticker": "WELL",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 6,
+      "time": 0.7193632125854492
+    },
+    {
+      "ticker": "WM",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 7,
+      "time": 0.7931606769561768
+    },
+    {
+      "ticker": "WMB",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 0.816509485244751
+    },
+    {
+      "ticker": "WMT",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 7,
+      "time": 0.7129366397857666
+    },
+    {
+      "ticker": "WRB",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 6,
+      "time": 0.7315316200256348
+    },
+    {
+      "ticker": "WTW",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 10,
+      "quarters": 6,
+      "time": 0.7034242153167725
+    },
+    {
+      "ticker": "WST",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 6,
+      "time": 0.7658724784851074
+    },
+    {
+      "ticker": "WY",
+      "status": "PASS",
+      "verdict": "AVOID",
+      "score": 3,
+      "quarters": 6,
+      "time": 0.6582777500152588
+    },
+    {
+      "ticker": "WYNN",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 6,
+      "time": 0.6561141014099121
+    },
+    {
+      "ticker": "XOM",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 0.7337930202484131
+    },
+    {
+      "ticker": "XEL",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 6,
+      "quarters": 5,
+      "time": 0.8233349323272705
+    },
+    {
+      "ticker": "XYL",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 7,
+      "quarters": 6,
+      "time": 0.6241998672485352
+    },
+    {
+      "ticker": "YUM",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 8,
+      "quarters": 6,
+      "time": 0.699793815612793
+    },
+    {
+      "ticker": "ZBH",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 5,
+      "time": 0.7364697456359863
+    },
+    {
+      "ticker": "ZBRA",
+      "status": "PASS",
+      "verdict": "BUY",
+      "score": 9,
+      "quarters": 6,
+      "time": 0.6644372940063477
+    },
+    {
+      "ticker": "ZTS",
+      "status": "PASS",
+      "verdict": "HOLD",
+      "score": 5,
+      "quarters": 6,
+      "time": 0.6045835018157959
+    }
+  ]
+}

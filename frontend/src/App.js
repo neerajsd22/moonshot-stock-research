@@ -251,6 +251,36 @@ const HomePage = () => {
     }
   };
 
+  const fetchCustomCategories = async () => {
+    try {
+      const response = await axios.get(`${API}/custom-categories`);
+      setCustomCategories(response.data);
+    } catch (error) {
+      console.error('Error fetching custom categories:', error);
+    }
+  };
+
+  const handleCreateCategory = async (categoryData) => {
+    try {
+      await axios.post(`${API}/custom-categories`, categoryData);
+      await fetchCustomCategories();
+    } catch (error) {
+      console.error('Error creating category:', error);
+      throw error;
+    }
+  };
+
+  const handleDeleteCategory = async (categoryId) => {
+    try {
+      await axios.delete(`${API}/custom-categories/${categoryId}`);
+      await fetchCustomCategories();
+      toast.success('Category deleted');
+    } catch (error) {
+      console.error('Error deleting category:', error);
+      toast.error('Failed to delete category');
+    }
+  };
+
   const searchStocks = async (query) => {
     if (!query.trim()) {
       setSearchResults([]);

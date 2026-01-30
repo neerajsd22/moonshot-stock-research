@@ -615,6 +615,24 @@ const IntelligenceHub = ({ ticker }) => {
     return pct < 0 ? `${Math.abs(pct).toFixed(0)}% discount` : `${pct.toFixed(0)}% premium`;
   };
 
+  // Smart Earnings summaries
+  const getSmartEarningsSummary = () => {
+    if (!smartEarnings) return '';
+    if (smartEarnings.days_until_earnings !== null && smartEarnings.days_until_earnings <= 5) {
+      return `${smartEarnings.days_until_earnings}d to earnings`;
+    }
+    return smartEarnings.historical_fundamentals?.beat_rate ? `${smartEarnings.historical_fundamentals.beat_rate}% beat rate` : '';
+  };
+  const getSmartEarningsBadge = () => {
+    if (!smartEarnings) return '';
+    if (smartEarnings.peir_active) return 'PEIR Active';
+    return smartEarnings.upcoming_earnings_date || '';
+  };
+  const getSmartEarningsBadgeColor = () => {
+    if (smartEarnings?.peir_active) return 'bg-green-500/30 text-green-300';
+    return 'bg-[rgba(255,255,255,0.1)] text-gray-300';
+  };
+
   return (
     <Card className="premium-card gold-gradient-border">
       <CardHeader className="pb-2 pt-3 px-4">
@@ -650,18 +668,19 @@ const IntelligenceHub = ({ ticker }) => {
           {expandedSection === 'signals' && <FiveSignalsContent data={fiveSignals} />}
         </div>
 
-        {/* Earnings */}
+        {/* Smart Earnings Analysis */}
         <div>
           <AccordionHeader
-            icon={Calendar}
-            title="Earnings"
-            summary={getEarningsSummary()}
-            badge={earningsIntel?.estimate_revisions?.target_price_mean ? `$${earningsIntel.estimate_revisions.target_price_mean.toFixed(0)}` : ''}
-            isOpen={expandedSection === 'earnings'}
-            onClick={() => toggleSection('earnings')}
-            loading={loading.earnings}
+            icon={BarChart3}
+            title="Smart Earnings"
+            summary={getSmartEarningsSummary()}
+            badge={getSmartEarningsBadge()}
+            badgeColor={getSmartEarningsBadgeColor()}
+            isOpen={expandedSection === 'smartEarnings'}
+            onClick={() => toggleSection('smartEarnings')}
+            loading={loading.smartEarnings}
           />
-          {expandedSection === 'earnings' && <EarningsContent data={earningsIntel} />}
+          {expandedSection === 'smartEarnings' && <SmartEarningsContent data={smartEarnings} />}
         </div>
 
         {/* Why Moving */}

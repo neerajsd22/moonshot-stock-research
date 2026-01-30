@@ -145,7 +145,6 @@ const HomePage = () => {
   // Fetch pinned stocks on mount
   useEffect(() => {
     fetchPinnedStocks();
-    fetchCustomCategories();
     fetchAlertCount();
   }, []);
 

@@ -14,6 +14,7 @@ import { Routes, Route, useNavigate, useSearchParams } from 'react-router-dom';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import CategoryPage from './CategoryPage';
+import CategoriesPage from './CategoriesPage';
 import CreateCategoryDialog from './components/CreateCategoryDialog';
 import WatchlistManager from './components/WatchlistManager';
 import PriceAlertManager from './components/PriceAlertManager';

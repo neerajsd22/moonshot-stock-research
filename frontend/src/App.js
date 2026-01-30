@@ -112,15 +112,13 @@ const HomePage = () => {
   const [comparisonMode, setComparisonMode] = useState(false);
   const [showComparisonChart, setShowComparisonChart] = useState(false); // New comparison chart modal
   const chartRef = useRef(null);
-  const [customCategories, setCustomCategories] = useState([]);
-  const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [newsArticles, setNewsArticles] = useState([]);
   const [loadingNews, setLoadingNews] = useState(false);
   const [showWatchlistManager, setShowWatchlistManager] = useState(false);
   const [showPriceAlertManager, setShowPriceAlertManager] = useState(false);
   const [showAdvancedChart, setShowAdvancedChart] = useState(false);
   const [alertCount, setAlertCount] = useState(0);
-  const [selectedMarket, setSelectedMarket] = useState('all'); // 'all', 'us', 'india'
+  const [selectedMarket, setSelectedMarket] = useState('all'); // 'all', 'us', 'india' - used for search filter
   const [showCategorySettings, setShowCategorySettings] = useState(false);
   const [enabledCategories, setEnabledCategories] = useState(() => {
     const saved = localStorage.getItem('category_preferences');

@@ -1597,9 +1597,9 @@ const HomePage = () => {
             </div>
           )}
 
-          {/* Detailed Analysis sections - show when a stock is selected */}
-          {selectedStock && stockQuote && viewMode === 'spacious' && (
-            <div className="space-y-4 fade-in">
+        {/* Detailed Analysis sections - show when a stock is selected */}
+        {selectedStock && stockQuote && viewMode === 'spacious' && (
+          <div className="mt-4 space-y-4 fade-in">
             {/* Financials, Analysis & News - 3 Column Layout */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {/* Column 1: Financials Section */}

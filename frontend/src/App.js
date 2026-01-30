@@ -32,15 +32,16 @@ import {
   ExportButton,
   ResearchAnalysis,
 } from './components/stock';
-import { ParticleNetwork, FloatingOrbs, GridGlow, Starfield, GradientWaves } from './components/AnimatedBackground';
+import { ParticleNetwork, AuroraBorealis, MatrixRain, BokehBlur, NoiseGradient, MeshGradient } from './components/AnimatedBackground';
 
 // Background options for selection
 const BACKGROUND_OPTIONS = {
   particles: { name: 'Particle Network', component: ParticleNetwork, description: 'Connected dots that react to mouse' },
-  orbs: { name: 'Floating Orbs', component: FloatingOrbs, description: 'Soft gradient blobs floating around' },
-  grid: { name: 'Grid Glow', component: GridGlow, description: 'Subtle grid pattern with corner accents' },
-  stars: { name: 'Starfield', component: Starfield, description: 'Twinkling stars with shooting stars' },
-  waves: { name: 'Gradient Waves', component: GradientWaves, description: 'Animated wave patterns at bottom' },
+  aurora: { name: 'Aurora Borealis', component: AuroraBorealis, description: 'Slow-moving northern lights effect' },
+  matrix: { name: 'Matrix Rain', component: MatrixRain, description: 'Subtle falling financial symbols' },
+  bokeh: { name: 'Bokeh Blur', component: BokehBlur, description: 'Out-of-focus city lights effect' },
+  noise: { name: 'Noise Gradient', component: NoiseGradient, description: 'Modern grainy texture with color shifts' },
+  mesh: { name: 'Mesh Gradient', component: MeshGradient, description: 'Smooth animated color blobs' },
   none: { name: 'None', component: () => null, description: 'No animated background' },
 };
 import {

@@ -496,9 +496,8 @@ const HomePage = () => {
       return;
     }
     
-    // Start animation and collapse categories
+    // Start animation
     setStockAnimating(true);
-    setCategoriesCollapsed(true);
     setSearchResults([]);
     setSearchQuery('');
     

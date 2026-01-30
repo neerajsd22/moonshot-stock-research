@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   Brain, 
   TrendingUp, 
@@ -19,7 +18,9 @@ import {
   RefreshCw,
   Bell,
   Building2,
-  GitCompare
+  GitCompare,
+  ChevronDown,
+  ChevronRight
 } from 'lucide-react';
 import axios from 'axios';
 
@@ -34,99 +35,72 @@ const GradeBadge = ({ grade }) => {
     'D': 'bg-red-500/30 text-red-300 border-red-400/50'
   };
   return (
-    <Badge className={`${colors[grade] || colors['C']} text-sm font-bold px-2 py-0.5`}>
+    <Badge className={`${colors[grade] || colors['C']} text-xs font-bold px-1.5 py-0`}>
       {grade}
     </Badge>
   );
 };
 
-// Signal Progress Bar - More visible
-const SignalBar = ({ score, maxScore, label }) => {
-  const pct = (score / maxScore) * 100;
-  return (
-    <div className="space-y-1">
-      <div className="flex justify-between text-sm">
-        <span className="text-gray-300">{label}</span>
-        <span className="text-white font-semibold">{score}/{maxScore}</span>
-      </div>
-      <div className="h-2.5 bg-[rgba(255,255,255,0.15)] rounded-full overflow-hidden">
-        <div 
-          className={`h-full rounded-full transition-all duration-500 ${
-            pct >= 80 ? 'bg-green-400' : pct >= 60 ? 'bg-blue-400' : pct >= 40 ? 'bg-yellow-400' : 'bg-red-400'
-          }`}
-          style={{ width: `${pct}%` }}
-        />
-      </div>
+// Accordion Header Component
+const AccordionHeader = ({ icon: Icon, title, summary, badge, badgeColor, isOpen, onClick, loading }) => (
+  <button
+    onClick={onClick}
+    className={`w-full flex items-center justify-between p-3 rounded-lg transition-all ${
+      isOpen 
+        ? 'bg-[rgba(217,70,239,0.1)] border border-[rgba(217,70,239,0.3)]' 
+        : 'bg-[rgba(255,255,255,0.03)] border border-transparent hover:bg-[rgba(255,255,255,0.05)]'
+    }`}
+  >
+    <div className="flex items-center gap-3 min-w-0 flex-1">
+      {isOpen ? (
+        <ChevronDown className="w-4 h-4 text-[#d946ef] flex-shrink-0" />
+      ) : (
+        <ChevronRight className="w-4 h-4 text-gray-400 flex-shrink-0" />
+      )}
+      <Icon className={`w-4 h-4 flex-shrink-0 ${isOpen ? 'text-[#d946ef]' : 'text-gray-400'}`} />
+      <span className={`text-sm font-medium ${isOpen ? 'text-white' : 'text-gray-300'}`}>{title}</span>
     </div>
-  );
-};
+    <div className="flex items-center gap-2 flex-shrink-0">
+      {loading ? (
+        <RefreshCw className="w-3 h-3 text-gray-400 animate-spin" />
+      ) : (
+        <>
+          <span className="text-xs text-gray-400 hidden sm:inline">{summary}</span>
+          {badge && (
+            <Badge className={`text-xs px-2 py-0 ${badgeColor || 'bg-gray-500/30 text-gray-300'}`}>
+              {badge}
+            </Badge>
+          )}
+        </>
+      )}
+    </div>
+  </button>
+);
 
-// Five Signals Analysis Component
-const FiveSignalsAnalysis = ({ data, loading }) => {
-  if (loading) {
-    return (
-      <div className="space-y-3">
-        {[...Array(5)].map((_, i) => (
-          <div key={i} className="h-14 loading-skeleton rounded-lg" />
-        ))}
-      </div>
-    );
-  }
-
-  if (!data) return null;
+// Five Signals Analysis Component - Compact version for accordion
+const FiveSignalsContent = ({ data }) => {
+  if (!data) return <div className="text-sm text-gray-400 p-2">No data available</div>;
 
   const signalConfig = [
-    { key: 'cash_generation', label: 'Cash Generation', icon: DollarSign, desc: 'FCF quality' },
-    { key: 'competitive_position', label: 'Competitive Position', icon: Shield, desc: 'Margins' },
-    { key: 'smart_money', label: 'Smart Money', icon: Users, desc: 'Institutional' },
-    { key: 'growth_quality', label: 'Growth Quality', icon: TrendingUp, desc: 'Acceleration' },
-    { key: 'valuation_sanity', label: 'Valuation', icon: Target, desc: 'Value' }
+    { key: 'cash_generation', label: 'Cash Gen', icon: DollarSign },
+    { key: 'competitive_position', label: 'Competitive', icon: Shield },
+    { key: 'smart_money', label: 'Smart Money', icon: Users },
+    { key: 'growth_quality', label: 'Growth', icon: TrendingUp },
+    { key: 'valuation_sanity', label: 'Valuation', icon: Target }
   ];
 
   return (
-    <div className="space-y-3">
-      {/* Overall Score - Compact */}
-      <div className="flex items-center justify-between p-3 bg-[rgba(255,255,255,0.05)] rounded-lg">
-        <div className="flex items-center gap-3">
-          <div className="text-2xl font-bold text-white">{data.overall_score}<span className="text-base text-gray-400">/100</span></div>
-        </div>
-        <Badge className={`text-sm px-3 py-1 font-bold ${
-          data.verdict === 'STRONG BUY' || data.verdict === 'BUY' ? 'bg-green-500/30 text-green-300' :
-          data.verdict === 'HOLD' ? 'bg-yellow-500/30 text-yellow-300' :
-          'bg-red-500/30 text-red-300'
-        }`}>
-          {data.verdict}
-        </Badge>
-      </div>
-
-      {/* Individual Signals - Compact */}
-      <div className="space-y-2">
+    <div className="p-3 space-y-2">
+      <div className="grid grid-cols-5 gap-2">
         {signalConfig.map(({ key, label, icon: Icon }) => {
           const signal = data.signals?.[key];
           if (!signal) return null;
-          
           return (
-            <div key={key} className="flex items-center gap-3 p-2 bg-[rgba(255,255,255,0.03)] rounded-lg">
-              <Icon className="w-4 h-4 text-[#d946ef] flex-shrink-0" />
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-white font-medium">{label}</span>
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm text-gray-300">{signal.score}/{signal.max_score}</span>
-                    <GradeBadge grade={signal.grade} />
-                  </div>
-                </div>
-                <div className="mt-1 h-1.5 bg-[rgba(255,255,255,0.1)] rounded-full overflow-hidden">
-                  <div 
-                    className={`h-full rounded-full ${
-                      signal.grade === 'A' ? 'bg-green-400' : 
-                      signal.grade === 'B' ? 'bg-blue-400' : 
-                      signal.grade === 'C' ? 'bg-yellow-400' : 'bg-red-400'
-                    }`}
-                    style={{ width: `${(signal.score / signal.max_score) * 100}%` }}
-                  />
-                </div>
-              </div>
+            <div key={key} className="text-center p-2 bg-[rgba(255,255,255,0.02)] rounded">
+              <Icon className="w-3 h-3 mx-auto text-[#d946ef] mb-1" />
+              <div className="text-[10px] text-gray-400">{label}</div>
+              <div className="text-xs font-semibold text-white">{signal.score}/{signal.max_score}</div>
+              <GradeBadge grade={signal.grade} />
             </div>
           );
         })}
@@ -136,67 +110,37 @@ const FiveSignalsAnalysis = ({ data, loading }) => {
 };
 
 // Earnings Intelligence Component - Compact
-const EarningsIntelligence = ({ data, loading }) => {
-  if (loading) {
-    return <div className="h-40 loading-skeleton rounded-lg" />;
-  }
-  if (!data) return null;
+const EarningsContent = ({ data }) => {
+  if (!data) return <div className="text-sm text-gray-400 p-2">No data available</div>;
 
   return (
-    <div className="space-y-3">
-      {/* Beat Probability */}
-      {data.earnings_prediction && (
-        <div className="p-3 bg-[rgba(217,70,239,0.15)] rounded-lg border border-[rgba(217,70,239,0.3)]">
-          <div className="flex items-center justify-between">
-            <span className="text-sm font-semibold text-white">Beat Probability</span>
-            <Badge className={`text-lg px-3 py-1 font-bold ${
-              data.earnings_prediction.beat_probability >= 70 ? 'bg-green-500/30 text-green-300' :
-              data.earnings_prediction.beat_probability >= 50 ? 'bg-yellow-500/30 text-yellow-300' :
-              'bg-red-500/30 text-red-300'
-            }`}>
-              {data.earnings_prediction.beat_probability}%
-            </Badge>
+    <div className="p-3">
+      <div className="grid grid-cols-3 gap-3">
+        {data.earnings_prediction && (
+          <div className="p-2 bg-[rgba(217,70,239,0.1)] rounded text-center">
+            <div className="text-[10px] text-gray-400">Beat Prob</div>
+            <div className={`text-lg font-bold ${
+              data.earnings_prediction.beat_probability >= 70 ? 'text-green-400' :
+              data.earnings_prediction.beat_probability >= 50 ? 'text-yellow-400' : 'text-red-400'
+            }`}>{data.earnings_prediction.beat_probability}%</div>
           </div>
-          {data.earnings_prediction.key_factors?.length > 0 && (
-            <div className="mt-2 space-y-1">
-              {data.earnings_prediction.key_factors.slice(0, 2).map((factor, i) => (
-                <div key={i} className="text-xs text-gray-300 flex items-start gap-1">
-                  <span className="text-[#d946ef]">•</span> {factor}
-                </div>
-              ))}
-            </div>
-          )}
+        )}
+        <div className="p-2 bg-[rgba(255,255,255,0.03)] rounded text-center">
+          <div className="text-[10px] text-gray-400">Beat Rate</div>
+          <div className="text-lg font-bold text-green-400">{data.beat_rate || 0}%</div>
         </div>
-      )}
-
-      {/* History & Targets */}
-      <div className="grid grid-cols-2 gap-2">
-        {/* Beat Rate */}
-        <div className="p-3 bg-[rgba(255,255,255,0.03)] rounded-lg">
-          <div className="text-xs text-gray-400">Historical Beat Rate</div>
-          <div className="text-xl font-bold text-green-400">{data.beat_rate || 0}%</div>
-        </div>
-        
-        {/* Target Price */}
         {data.estimate_revisions?.target_price_mean && (
-          <div className="p-3 bg-[rgba(255,255,255,0.03)] rounded-lg">
-            <div className="text-xs text-gray-400">Target Price</div>
-            <div className="text-xl font-bold text-white">${data.estimate_revisions.target_price_mean?.toFixed(0)}</div>
+          <div className="p-2 bg-[rgba(255,255,255,0.03)] rounded text-center">
+            <div className="text-[10px] text-gray-400">Target</div>
+            <div className="text-lg font-bold text-white">${data.estimate_revisions.target_price_mean?.toFixed(0)}</div>
           </div>
         )}
       </div>
-
-      {/* Insider Sentiment */}
-      {data.insider_activity?.net_sentiment && (
-        <div className="flex items-center justify-between p-2 bg-[rgba(255,255,255,0.03)] rounded-lg">
-          <span className="text-sm text-gray-300">Insider Sentiment</span>
-          <Badge className={`capitalize text-sm ${
-            data.insider_activity.net_sentiment === 'bullish' ? 'bg-green-500/30 text-green-300' :
-            data.insider_activity.net_sentiment === 'bearish' ? 'bg-red-500/30 text-red-300' :
-            'bg-gray-500/30 text-gray-300'
-          }`}>
-            {data.insider_activity.net_sentiment}
-          </Badge>
+      {data.earnings_prediction?.key_factors?.length > 0 && (
+        <div className="mt-2 text-xs text-gray-400">
+          {data.earnings_prediction.key_factors.slice(0, 2).map((f, i) => (
+            <div key={i} className="flex items-start gap-1"><span className="text-[#d946ef]">•</span>{f}</div>
+          ))}
         </div>
       )}
     </div>
@@ -204,54 +148,31 @@ const EarningsIntelligence = ({ data, loading }) => {
 };
 
 // Why Moving Component - Compact
-const WhyMoving = ({ data, loading }) => {
-  if (loading) {
-    return <div className="h-32 loading-skeleton rounded-lg" />;
-  }
-  if (!data) return null;
+const WhyMovingContent = ({ data }) => {
+  if (!data) return <div className="text-sm text-gray-400 p-2">No data available</div>;
 
   const change = data.change_today || {};
   const isUp = change.direction === 'up';
 
   return (
-    <div className="space-y-3">
-      {/* Movement Summary */}
-      <div className={`p-3 rounded-lg ${isUp ? 'bg-green-500/10 border border-green-500/30' : 'bg-red-500/10 border border-red-500/30'}`}>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            {isUp ? <TrendingUp className="w-5 h-5 text-green-400" /> : <TrendingDown className="w-5 h-5 text-red-400" />}
-            <span className={`text-xl font-bold ${isUp ? 'text-green-400' : 'text-red-400'}`}>
-              {change.change_pct > 0 ? '+' : ''}{change.change_pct?.toFixed(2)}%
-            </span>
-          </div>
-          <Badge className={`capitalize text-sm ${
-            data.movement_strength === 'extreme' ? 'bg-purple-500/30 text-purple-300' :
-            data.movement_strength === 'significant' ? 'bg-blue-500/30 text-blue-300' :
-            'bg-gray-500/30 text-gray-300'
-          }`}>
-            {data.movement_strength}
-          </Badge>
-        </div>
-        <div className="text-sm text-gray-300 mt-2">{data.ai_summary}</div>
-      </div>
-
-      {/* Volume */}
-      {change.volume_vs_avg && (
-        <div className="flex items-center justify-between p-2 bg-[rgba(255,255,255,0.03)] rounded-lg">
-          <span className="text-sm text-gray-300">Volume vs Avg</span>
-          <span className={`text-sm font-semibold ${change.volume_vs_avg > 2 ? 'text-yellow-400' : 'text-white'}`}>
-            {change.volume_vs_avg?.toFixed(1)}x
+    <div className="p-3">
+      <div className={`p-2 rounded ${isUp ? 'bg-green-500/10' : 'bg-red-500/10'}`}>
+        <div className="flex items-center gap-2 mb-1">
+          {isUp ? <TrendingUp className="w-4 h-4 text-green-400" /> : <TrendingDown className="w-4 h-4 text-red-400" />}
+          <span className={`text-lg font-bold ${isUp ? 'text-green-400' : 'text-red-400'}`}>
+            {change.change_pct > 0 ? '+' : ''}{change.change_pct?.toFixed(2)}%
           </span>
+          {change.volume_vs_avg && (
+            <span className="text-xs text-gray-400 ml-auto">Vol: {change.volume_vs_avg?.toFixed(1)}x</span>
+          )}
         </div>
-      )}
-
-      {/* Catalysts */}
+        <div className="text-xs text-gray-300">{data.ai_summary}</div>
+      </div>
       {data.potential_catalysts?.length > 0 && (
-        <div className="space-y-1">
+        <div className="mt-2 space-y-1">
           {data.potential_catalysts.slice(0, 2).map((c, i) => (
-            <div key={i} className="text-sm text-gray-300 flex items-center gap-2 p-2 bg-[rgba(255,255,255,0.02)] rounded">
-              <Activity className="w-3 h-3 text-[#d946ef]" />
-              {c.description}
+            <div key={i} className="text-xs text-gray-400 flex items-center gap-1">
+              <Activity className="w-3 h-3 text-[#d946ef]" />{c.description}
             </div>
           ))}
         </div>
@@ -260,47 +181,36 @@ const WhyMoving = ({ data, loading }) => {
   );
 };
 
-// NEW: Insider Alerts Component
-const InsiderAlerts = ({ data, loading }) => {
-  if (loading) {
-    return <div className="h-32 loading-skeleton rounded-lg" />;
-  }
-  if (!data) return null;
+// Insider Alerts Component - Full text visible
+const InsiderContent = ({ data }) => {
+  if (!data) return <div className="text-sm text-gray-400 p-2">No data available</div>;
 
   return (
-    <div className="space-y-3">
-      {/* Alert Banner */}
+    <div className="p-3 space-y-2">
       {data.cluster_alert && (
-        <div className={`p-3 rounded-lg border ${
-          data.signal_strength === 'strong' ? 'bg-green-500/15 border-green-500/40' :
-          data.signal_strength === 'moderate' ? 'bg-yellow-500/15 border-yellow-500/40' :
-          'bg-[rgba(255,255,255,0.05)] border-[rgba(255,255,255,0.1)]'
+        <div className={`p-2 rounded text-xs ${
+          data.signal_strength === 'strong' ? 'bg-green-500/15 text-green-300' :
+          data.signal_strength === 'moderate' ? 'bg-yellow-500/15 text-yellow-300' :
+          'bg-[rgba(255,255,255,0.05)] text-gray-300'
         }`}>
-          <div className="flex items-center gap-2">
-            <Bell className={`w-5 h-5 ${data.signal_strength === 'strong' ? 'text-green-400' : 'text-yellow-400'}`} />
-            <span className="text-sm font-bold text-white">{data.cluster_alert.type}</span>
-          </div>
-          <div className="text-sm text-gray-300 mt-1">{data.summary}</div>
+          <Bell className="w-3 h-3 inline mr-1" />{data.summary}
         </div>
       )}
-
       {!data.cluster_alert && (
-        <div className="p-3 bg-[rgba(255,255,255,0.03)] rounded-lg text-center">
-          <div className="text-sm text-gray-400">{data.summary}</div>
+        <div className="p-2 bg-[rgba(255,255,255,0.03)] rounded text-xs text-gray-400 text-center">
+          {data.summary}
         </div>
       )}
-
-      {/* Recent Transactions */}
       {data.insider_transactions?.length > 0 && (
         <div className="space-y-1">
-          <div className="text-xs text-gray-400 font-medium mb-2">Recent Insider Activity</div>
-          {data.insider_transactions.slice(0, 4).map((txn, i) => (
-            <div key={i} className="flex items-center justify-between p-2 bg-[rgba(255,255,255,0.02)] rounded text-sm">
-              <div className="flex items-center gap-2">
-                <span className={`w-2 h-2 rounded-full ${txn.type === 'buy' ? 'bg-green-400' : 'bg-red-400'}`} />
-                <span className="text-gray-300 truncate max-w-[120px]">{txn.insider}</span>
+          {data.insider_transactions.slice(0, 5).map((txn, i) => (
+            <div key={i} className="flex items-center justify-between p-1.5 bg-[rgba(255,255,255,0.02)] rounded text-xs">
+              <div className="flex items-center gap-2 min-w-0 flex-1">
+                <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${txn.type === 'buy' ? 'bg-green-400' : 'bg-red-400'}`} />
+                <span className="text-gray-300">{txn.insider}</span>
+                {txn.title && <span className="text-gray-500 text-[10px]">({txn.title})</span>}
               </div>
-              <span className={`font-medium ${txn.type === 'buy' ? 'text-green-400' : 'text-red-400'}`}>
+              <span className={`font-medium flex-shrink-0 ml-2 ${txn.type === 'buy' ? 'text-green-400' : 'text-red-400'}`}>
                 {txn.type === 'buy' ? '+' : '-'}{txn.shares?.toLocaleString()}
               </span>
             </div>
@@ -311,48 +221,33 @@ const InsiderAlerts = ({ data, loading }) => {
   );
 };
 
-// NEW: Whale Watch Component
-const WhaleWatch = ({ data, loading }) => {
-  if (loading) {
-    return <div className="h-32 loading-skeleton rounded-lg" />;
-  }
-  if (!data) return null;
+// Whale Watch Component - Full text visible
+const WhaleContent = ({ data }) => {
+  if (!data) return <div className="text-sm text-gray-400 p-2">No data available</div>;
 
   return (
-    <div className="space-y-3">
-      {/* Summary */}
-      <div className="p-3 bg-[rgba(255,255,255,0.05)] rounded-lg">
-        <div className="flex items-center gap-2 mb-2">
-          <Building2 className="w-5 h-5 text-[#d946ef]" />
-          <span className="text-sm font-semibold text-white">Institutional Overview</span>
+    <div className="p-3 space-y-2">
+      <div className="grid grid-cols-2 gap-2">
+        <div className="p-2 bg-[rgba(255,255,255,0.03)] rounded text-center">
+          <div className="text-[10px] text-gray-400">Institutional</div>
+          <div className="text-lg font-bold text-white">{data.institutional_summary?.institutional_ownership_pct}%</div>
         </div>
-        <div className="grid grid-cols-2 gap-3">
-          <div>
-            <div className="text-xs text-gray-400">Inst. Ownership</div>
-            <div className="text-lg font-bold text-white">{data.institutional_summary?.institutional_ownership_pct}%</div>
-          </div>
-          <div>
-            <div className="text-xs text-gray-400">Insider Ownership</div>
-            <div className="text-lg font-bold text-white">{data.institutional_summary?.insider_ownership_pct}%</div>
-          </div>
+        <div className="p-2 bg-[rgba(255,255,255,0.03)] rounded text-center">
+          <div className="text-[10px] text-gray-400">Insider</div>
+          <div className="text-lg font-bold text-white">{data.institutional_summary?.insider_ownership_pct}%</div>
         </div>
       </div>
-
-      {/* Whale Signal */}
       {data.whale_signal && (
-        <div className="p-2 bg-[rgba(217,70,239,0.15)] rounded-lg border border-[rgba(217,70,239,0.3)]">
-          <div className="text-sm font-semibold text-[#d946ef]">🐋 {data.whale_signal.type}</div>
-          <div className="text-xs text-gray-300">{data.whale_signal.description}</div>
+        <div className="p-2 bg-[rgba(217,70,239,0.15)] rounded text-xs">
+          <span className="text-[#d946ef] font-semibold">🐋 {data.whale_signal.type}</span>
+          <span className="text-gray-300 ml-1">- {data.whale_signal.description}</span>
         </div>
       )}
-
-      {/* Top Holders */}
       {data.top_holders?.length > 0 && (
         <div className="space-y-1">
-          <div className="text-xs text-gray-400 font-medium">Top Holders</div>
-          {data.top_holders.slice(0, 4).map((h, i) => (
-            <div key={i} className="flex items-center justify-between p-2 bg-[rgba(255,255,255,0.02)] rounded text-sm">
-              <span className="text-gray-300 truncate max-w-[150px]">{h.name}</span>
+          {data.top_holders.slice(0, 5).map((h, i) => (
+            <div key={i} className="flex items-center justify-between p-1.5 bg-[rgba(255,255,255,0.02)] rounded text-xs">
+              <span className="text-gray-300">{h.name}</span>
               <span className="text-white font-medium">{h.pct_held}%</span>
             </div>
           ))}
@@ -362,43 +257,33 @@ const WhaleWatch = ({ data, loading }) => {
   );
 };
 
-// NEW: Similar Stocks Component
-const SimilarStocks = ({ data, loading }) => {
-  if (loading) {
-    return <div className="h-32 loading-skeleton rounded-lg" />;
-  }
-  if (!data) return null;
+// Similar Stocks Component - Full text visible
+const SimilarContent = ({ data }) => {
+  if (!data) return <div className="text-sm text-gray-400 p-2">No data available</div>;
 
   return (
-    <div className="space-y-3">
-      {/* Summary */}
-      <div className="p-3 bg-[rgba(255,255,255,0.05)] rounded-lg">
-        <div className="text-sm text-gray-300">{data.summary}</div>
-        {data.peer_comparison?.pe_premium_pct && (
-          <div className="mt-2 text-xs">
-            <span className="text-gray-400">Your P/E: </span>
-            <span className="text-white font-medium">{data.peer_comparison.your_pe}</span>
-            <span className="text-gray-400"> vs Peers: </span>
-            <span className="text-white font-medium">{data.peer_comparison.peer_avg_pe}</span>
+    <div className="p-3 space-y-2">
+      <div className="p-2 bg-[rgba(255,255,255,0.03)] rounded">
+        <div className="text-xs text-gray-300">{data.summary}</div>
+        {data.peer_comparison?.pe_premium_pct !== null && data.peer_comparison?.pe_premium_pct !== undefined && (
+          <div className="mt-1 text-[10px] text-gray-400">
+            P/E: <span className="text-white">{data.peer_comparison.your_pe}</span> vs Peers: <span className="text-white">{data.peer_comparison.peer_avg_pe}</span>
           </div>
         )}
       </div>
-
-      {/* Similar Stocks */}
       {data.similar_stocks?.length > 0 && (
         <div className="space-y-1">
-          <div className="text-xs text-gray-400 font-medium">Similar Stocks</div>
-          {data.similar_stocks.slice(0, 4).map((s, i) => (
-            <div key={i} className="flex items-center justify-between p-2 bg-[rgba(255,255,255,0.02)] rounded">
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-semibold text-white">{s.ticker}</span>
-                <span className="text-xs text-gray-400 truncate max-w-[80px]">{s.name}</span>
+          {data.similar_stocks.slice(0, 5).map((s, i) => (
+            <div key={i} className="flex items-center justify-between p-1.5 bg-[rgba(255,255,255,0.02)] rounded text-xs">
+              <div className="flex items-center gap-2 min-w-0 flex-1">
+                <span className="font-semibold text-white">{s.ticker}</span>
+                <span className="text-gray-400">{s.name}</span>
               </div>
-              <div className="flex items-center gap-2">
-                <span className={`text-sm ${s.change_pct >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+              <div className="flex items-center gap-2 flex-shrink-0 ml-2">
+                <span className={s.change_pct >= 0 ? 'text-green-400' : 'text-red-400'}>
                   {s.change_pct >= 0 ? '+' : ''}{s.change_pct?.toFixed(1)}%
                 </span>
-                <Badge className="text-xs bg-[rgba(255,255,255,0.1)] text-gray-300">
+                <Badge className="text-[10px] bg-[rgba(255,255,255,0.1)] text-gray-300 px-1">
                   {s.similarity_score}%
                 </Badge>
               </div>
@@ -410,9 +295,9 @@ const SimilarStocks = ({ data, loading }) => {
   );
 };
 
-// Main Intelligence Hub Component
+// Main Intelligence Hub Component - Accordion Style
 const IntelligenceHub = ({ ticker }) => {
-  const [activeTab, setActiveTab] = useState('signals');
+  const [expandedSection, setExpandedSection] = useState('signals');
   const [fiveSignals, setFiveSignals] = useState(null);
   const [earningsIntel, setEarningsIntel] = useState(null);
   const [whyMoving, setWhyMoving] = useState(null);
@@ -454,12 +339,61 @@ const IntelligenceHub = ({ ticker }) => {
 
   useEffect(() => {
     if (ticker) {
-      // Fetch all data
       ['signals', 'earnings', 'moving', 'insider', 'whale', 'similar'].forEach(fetchData);
     }
   }, [ticker]);
 
+  const toggleSection = (section) => {
+    setExpandedSection(expandedSection === section ? null : section);
+  };
+
+  const refreshAll = () => {
+    ['signals', 'earnings', 'moving', 'insider', 'whale', 'similar'].forEach(fetchData);
+  };
+
   if (!ticker) return null;
+
+  // Generate summaries for headers
+  const getSignalsSummary = () => fiveSignals ? `${fiveSignals.overall_score}/100` : '';
+  const getSignalsBadge = () => fiveSignals?.verdict || '';
+  const getSignalsBadgeColor = () => {
+    if (!fiveSignals) return '';
+    return fiveSignals.verdict === 'STRONG BUY' || fiveSignals.verdict === 'BUY' 
+      ? 'bg-green-500/30 text-green-300' 
+      : fiveSignals.verdict === 'HOLD' 
+        ? 'bg-yellow-500/30 text-yellow-300' 
+        : 'bg-red-500/30 text-red-300';
+  };
+
+  const getEarningsSummary = () => earningsIntel?.earnings_prediction ? `Beat: ${earningsIntel.earnings_prediction.beat_probability}%` : '';
+  const getMovingSummary = () => {
+    if (!whyMoving?.change_today) return '';
+    const pct = whyMoving.change_today.change_pct;
+    return `${pct > 0 ? '+' : ''}${pct?.toFixed(1)}%`;
+  };
+  const getMovingBadge = () => whyMoving?.movement_strength || '';
+  
+  const getInsiderSummary = () => {
+    if (insiderAlerts?.signal_strength === 'strong') return 'Strong Signal';
+    if (insiderAlerts?.signal_strength === 'moderate') return 'Moderate';
+    if (insiderAlerts?.ceo_buying) return 'CEO Buying';
+    return '';
+  };
+  const getInsiderBadge = () => insiderAlerts?.cluster_alert?.type || '';
+  const getInsiderBadgeColor = () => {
+    if (insiderAlerts?.signal_strength === 'strong') return 'bg-green-500/30 text-green-300';
+    if (insiderAlerts?.signal_strength === 'moderate') return 'bg-yellow-500/30 text-yellow-300';
+    return 'bg-gray-500/30 text-gray-300';
+  };
+
+  const getWhaleSummary = () => whaleWatch?.institutional_summary ? `Inst: ${whaleWatch.institutional_summary.institutional_ownership_pct}%` : '';
+  const getWhaleBadge = () => whaleWatch?.whale_signal?.type || '';
+
+  const getSimilarSummary = () => {
+    if (!similarStocks?.peer_comparison?.pe_premium_pct) return '';
+    const pct = similarStocks.peer_comparison.pe_premium_pct;
+    return pct < 0 ? `${Math.abs(pct).toFixed(0)}% discount` : `${pct.toFixed(0)}% premium`;
+  };
 
   return (
     <Card className="premium-card gold-gradient-border">
@@ -472,61 +406,102 @@ const IntelligenceHub = ({ ticker }) => {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => ['signals', 'earnings', 'moving', 'insider', 'whale', 'similar'].forEach(fetchData)}
+            onClick={refreshAll}
             className="h-7 w-7 p-0 text-gray-400 hover:text-white"
           >
             <RefreshCw className="w-3.5 h-3.5" />
           </Button>
         </div>
       </CardHeader>
-      <CardContent className="px-4 pb-4">
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="w-full grid grid-cols-6 mb-3 h-9">
-            <TabsTrigger value="signals" className="text-[11px] px-1">
-              <Target className="w-3 h-3 mr-0.5" />
-              <span className="hidden sm:inline">5 Signals</span>
-            </TabsTrigger>
-            <TabsTrigger value="earnings" className="text-[11px] px-1">
-              <Calendar className="w-3 h-3 mr-0.5" />
-              <span className="hidden sm:inline">Earnings</span>
-            </TabsTrigger>
-            <TabsTrigger value="moving" className="text-[11px] px-1">
-              <Zap className="w-3 h-3 mr-0.5" />
-              <span className="hidden sm:inline">Moving</span>
-            </TabsTrigger>
-            <TabsTrigger value="insider" className="text-[11px] px-1">
-              <Bell className="w-3 h-3 mr-0.5" />
-              <span className="hidden sm:inline">Insider</span>
-            </TabsTrigger>
-            <TabsTrigger value="whale" className="text-[11px] px-1">
-              <Building2 className="w-3 h-3 mr-0.5" />
-              <span className="hidden sm:inline">Whales</span>
-            </TabsTrigger>
-            <TabsTrigger value="similar" className="text-[11px] px-1">
-              <GitCompare className="w-3 h-3 mr-0.5" />
-              <span className="hidden sm:inline">Similar</span>
-            </TabsTrigger>
-          </TabsList>
+      <CardContent className="px-3 pb-3 space-y-1">
+        {/* 5 Signals */}
+        <div>
+          <AccordionHeader
+            icon={Target}
+            title="5 Signals"
+            summary={getSignalsSummary()}
+            badge={getSignalsBadge()}
+            badgeColor={getSignalsBadgeColor()}
+            isOpen={expandedSection === 'signals'}
+            onClick={() => toggleSection('signals')}
+            loading={loading.signals}
+          />
+          {expandedSection === 'signals' && <FiveSignalsContent data={fiveSignals} />}
+        </div>
 
-          <TabsContent value="signals" className="mt-0">
-            <FiveSignalsAnalysis data={fiveSignals} loading={loading.signals} />
-          </TabsContent>
-          <TabsContent value="earnings" className="mt-0">
-            <EarningsIntelligence data={earningsIntel} loading={loading.earnings} />
-          </TabsContent>
-          <TabsContent value="moving" className="mt-0">
-            <WhyMoving data={whyMoving} loading={loading.moving} />
-          </TabsContent>
-          <TabsContent value="insider" className="mt-0">
-            <InsiderAlerts data={insiderAlerts} loading={loading.insider} />
-          </TabsContent>
-          <TabsContent value="whale" className="mt-0">
-            <WhaleWatch data={whaleWatch} loading={loading.whale} />
-          </TabsContent>
-          <TabsContent value="similar" className="mt-0">
-            <SimilarStocks data={similarStocks} loading={loading.similar} />
-          </TabsContent>
-        </Tabs>
+        {/* Earnings */}
+        <div>
+          <AccordionHeader
+            icon={Calendar}
+            title="Earnings"
+            summary={getEarningsSummary()}
+            badge={earningsIntel?.estimate_revisions?.target_price_mean ? `$${earningsIntel.estimate_revisions.target_price_mean.toFixed(0)}` : ''}
+            isOpen={expandedSection === 'earnings'}
+            onClick={() => toggleSection('earnings')}
+            loading={loading.earnings}
+          />
+          {expandedSection === 'earnings' && <EarningsContent data={earningsIntel} />}
+        </div>
+
+        {/* Why Moving */}
+        <div>
+          <AccordionHeader
+            icon={Zap}
+            title="Why Moving"
+            summary={getMovingSummary()}
+            badge={getMovingBadge()}
+            badgeColor={whyMoving?.change_today?.direction === 'up' ? 'bg-green-500/30 text-green-300' : 'bg-red-500/30 text-red-300'}
+            isOpen={expandedSection === 'moving'}
+            onClick={() => toggleSection('moving')}
+            loading={loading.moving}
+          />
+          {expandedSection === 'moving' && <WhyMovingContent data={whyMoving} />}
+        </div>
+
+        {/* Insider */}
+        <div>
+          <AccordionHeader
+            icon={Bell}
+            title="Insider Alerts"
+            summary={getInsiderSummary()}
+            badge={getInsiderBadge()}
+            badgeColor={getInsiderBadgeColor()}
+            isOpen={expandedSection === 'insider'}
+            onClick={() => toggleSection('insider')}
+            loading={loading.insider}
+          />
+          {expandedSection === 'insider' && <InsiderContent data={insiderAlerts} />}
+        </div>
+
+        {/* Whales */}
+        <div>
+          <AccordionHeader
+            icon={Building2}
+            title="Whale Watch"
+            summary={getWhaleSummary()}
+            badge={getWhaleBadge()}
+            badgeColor="bg-[rgba(217,70,239,0.3)] text-[#f0abfc]"
+            isOpen={expandedSection === 'whale'}
+            onClick={() => toggleSection('whale')}
+            loading={loading.whale}
+          />
+          {expandedSection === 'whale' && <WhaleContent data={whaleWatch} />}
+        </div>
+
+        {/* Similar */}
+        <div>
+          <AccordionHeader
+            icon={GitCompare}
+            title="Similar Stocks"
+            summary={getSimilarSummary()}
+            badge={similarStocks?.profile?.sector || ''}
+            badgeColor="bg-[rgba(255,255,255,0.1)] text-gray-300"
+            isOpen={expandedSection === 'similar'}
+            onClick={() => toggleSection('similar')}
+            loading={loading.similar}
+          />
+          {expandedSection === 'similar' && <SimilarContent data={similarStocks} />}
+        </div>
       </CardContent>
     </Card>
   );

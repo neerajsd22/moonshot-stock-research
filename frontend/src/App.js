@@ -1054,7 +1054,8 @@ const HomePage = () => {
               )}
             </div>
           </div>
-        </header>
+        </div>
+      </header>
 
       {/* Main Content */}
       <main className="max-w-[1600px] mx-auto px-6 py-8 lg:px-8 lg:py-10 relative z-10">

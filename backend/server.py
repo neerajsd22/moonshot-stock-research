@@ -7,15 +7,66 @@ import logging
 import math
 from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 import uuid
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 import yfinance as yf
 import asyncio
 import pandas as pd
 from emergentintegrations.llm.chat import LlmChat, UserMessage
 import secrets
 import string
+from functools import lru_cache
+import time
+
+
+# ========== CACHING LAYER ==========
+# Simple in-memory cache for yfinance data to reduce API calls
+class TickerCache:
+    """Simple TTL cache for yfinance ticker data"""
+    def __init__(self, ttl_seconds: int = 300):  # 5 minute default TTL
+        self._cache: Dict[str, Dict[str, Any]] = {}
+        self._timestamps: Dict[str, float] = {}
+        self.ttl = ttl_seconds
+    
+    def get(self, ticker: str) -> Optional[yf.Ticker]:
+        """Get cached ticker or None if expired/missing"""
+        key = ticker.upper()
+        if key in self._cache:
+            if time.time() - self._timestamps[key] < self.ttl:
+                return self._cache[key]
+            else:
+                # Expired, remove from cache
+                del self._cache[key]
+                del self._timestamps[key]
+        return None
+    
+    def set(self, ticker: str, data: yf.Ticker) -> None:
+        """Cache ticker data"""
+        key = ticker.upper()
+        self._cache[key] = data
+        self._timestamps[key] = time.time()
+    
+    def get_or_create(self, ticker: str) -> yf.Ticker:
+        """Get from cache or create new ticker"""
+        cached = self.get(ticker)
+        if cached is not None:
+            return cached
+        stock = yf.Ticker(ticker)
+        self.set(ticker, stock)
+        return stock
+    
+    def clear_expired(self) -> int:
+        """Remove expired entries, return count removed"""
+        now = time.time()
+        expired = [k for k, t in self._timestamps.items() if now - t >= self.ttl]
+        for k in expired:
+            del self._cache[k]
+            del self._timestamps[k]
+        return len(expired)
+
+# Global ticker cache instance
+ticker_cache = TickerCache(ttl_seconds=300)  # 5 minute cache
 
 
 # Helper function to sanitize float values for JSON

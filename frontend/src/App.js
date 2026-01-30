@@ -131,6 +131,7 @@ const HomePage = () => {
     return localStorage.getItem('moonshot_background') || 'particles';
   });
   const [showBackgroundPicker, setShowBackgroundPicker] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   
   const MAX_STACKED_STOCKS = 10;
 

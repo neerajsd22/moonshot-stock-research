@@ -1025,6 +1025,24 @@ const HomePage = () => {
             
             {/* Right side buttons - pushed to far right */}
             <div className="flex items-center gap-2 flex-shrink-0 ml-auto">
+              {/* Explore by Category Button */}
+              <Button
+                data-testid="explore-categories-button"
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  const categoriesSection = document.getElementById('categories-section');
+                  if (categoriesSection) {
+                    categoriesSection.scrollIntoView({ behavior: 'smooth' });
+                  }
+                  setCategoriesCollapsed(false);
+                }}
+                className="h-11 px-4 flex items-center gap-2 btn-outline-gold"
+              >
+                <LayoutGrid className="w-4 h-4" />
+                <span className="hidden sm:inline">Categories</span>
+              </Button>
+              
               {/* View Mode Toggle */}
               <Button
                 data-testid="view-mode-toggle"
@@ -1033,7 +1051,7 @@ const HomePage = () => {
                 onClick={() => setViewMode(isDense ? 'spacious' : 'dense')}
                 className="h-11 px-4 flex items-center gap-2 btn-outline-gold"
               >
-                {isDense ? <LayoutGrid className="w-4 h-4" /> : <LayoutList className="w-4 h-4" />}
+                {isDense ? <LayoutList className="w-4 h-4" /> : <LayoutList className="w-4 h-4" />}
                 <span className="hidden sm:inline">{isDense ? 'Expand' : 'Dense'}</span>
               </Button>
               

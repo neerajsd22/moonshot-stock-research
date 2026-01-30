@@ -62,7 +62,7 @@ const CategoriesPage = () => {
   const [showCategorySettings, setShowCategorySettings] = useState(false);
   const [enabledCategories, setEnabledCategories] = useState(() => {
     const saved = localStorage.getItem('category_preferences');
-    return saved ? JSON.parse(saved) : ALL_CATEGORIES.map(c => c.id);
+    return saved ? JSON.parse(saved) : ALL_CATEGORIES.map(c => c.slug);
   });
 
   // Fetch custom categories

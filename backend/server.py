@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter, HTTPException, Depends, Header
+from fastapi import FastAPI, APIRouter, HTTPException, Header
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -9,14 +9,13 @@ from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict
 from typing import List, Optional, Dict, Any
 import uuid
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timezone
 import yfinance as yf
 import asyncio
 import pandas as pd
 from emergentintegrations.llm.chat import LlmChat, UserMessage
 import secrets
 import string
-from functools import lru_cache
 import time
 
 
@@ -2190,7 +2189,6 @@ async def get_five_signals_analysis(ticker: str):
             # Get financial data
             cashflow = stock.quarterly_cashflow
             financials = stock.quarterly_financials
-            balance = stock.quarterly_balance_sheet
             
             # Initialize signals
             signals = {
@@ -3305,9 +3303,9 @@ async def get_insider_alerts(ticker: str):
                         if ceo_bought:
                             result["summary"] += " including CEO"
                     elif result["signal_strength"] == "moderate":
-                        result["summary"] = f"⚠️ MODERATE SIGNAL: Multiple insider buys detected"
+                        result["summary"] = "⚠️ MODERATE SIGNAL: Multiple insider buys detected"
                     elif ceo_bought:
-                        result["summary"] = f"📊 CEO/President buying activity detected"
+                        result["summary"] = "📊 CEO/President buying activity detected"
                         result["signal_strength"] = "notable"
                     else:
                         result["summary"] = "No significant insider buying cluster detected"

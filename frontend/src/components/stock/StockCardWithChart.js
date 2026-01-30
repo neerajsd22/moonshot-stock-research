@@ -148,14 +148,14 @@ const StockCardWithChart = ({
         {/* Chart Section */}
         <div className="relative">
           {/* Period Tabs & Advanced Button */}
-          <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center justify-between mb-3">
             <Tabs value={currentPeriod} onValueChange={(val) => onPeriodChange && onPeriodChange(val, ticker)}>
-              <TabsList className="h-7 bg-[rgba(255,255,255,0.03)] p-0.5 rounded-md">
+              <TabsList className="h-8 bg-[rgba(255,255,255,0.03)] p-0.5 rounded-md">
                 {['1mo', '3mo', '6mo', '1y', '5y'].map(p => (
                   <TabsTrigger 
                     key={p} 
                     value={p} 
-                    className="h-6 px-2 text-[10px] data-[state=active]:bg-[#d946ef] data-[state=active]:text-[#0a0a0f]"
+                    className="h-7 px-3 text-xs font-medium data-[state=active]:bg-[#d946ef] data-[state=active]:text-[#0a0a0f]"
                     onClick={(e) => e.stopPropagation()}
                   >
                     {p.toUpperCase()}
@@ -164,10 +164,10 @@ const StockCardWithChart = ({
               </TabsList>
             </Tabs>
             
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               {/* Period Performance */}
               {priceRange && (
-                <span className={`text-xs mono-numbers ${isUp ? 'text-green-400' : 'text-red-400'}`}>
+                <span className={`text-sm font-medium mono-numbers ${isUp ? 'text-green-400' : 'text-red-400'}`}>
                   {isUp ? '+' : ''}{periodChange}%
                 </span>
               )}

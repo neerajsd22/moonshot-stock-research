@@ -1252,8 +1252,8 @@ const HomePage = () => {
           </div>
         )}
 
-        {/* Chart and Detailed Analysis for selected stock */}
-        {selectedStock && stockQuote && viewMode === 'spacious' && (
+        {/* Advanced Chart - Only show when explicitly requested */}
+        {selectedStock && stockQuote && viewMode === 'spacious' && showAdvancedChart && (
           <div className="space-y-6 fade-in" data-testid="stock-details-container">
             {/* Chart */}
             <Card className="premium-card gold-gradient-border">
@@ -1261,17 +1261,17 @@ const HomePage = () => {
                 <div className="flex items-center justify-between flex-wrap gap-4">
                   <div className="flex items-center gap-3">
                     <CardTitle className="text-white text-2xl" style={{ fontFamily: 'Outfit, sans-serif' }} data-testid="chart-title">
-                      {selectedStock}
+                      {selectedStock} - Advanced Chart
                       </CardTitle>
                       <Button
-                        data-testid="advanced-chart-button"
+                        data-testid="close-advanced-chart"
                         variant="outline"
                         size="sm"
-                        onClick={() => setShowAdvancedChart(true)}
-                        className="flex items-center gap-2 btn-outline-gold"
+                        onClick={() => setShowAdvancedChart(false)}
+                        className="flex items-center gap-2 text-red-400 border-red-400/30 hover:bg-red-500/10"
                       >
-                        <BarChart3 className="w-4 h-4" />
-                        Advanced
+                        <X className="w-4 h-4" />
+                        Close
                       </Button>
                       <Button
                         data-testid="comparison-mode-toggle"

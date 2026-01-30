@@ -130,11 +130,19 @@ GET  /api/custom-categories           - List custom categories
     - App gracefully handles unavailable stocks with "AVOID" verdict and 0/10 score
     - Test report: `/app/test_reports/sp500_ai_analysis_test.json`
 
+19. **Intelligence Hub - Advanced Analysis Features** ✅:
+    - **5 Signals Framework**: Cash Generation, Competitive Position, Smart Money, Growth Quality, Valuation Sanity (100-point scoring)
+    - **Pre-Earnings Intelligence**: Beat probability prediction, historical surprises, analyst targets, insider activity
+    - **"Why Is This Moving?"**: Real-time movement analysis with AI-generated explanation, volume analysis, catalyst detection
+    - New endpoints: `/api/stocks/{ticker}/five-signals`, `/api/stocks/{ticker}/earnings-intelligence`, `/api/stocks/{ticker}/why-moving`
+    - New component: `/app/frontend/src/components/IntelligenceHub.js`
+
 ## Backlog (Future Features)
 ### P1 - COMPLETED ✅
 - ~~Persist stacked stocks across sessions (localStorage)~~
 - ~~Export stacked stocks to CSV~~
 - ~~Compare charts overlay~~
+- ~~Intelligence Hub (5 Signals, Earnings Intel, Why Moving)~~
 
 ### P2
 - Custom columns in Dense view
@@ -149,4 +157,4 @@ GET  /api/custom-categories           - List custom categories
 - Further reduce App.js to ~1000 lines
 
 ---
-*Last Updated: Jan 30, 2026 (Combined Stock Card + Chart UI)*
+*Last Updated: Jan 30, 2026 (Intelligence Hub features implemented)*

@@ -142,12 +142,14 @@ GET  /api/custom-categories           - List custom categories
     - **Whale Watch**: Institutional ownership analysis, identifies major fund holders (Vanguard, BlackRock, etc.), whale signals
     - **Similar Stocks**: Peer comparison by sector/industry, similarity scoring, P/E premium/discount analysis
     - New endpoints: `/api/stocks/{ticker}/insider-alerts`, `/api/stocks/{ticker}/whale-watch`, `/api/stocks/{ticker}/similar-stocks`
-    - **UI Improvements**: All 6 tabs now visible in compact Intelligence Hub with icons and responsive design
 
-21. **Header & UI Refinements** ✅:
-    - "Categories" button prominently placed in header (scrolls to category section)
-    - Consistent button styling across header (Categories, Dense, Menu)
-    - Collapsible sidebar for secondary navigation
+21. **UI/UX Improvements - Phase 3** ✅:
+    - **Accordion-Style Intelligence Hub**: Compact design, expand one section at a time, key metrics shown in headers
+    - **Fixed Truncated Text**: All names (insiders, fund holders, companies) now display in full
+    - **Dedicated Categories Page**: Moved "Explore by Category" to `/categories` route
+    - **Cleaner Home Page**: Removed category grid from home, now focused on stock analysis
+    - **Categories Button**: Now navigates to dedicated categories page with search & filtering
+    - New file: `/app/frontend/src/CategoriesPage.js`
 
 ## Backlog (Future Features)
 ### P1 - COMPLETED ✅
@@ -156,6 +158,8 @@ GET  /api/custom-categories           - List custom categories
 - ~~Compare charts overlay~~
 - ~~Intelligence Hub (5 Signals, Earnings Intel, Why Moving)~~
 - ~~Intelligence Hub Phase 2 (Insider Alerts, Whale Watch, Similar Stocks)~~
+- ~~Accordion-style Intelligence Hub UI~~
+- ~~Dedicated Categories Page~~
 
 ### P2
 - Drag-and-drop reordering of stacked stocks
@@ -165,9 +169,8 @@ GET  /api/custom-categories           - List custom categories
 
 ### P3 (Refactoring Opportunities)
 - Extract chart components (HistoricalChart, ComparisonSelectors)
-- Extract category components (CategoryGrid, CategoryCard)
 - Extract header components (SearchBar, NavButtons)
 - Further reduce App.js to ~1000 lines
 
 ---
-*Last Updated: Jan 30, 2026 (Intelligence Hub Phase 2 complete - all 6 analysis tabs working)*
+*Last Updated: Jan 30, 2026 (UI/UX Phase 3 - Accordion Hub, Categories Page, Fixed Truncation)*

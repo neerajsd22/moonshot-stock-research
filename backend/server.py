@@ -123,6 +123,7 @@ class PinnedStock(BaseModel):
     ticker: str
     company_name: str
     pinned_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    order: int = Field(default=0)
 
 class CustomCategory(BaseModel):
     model_config = ConfigDict(extra="ignore")
@@ -1254,13 +1255,19 @@ async def pin_stock(input: PinnedStockCreate):
     )
     
     if existing:
-        if isinstance(existing['pinned_at'], str):
+        if isinstance(existing.get('pinned_at'), str):
             existing['pinned_at'] = datetime.fromisoformat(existing['pinned_at'])
+        if 'order' not in existing:
+            existing['order'] = 0
         return PinnedStock(**existing)
+    
+    # Get the next order value
+    last = await db.pinned_stocks.find_one(sort=[("order", -1)], projection={"_id": 0, "order": 1})
+    next_order = (last.get('order', 0) + 1) if last else 0
     
     pinned_dict = input.model_dump()
     pinned_dict['ticker'] = pinned_dict['ticker'].upper()
-    pinned_obj = PinnedStock(**pinned_dict)
+    pinned_obj = PinnedStock(**pinned_dict, order=next_order)
     
     doc = pinned_obj.model_dump()
     doc['pinned_at'] = doc['pinned_at'].isoformat()
@@ -1271,12 +1278,27 @@ async def pin_stock(input: PinnedStockCreate):
 
 @api_router.get("/pinned-stocks", response_model=List[PinnedStock])
 async def get_pinned_stocks():
-    """Get all pinned stocks"""
-    pinned_stocks = await db.pinned_stocks.find({}, {"_id": 0}).to_list(1000)
+    """Get all pinned stocks sorted by order"""
+    pinned_stocks = await db.pinned_stocks.find({}, {"_id": 0}).sort("order", 1).to_list(1000)
     
     for stock in pinned_stocks:
-        if isinstance(stock['pinned_at'], str):
+        if isinstance(stock.get('pinned_at'), str):
             stock['pinned_at'] = datetime.fromisoformat(stock['pinned_at'])
+        if 'order' not in stock:
+            stock['order'] = 0
+    
+    return pinned_stocks
+
+
+@api_router.put("/pinned-stocks/reorder")
+async def reorder_pinned_stocks(tickers: List[str]):
+    """Reorder pinned stocks by updating order field"""
+    for i, ticker in enumerate(tickers):
+        await db.pinned_stocks.update_one(
+            {"ticker": ticker.upper()},
+            {"$set": {"order": i}}
+        )
+    return {"message": "Pinned stocks reordered"}
     
     return pinned_stocks
 

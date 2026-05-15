@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import '@/App.css';
 import axios from 'axios';
-import { Search, TrendingUp, Pin, X, LayoutList, ExternalLink, Plus, List, Bell, BarChart3, Settings, BrainCircuit, Cpu, ChevronDown, CalendarDays, RefreshCw, Menu, ChevronLeft } from 'lucide-react';
+import { Search, TrendingUp, Pin, X, LayoutList, ExternalLink, Plus, List, Bell, BarChart3, Settings, BrainCircuit, Cpu, ChevronDown, CalendarDays, RefreshCw, Menu, ChevronLeft, GripVertical } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -25,6 +25,9 @@ import AdminPage from './components/AdminPage';
 import IntelligenceHub from './components/IntelligenceHub';
 import PullToRefreshIndicator from './components/PullToRefreshIndicator';
 import { usePullToRefresh } from './hooks/usePullToRefresh';
+import { DndContext, closestCenter, PointerSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { SortableContext, horizontalListSortingStrategy, useSortable, arrayMove } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 // Refactored stock components
 import {
   StockCardWithChart,
@@ -75,6 +78,57 @@ const CategoryIcon = ({ icon, isLucide, className = "text-2xl sm:text-4xl mb-1 s
     return <div className={className}><IconComponent className="w-7 h-7 sm:w-10 sm:h-10 text-primary mx-auto" /></div>;
   }
   return <div className={className}>{icon}</div>;
+};
+
+// Sortable pinned stock card
+const SortablePinnedStock = ({ stock, onSelect, onUnpin }) => {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: stock.ticker });
+  
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    zIndex: isDragging ? 50 : 'auto',
+  };
+
+  return (
+    <Card
+      ref={setNodeRef}
+      style={style}
+      data-testid={`pinned-stock-${stock.ticker}`}
+      className={`min-w-[150px] sm:min-w-[200px] bg-[rgba(15,15,20,0.95)] border border-[rgba(255,255,255,0.15)] hover:border-[#d946ef]/50 transition-colors duration-200 cursor-pointer flex-shrink-0 shadow-lg ${isDragging ? 'ring-2 ring-[#d946ef]/50' : ''}`}
+      onClick={() => onSelect(stock.ticker)}
+    >
+      <CardContent className="p-3 sm:p-4">
+        <div className="flex items-start justify-between">
+          <button
+            {...attributes}
+            {...listeners}
+            className="text-gray-500 hover:text-gray-300 cursor-grab active:cursor-grabbing mr-2 mt-0.5 touch-none"
+            onClick={(e) => e.stopPropagation()}
+            data-testid={`drag-handle-${stock.ticker}`}
+          >
+            <GripVertical className="w-4 h-4" />
+          </button>
+          <div className="min-w-0 flex-1">
+            <div className="text-base sm:text-lg font-bold text-white" style={{ fontFamily: 'DM Mono, monospace' }}>
+              {stock.ticker}
+            </div>
+            <div className="text-xs sm:text-sm text-gray-400 mt-1 line-clamp-1 sm:line-clamp-2">
+              {stock.company_name}
+            </div>
+          </div>
+          <button
+            data-testid={`unpin-button-${stock.ticker}`}
+            onClick={(e) => { e.stopPropagation(); onUnpin(stock.ticker); }}
+            className="text-gray-400 hover:text-red-400 transition-colors ml-2"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      </CardContent>
+    </Card>
+  );
 };
 
 const HomePage = () => {
@@ -168,6 +222,28 @@ const HomePage = () => {
   }, [selectedStock]);
 
   const { pullDistance, refreshing, progress } = usePullToRefresh(handlePullRefresh);
+
+  // DnD sensors for pinned stock reordering
+  const pointerSensor = useSensor(PointerSensor, { activationConstraint: { distance: 8 } });
+  const touchSensor = useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 5 } });
+  const dndSensors = useSensors(pointerSensor, touchSensor);
+
+  const handleDragEnd = useCallback(async (event) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = pinnedStocks.findIndex(s => s.ticker === active.id);
+    const newIndex = pinnedStocks.findIndex(s => s.ticker === over.id);
+    const reordered = arrayMove(pinnedStocks, oldIndex, newIndex);
+    setPinnedStocks(reordered);
+
+    // Persist to backend
+    try {
+      await axios.put(`${API}/pinned-stocks/reorder`, reordered.map(s => s.ticker));
+    } catch (err) {
+      console.error('Failed to persist reorder:', err);
+    }
+  }, [pinnedStocks]);
 
   // Helper function to get currency symbol based on ticker
   const getCurrencySymbol = (ticker, currency) => {
@@ -1089,7 +1165,7 @@ const HomePage = () => {
 
       {/* Main Content */}
       <main className="max-w-[1600px] mx-auto px-3 py-4 sm:px-6 sm:py-8 lg:px-8 lg:py-10 relative z-10">
-        {/* Pinned Stocks Section - At the top, always visible when there are pinned stocks */}
+        {/* Pinned Stocks Section - Drag-and-drop reorderable */}
         {pinnedStocks.length > 0 && (
           <div className="mb-4 sm:mb-8 relative z-20" data-testid="pinned-stocks-section">
             <div className="flex items-center gap-2 mb-3 sm:mb-4">
@@ -1101,44 +1177,23 @@ const HomePage = () => {
                 Pinned Stocks
               </h2>
               <span className="text-xs text-gray-500">({pinnedStocks.length})</span>
+              <span className="text-[10px] text-gray-600 ml-1 hidden sm:inline">Drag to reorder</span>
             </div>
             
-            <div className="flex gap-2 sm:gap-4 overflow-x-auto pb-3 sm:pb-4 scrollbar-hide -mx-3 px-3 sm:mx-0 sm:px-0" data-testid="pinned-stocks-container">
-              {pinnedStocks.map((stock) => (
-                <Card
-                  key={stock.ticker}
-                  data-testid={`pinned-stock-${stock.ticker}`}
-                  className="min-w-[150px] sm:min-w-[200px] bg-[rgba(15,15,20,0.95)] border border-[rgba(255,255,255,0.15)] hover:border-[#d946ef]/50 transition-colors duration-200 cursor-pointer flex-shrink-0 shadow-lg"
-                  onClick={() => selectStock(stock.ticker)}
-                >
-                  <CardContent className="p-3 sm:p-4">
-                    <div className="flex items-start justify-between">
-                      <div className="min-w-0 flex-1">
-                        <div
-                          className="text-base sm:text-lg font-bold text-white"
-                          style={{ fontFamily: 'DM Mono, monospace' }}
-                        >
-                          {stock.ticker}
-                        </div>
-                        <div className="text-xs sm:text-sm text-gray-400 mt-1 line-clamp-1 sm:line-clamp-2">
-                          {stock.company_name}
-                        </div>
-                      </div>
-                      <button
-                        data-testid={`unpin-button-${stock.ticker}`}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          unpinStock(stock.ticker);
-                        }}
-                        className="text-gray-400 hover:text-red-400 transition-colors ml-2"
-                      >
-                        <X className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+            <DndContext sensors={dndSensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+              <SortableContext items={pinnedStocks.map(s => s.ticker)} strategy={horizontalListSortingStrategy}>
+                <div className="flex gap-2 sm:gap-4 overflow-x-auto pb-3 sm:pb-4 scrollbar-hide -mx-3 px-3 sm:mx-0 sm:px-0" data-testid="pinned-stocks-container">
+                  {pinnedStocks.map((stock) => (
+                    <SortablePinnedStock
+                      key={stock.ticker}
+                      stock={stock}
+                      onSelect={selectStock}
+                      onUnpin={unpinStock}
+                    />
+                  ))}
+                </div>
+              </SortableContext>
+            </DndContext>
           </div>
         )}
 

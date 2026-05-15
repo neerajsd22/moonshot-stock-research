@@ -9,7 +9,7 @@ import time
 from datetime import datetime
 
 # API Base URL
-API_BASE = "https://market-insight-153.preview.emergentagent.com/api"
+API_BASE = "https://earnings-preview-4.preview.emergentagent.com/api"
 
 # S&P 500 Sample - Testing with 50 diverse tickers across sectors
 SP500_SAMPLE = [

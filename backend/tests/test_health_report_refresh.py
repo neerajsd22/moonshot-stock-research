@@ -7,7 +7,7 @@ import requests
 import os
 import time
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://market-insight-153.preview.emergentagent.com')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://earnings-preview-4.preview.emergentagent.com')
 
 class TestHealthReportEndpoint:
     """Tests for the health report API endpoint used by refresh button"""

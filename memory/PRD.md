@@ -1,198 +1,64 @@
-# Moonshot Stock Picker - Product Requirements Document
+# Moonshot - Stock Analysis Platform
 
-## Source Repository
-**GitHub**: https://github.com/neerajsd22/MoonshotStockPicker.git
-*(Make sure repo is public when cloning)*
+## Original Problem Statement
+Build a comprehensive stock analysis application called "Moonshot" with stock search, financial charts, AI-powered analysis, and intelligence modules. The app should support responsive mobile/tablet/desktop views with a premium dark theme.
 
-## Access Credentials
-- **User Access Code**: Use codes from admin panel (check DB for active codes)
-- **Admin Password**: `z7&G2#kL9!pX`
-- **Admin URL**: `/admin`
+## User Personas
+- **Retail Investors**: Search stocks, view charts, pin favorites, explore categories
+- **Power Users**: Dense view mode, stock comparison, advanced charts, export to CSV
+- **Admin**: Manage access codes at `/admin`
 
-## Tech Stack
-- **Frontend**: React.js, Tailwind CSS, shadcn/ui components, Recharts
-- **Backend**: Python FastAPI
-- **Database**: MongoDB
-- **External API**: yfinance for stock data
+## Core Requirements
+1. **Stock Management**: Search, stack (up to 10), pin, dismiss stocks
+2. **Financial Charts & Data**: Interactive charts with Y-axis dollar values, key stats, news, earnings
+3. **AI Deep Analysis**: 8-quarter health report with risk scorecard
+4. **Intelligence Hub (Beta)**: Accordion layout with 5 Signals, Pre-Earnings Intelligence Report, Why Moving, Insider Alerts, Whale Watch, Similar Stocks
+5. **UI/UX**: Dark theme with tagline "Discover Your Next Big Win", category exploration, animated backgrounds (Particle Network, Aurora Borealis, Matrix Rain, Bokeh Blur, Noise Gradient, Mesh Gradient)
+6. **Performance**: Backend yfinance TickerCache to prevent redundant API calls
+7. **Responsive Design**: Mobile-optimized layout across all viewports (375px+)
 
-## Key Files
-```
-/app/frontend/src/App.js                    - Main app (reduced from 2188 to 1879 lines after refactoring)
-/app/frontend/src/CategoryPage.js           - Category detail page
-/app/frontend/src/components/AdminPage.js   - Admin dashboard
-/app/frontend/src/components/AccessGate.js  - Access code authentication
-/app/frontend/src/components/stock/         - Refactored stock components
-  - StockHeader.js      - Stock title, price, extended hours, pin/dismiss
-  - KeyStatsCard.js     - Key statistics grid
-  - DenseViewTable.js   - Compact table view
-  - LoadingAnimation.js - Stock loading animation
-  - FinancialsCard.js   - Financials section
-  - AnalysisCard.js     - Bull/Bear analysis
-  - NewsCard.js         - Latest news section
-  - HealthReportCard.js - AI Deep Analysis
-  - index.js            - Barrel export
-/app/frontend/src/App.css                   - Global styles
-/app/backend/server.py                      - FastAPI backend with all endpoints
-```
+## Architecture
+- **Backend**: FastAPI + Motor (async MongoDB) + yfinance (with TickerCache)
+- **Frontend**: React + axios + recharts + shadcn/ui
+- **Database**: MongoDB (access_codes, custom_categories, pinned_stocks)
+- **Auth**: Access code system with admin panel
 
-## Core Features Implemented
+## What's Been Implemented
+- Stock search, stacking (up to 10), pinning, dismissal
+- Financial charts with Y-axis labels, key stats, news, earnings snapshots
+- AI Deep Analysis (8-quarter health report + risk scorecard + verdicts)
+- Intelligence Hub (Beta) with accordion: 5 Signals, PEIR, Why Moving, Insider Alerts, Whale Watch, Similar Stocks
+- 6 animated background themes + None option
+- Backend TickerCache for yfinance optimization
+- S&P 500 comprehensive test suite (100% pass)
+- **[May 2026] Full responsive mobile optimization** - 3-viewport adaptive layout (mobile/tablet/desktop)
 
-### Stock Display & Management
-- Stock search with autocomplete
-- **Stack up to 10 stocks** - displays one below the other
-- **Dismiss button** - removes individual stocks from display
-- **Dense/Expand view toggle** - Dense shows compact table with Key Stats columns
-- Historical price charts with time periods (1M, 3M, 6M, 1Y, 5Y)
-- Key Stats: Day Open/High/Low, Market Cap, P/E, Dividend, 52W High/Low, Volume
-- Bull/Bear sentiment analysis
-- Latest news section
-- Pin/Unpin stocks functionality
+## Responsive Design Implementation (May 2026)
+- HTML font-size scaling: 16px mobile -> 18px tablet -> 20.8px desktop
+- Header: compact on mobile (icon-only buttons), full on desktop
+- Category grid: 3-col mobile -> 4-col tablet -> 6-col desktop
+- Stock card stats: 3-col mobile -> 5-col tablet -> 9-col desktop
+- Sidebar: 85vw on mobile, 18rem on desktop
+- Modals: bottom-sheet style on mobile, centered on desktop
+- Touch optimization: hover effects only on hover-capable devices
+- Scrollable period tabs and horizontally scrollable data tables
 
-### Categories
-- Pre-defined categories (Finance, Technology, AI, Semiconductors, etc.)
-- Indian market categories (Nifty 50, Nifty IT, Nifty Bank, etc.)
-- **Custom categories** - users can create their own with up to 10 tickers
-- Category names display correctly on category pages
+## Prioritized Backlog
 
-### Admin Features
-- Generate unlimited-use access codes
-- **Expire codes** - manually deactivate codes
-- **Reactivate codes** - restore expired codes
-- Delete codes permanently
+### P0 (Critical) - None
 
-### UI/UX
-- 🚀 **Fun loading animation** when fetching stock data (rocket, sparkles, progress bar)
-- Confetti celebration on first login
-- Dark theme with gold/pink accents
-- Responsive design
+### P1 (Important)
+- React Native mobile app (separate codebase)
 
-## API Endpoints
-```
-GET  /api/stocks/search?q={query}     - Search stocks
-GET  /api/stocks/{ticker}/quote       - Get stock quote
-GET  /api/stocks/{ticker}/history     - Get historical data
-GET  /api/stocks/category/{name}      - Get category stocks
-POST /api/access/verify               - Verify access code
-POST /api/admin/login                 - Admin login
-GET  /api/admin/access-codes          - List all codes
-POST /api/admin/access-codes          - Generate new codes
-PUT  /api/admin/access-codes/{code}/expire     - Expire a code
-PUT  /api/admin/access-codes/{code}/reactivate - Reactivate a code
-POST /api/custom-categories           - Create custom category
-GET  /api/custom-categories           - List custom categories
-```
+### P2 (Nice to have)
+- Drag-and-drop reordering for pinned stocks
+- Keyboard shortcuts (/ to focus search, Esc to close)
+- Confirmation dialog before "Dismiss All"
+- Compact view mode (ticker + mini sparkline + price)
+- Portfolio tracker with P&L dashboard
+- Price alert notifications
+- Side-by-side stock comparison tool
 
-## Session History
-
-### Jan 28, 2026
-1. Cloned codebase from GitHub
-2. Added dismiss button on stock cards
-3. Implemented stock stacking (up to 10)
-4. Added Dense/Expand view toggle with Key Stats table
-5. Fixed custom category name display bug
-6. Fixed admin login and made access codes persistent (unlimited uses)
-7. Added Expire/Reactivate functionality for codes
-8. Changed admin password
-9. Added fun loading animation (rocket + sparkles)
-
-### Jan 29, 2026
-10. **Major Refactoring**: Extracted 8 components from App.js (2188→1879 lines):
-    - StockHeader, KeyStatsCard, DenseViewTable, LoadingAnimation
-    - FinancialsCard, AnalysisCard, NewsCard, HealthReportCard
-11. Extended hours price display (pre-market/after-hours) - implemented but dependent on yfinance API data availability
-12. **P1 Features Implemented**:
-    - ✅ Persist stacked stocks in localStorage (survives page refresh)
-    - ✅ Export stacked stocks to CSV
-    - ✅ Stock comparison chart overlay (compare multiple stocks on one chart)
-13. **Animated Background**: Added elegant particle effect with connecting lines that react to mouse movement
-14. **ComparisonChart component**: New modal with % Change/Price toggle and CSV export for comparison data
-15. **Pinned Stocks Section**: Updated styling to match "Explore by Category" with collapsible toggle
-16. **Background Theme Picker**: 6 animated background options:
-    - Particle Network (connected dots, mouse reactive)
-    - Floating Orbs (soft gradient blobs)
-    - Grid Glow (subtle grid with corner accents)
-    - Starfield (twinkling stars + shooting stars)
-    - Gradient Waves (animated waves at bottom)
-    - None (clean, no animation)
-17. **AI Deep Analysis Refresh Button** ✅: 
-    - Added refresh button in AI Deep Analysis section header
-    - Added "Retry" button in error state for failed API calls
-    - Shows spinning animation during refresh
-    - Displays toast notification on success
-    - Tested: 100% pass rate (11/11 backend tests, all frontend features verified)
-
-### Jan 30, 2026
-18. **S&P 500 AI Deep Analysis Comprehensive Test** ✅:
-    - Fixed bug: None-safe comparisons in scoring logic (ROE, debt_to_equity)
-    - Tested all 502 S&P 500 tickers against health-report API
-    - **Pass rate: 95.2%** (478/502 tickers)
-    - 12 tickers unavailable due to delisting/mergers (ANSS, CTLT, FI, FLT, HES, IPG, JNPR, MRO, PARA, PXD, WBA, DFS)
-    - App gracefully handles unavailable stocks with "AVOID" verdict and 0/10 score
-    - Test report: `/app/test_reports/sp500_ai_analysis_test.json`
-
-19. **Intelligence Hub - Advanced Analysis Features** ✅:
-    - **5 Signals Framework**: Cash Generation, Competitive Position, Smart Money, Growth Quality, Valuation Sanity (100-point scoring)
-    - **Pre-Earnings Intelligence**: Beat probability prediction, historical surprises, analyst targets, insider activity
-    - **"Why Is This Moving?"**: Real-time movement analysis with AI-generated explanation, volume analysis, catalyst detection
-    - New endpoints: `/api/stocks/{ticker}/five-signals`, `/api/stocks/{ticker}/earnings-intelligence`, `/api/stocks/{ticker}/why-moving`
-    - New component: `/app/frontend/src/components/IntelligenceHub.js`
-
-20. **Intelligence Hub Phase 2 - Complete (3 New Features)** ✅:
-    - **Insider Alerts**: Tracks insider buying/selling activity, detects cluster buying patterns, identifies CEO/executive purchases
-    - **Whale Watch**: Institutional ownership analysis, identifies major fund holders (Vanguard, BlackRock, etc.), whale signals
-    - **Similar Stocks**: Peer comparison by sector/industry, similarity scoring, P/E premium/discount analysis
-    - New endpoints: `/api/stocks/{ticker}/insider-alerts`, `/api/stocks/{ticker}/whale-watch`, `/api/stocks/{ticker}/similar-stocks`
-
-21. **UI/UX Improvements - Phase 3** ✅:
-    - **Accordion-Style Intelligence Hub**: Compact design, expand one section at a time, key metrics shown in headers
-    - **Fixed Truncated Text**: All names (insiders, fund holders, companies) now display in full
-    - **Explore by Category section**: Restored on home page with collapsible UI
-    - New file: `/app/frontend/src/CategoriesPage.js`
-
-22. **Smart Earnings Analysis Module** ✅:
-    - **New Tab in Intelligence Hub**: Replaces old "Earnings" tab with comprehensive earnings analysis
-    - **Sub-section 1: Historical Fundamentals**:
-      - Fwd P/E, EPS Growth, Beat Rate, Average Surprise metrics
-      - Recent quarters with EPS actuals vs estimates
-      - Upcoming earnings date prominently displayed
-    - **Sub-section 2: Pre-Earnings Intelligence Report (PEIR)**:
-      - **Trigger**: Auto-activates 3-5 days before earnings, shows waiting message otherwise
-      - **Surprise Patterns**: Correlates past EPS beats/misses with stock price reaction
-      - **Volatility Gap**: Compares options-implied move vs historical 1-day post-earnings move
-      - **Insider Sentiment**: SEC Form 4 filings from last 90 days for anomalous executive trading
-      - **Revision Momentum**: Analyst estimate trends (upward/downward)
-      - **Peer Read-Through**: Competitor earnings results from same sector this quarter
-    - New endpoint: `/api/stocks/{ticker}/smart-earnings`
-    - Data sources: yfinance for earnings calendar, options data, insider transactions, peer data
-
-## Backlog (Future Features)
-### P1 - COMPLETED ✅
-- ~~Persist stacked stocks across sessions (localStorage)~~
-- ~~Export stacked stocks to CSV~~
-- ~~Compare charts overlay~~
-- ~~Intelligence Hub (5 Signals, Earnings Intel, Why Moving)~~
-- ~~Intelligence Hub Phase 2 (Insider Alerts, Whale Watch, Similar Stocks)~~
-- ~~Accordion-style Intelligence Hub UI~~
-- ~~Smart Earnings Analysis Module with PEIR~~
-- ~~S&P 500 Comprehensive Testing~~
-- ~~Codebase Optimization~~
-
-### P2
-- Drag-and-drop reordering of stacked stocks
-- Keyboard shortcuts (`/` to focus search, `Esc` to close modals)
-- Confirmation dialog for "Dismiss All" button
-- Compact view mode (ticker + sparkline + price)
-
-### P3 (Refactoring Opportunities)
-- Extract chart components (HistoricalChart, ComparisonSelectors)
-- Extract header components (SearchBar, NavButtons)
-- Further reduce App.js to ~1000 lines
-
-## Testing & Quality Assurance
-- **S&P 500 Test Suite**: 50 tickers × 8 endpoints = 400 tests, 100% pass rate
-- **Backend Optimization**: Added TickerCache for yfinance calls
-- **Code Quality**: ESLint warnings only (no errors), Python linting cleaned
-- **Test File**: `/app/backend/tests/test_sp500_comprehensive.py`
-
----
-*Last Updated: Jan 30, 2026 (S&P 500 Testing Complete, Codebase Optimized)*
+### Refactoring
+- Remove orphaned CategoriesPage.js (still routed but functionally duplicated)
+- Break down App.js (~2200+ lines) into smaller modules

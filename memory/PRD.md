@@ -32,6 +32,8 @@ Build a comprehensive stock analysis application called "Moonshot" with stock se
 - Backend TickerCache for yfinance optimization
 - S&P 500 comprehensive test suite (100% pass)
 - **[May 2026] Full responsive mobile optimization** - 3-viewport adaptive layout (mobile/tablet/desktop)
+- **[May 2026] Pull-to-refresh** - Native touch gesture for mobile data refresh
+- **[May 2026] Landing page** - Vertical spotlight scroll with Hero, AI Deep Analysis showcase, Intelligence Hub showcase, features grid, stats strip, and embedded access code input
 
 ## Responsive Design Implementation (May 2026)
 - HTML font-size scaling: 16px mobile -> 18px tablet -> 20.8px desktop

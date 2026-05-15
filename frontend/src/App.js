@@ -23,6 +23,8 @@ import CategorySettings, { ALL_CATEGORIES } from './components/CategorySettings'
 import AccessGate from './components/AccessGate';
 import AdminPage from './components/AdminPage';
 import IntelligenceHub from './components/IntelligenceHub';
+import PullToRefreshIndicator from './components/PullToRefreshIndicator';
+import { usePullToRefresh } from './hooks/usePullToRefresh';
 // Refactored stock components
 import {
   StockCardWithChart,
@@ -137,6 +139,35 @@ const HomePage = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   
   const MAX_STACKED_STOCKS = 10;
+
+  // Pull-to-refresh: refresh current stock data or pinned stocks
+  const handlePullRefresh = useCallback(async () => {
+    if (stackedStocksRef.current.length > 0) {
+      // Refresh all stacked stocks' quotes
+      const refreshPromises = stackedStocksRef.current.map(async (stock) => {
+        try {
+          const res = await axios.get(`${API}/stocks/${stock.ticker}/quote`);
+          return { ticker: stock.ticker, quote: res.data };
+        } catch {
+          return null;
+        }
+      });
+      const results = await Promise.all(refreshPromises);
+      setStackedStocks(prev => prev.map(stock => {
+        const updated = results.find(r => r && r.ticker === stock.ticker);
+        return updated ? { ...stock, quote: updated.quote } : stock;
+      }));
+      // Update selected stock quote too
+      const selectedUpdate = results.find(r => r && r.ticker === selectedStock);
+      if (selectedUpdate) setStockQuote(selectedUpdate.quote);
+      toast.success('Prices refreshed');
+    } else {
+      await Promise.all([fetchPinnedStocks(), fetchCustomCategories()]);
+      toast.success('Data refreshed');
+    }
+  }, [selectedStock]);
+
+  const { pullDistance, refreshing, progress } = usePullToRefresh(handlePullRefresh);
 
   // Helper function to get currency symbol based on ticker
   const getCurrencySymbol = (ticker, currency) => {
@@ -780,6 +811,9 @@ const HomePage = () => {
 
   return (
     <div className="min-h-screen bg-background relative">
+      {/* Pull-to-Refresh Indicator */}
+      <PullToRefreshIndicator pullDistance={pullDistance} refreshing={refreshing} progress={progress} />
+      
       {/* Animated Background - Dynamic based on selection */}
       {(() => {
         const BackgroundComponent = BACKGROUND_OPTIONS[selectedBackground]?.component;

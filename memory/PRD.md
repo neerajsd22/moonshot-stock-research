@@ -42,6 +42,7 @@ Build a comprehensive stock analysis application called "Moonshot" with stock se
 - Modals: bottom-sheet style on mobile, centered on desktop
 - Touch optimization: hover effects only on hover-capable devices
 - Scrollable period tabs and horizontally scrollable data tables
+- **Pull-to-refresh**: Native touch gesture to refresh stock prices (when stocks loaded) or home data (on home page). Shows animated indicator with progress feedback.
 
 ## Prioritized Backlog
 

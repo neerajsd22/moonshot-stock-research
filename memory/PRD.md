@@ -34,6 +34,7 @@ Build a comprehensive stock analysis application called "Moonshot" with stock se
 - **[May 2026] Full responsive mobile optimization** - 3-viewport adaptive layout (mobile/tablet/desktop)
 - **[May 2026] Pull-to-refresh** - Native touch gesture for mobile data refresh
 - **[May 2026] Landing page** - Vertical spotlight scroll with Hero, AI Deep Analysis showcase, Intelligence Hub showcase, features grid, stats strip, and embedded access code input
+- **[May 2026] Drag-and-drop pinned stocks** - Reorder pinned stocks by dragging, persists to backend via order field
 
 ## Responsive Design Implementation (May 2026)
 - HTML font-size scaling: 16px mobile -> 18px tablet -> 20.8px desktop
@@ -54,7 +55,6 @@ Build a comprehensive stock analysis application called "Moonshot" with stock se
 - React Native mobile app (separate codebase)
 
 ### P2 (Nice to have)
-- Drag-and-drop reordering for pinned stocks
 - Keyboard shortcuts (/ to focus search, Esc to close)
 - Confirmation dialog before "Dismiss All"
 - Compact view mode (ticker + mini sparkline + price)

@@ -67,10 +67,10 @@ const LUCIDE_ICONS = {
 };
 
 // Helper to render category icon
-const CategoryIcon = ({ icon, isLucide, className = "text-4xl mb-3" }) => {
+const CategoryIcon = ({ icon, isLucide, className = "text-2xl sm:text-4xl mb-1 sm:mb-3" }) => {
   if (isLucide && LUCIDE_ICONS[icon]) {
     const IconComponent = LUCIDE_ICONS[icon];
-    return <div className={className}><IconComponent className="w-10 h-10 text-primary mx-auto" /></div>;
+    return <div className={className}><IconComponent className="w-7 h-7 sm:w-10 sm:h-10 text-primary mx-auto" /></div>;
   }
   return <div className={className}>{icon}</div>;
 };
@@ -788,8 +788,8 @@ const HomePage = () => {
       
       {/* Background Picker Modal */}
       {showBackgroundPicker && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-          <Card className="premium-card gold-gradient-border w-full max-w-lg">
+        <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/70 backdrop-blur-sm">
+          <Card className="premium-card gold-gradient-border w-full sm:max-w-lg max-h-[80vh] sm:max-h-none rounded-t-2xl sm:rounded-xl overflow-hidden">
             <CardHeader>
               <CardTitle className="text-lg text-white flex items-center justify-between">
                 Choose Background Style
@@ -798,7 +798,7 @@ const HomePage = () => {
                 </Button>
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-3">
+            <CardContent className="space-y-2 sm:space-y-3 overflow-y-auto max-h-[60vh] sm:max-h-none pb-8 sm:pb-4">
               {Object.entries(BACKGROUND_OPTIONS).map(([key, option]) => (
                 <button
                   key={key}
@@ -838,7 +838,7 @@ const HomePage = () => {
         <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
       </div>
       <aside 
-        className={`fixed top-0 right-0 h-full w-72 z-[101] bg-[#0a0a0f] border-l border-[rgba(217,70,239,0.2)] shadow-2xl transform transition-transform duration-300 ease-out ${sidebarOpen ? 'translate-x-0' : 'translate-x-full'}`}
+        className={`fixed top-0 right-0 h-full w-[85vw] sm:w-72 z-[101] bg-[#0a0a0f] border-l border-[rgba(217,70,239,0.2)] shadow-2xl transform transition-transform duration-300 ease-out ${sidebarOpen ? 'translate-x-0' : 'translate-x-full'}`}
       >
         <div className="flex flex-col h-full">
           {/* Sidebar Header */}
@@ -948,11 +948,11 @@ const HomePage = () => {
       
       {/* Header */}
       <header className="sticky top-0 z-50 backdrop-blur-xl bg-[#0a0a0f]/80 border-b border-[rgba(217,70,239,0.1)]">
-        <div className="max-w-[1600px] mx-auto px-6 py-4">
-          <div className="flex items-center gap-4">
+        <div className="max-w-[1600px] mx-auto px-3 py-2 sm:px-6 sm:py-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             {/* Logo */}
             <div 
-              className="flex items-center gap-3 cursor-pointer group flex-shrink-0" 
+              className="flex items-center gap-2 sm:gap-3 cursor-pointer group flex-shrink-0" 
               onClick={() => {
                 setStackedStocks([]);
                 setSelectedStock(null);
@@ -965,7 +965,7 @@ const HomePage = () => {
               }}
               data-testid="home-link"
             >
-              <TrendingUp className="w-7 h-7 text-[#d946ef] transition-all duration-300 group-hover:scale-110" data-testid="logo-icon" />
+              <TrendingUp className="w-6 h-6 sm:w-7 sm:h-7 text-[#d946ef] transition-all duration-300 group-hover:scale-110" data-testid="logo-icon" />
               <div className="hidden sm:block">
                 <h1 className="text-xl font-bold gold-text leading-tight" style={{ fontFamily: 'Outfit, sans-serif' }} data-testid="app-title">
                   Moonshot
@@ -977,41 +977,41 @@ const HomePage = () => {
             </div>
             
             {/* Search Bar - Centered */}
-            <div className="relative flex-1 max-w-2xl">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <div className="relative flex-1 min-w-0 max-w-2xl">
+              <Search className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
               <Input
                 data-testid="stock-search-input"
                 type="text"
-                placeholder="Search stocks... (e.g., AAPL, Microsoft)"
+                placeholder="Search stocks..."
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
                   searchStocks(e.target.value);
                 }}
-                className="pl-12 h-11 text-sm input-premium rounded-lg w-full"
+                className="pl-9 sm:pl-12 h-9 sm:h-11 text-sm input-premium rounded-lg w-full"
                 style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}
               />
               
               {/* Search Results Dropdown */}
               {searchResults.length > 0 && (
-                <Card className="absolute top-full mt-2 w-full z-50 max-h-[300px] overflow-y-auto" data-testid="search-results-dropdown">
-                  <CardContent className="p-2">
+                <Card className="absolute top-full mt-2 w-full z-50 max-h-[60vh] sm:max-h-[300px] overflow-y-auto" data-testid="search-results-dropdown">
+                  <CardContent className="p-1 sm:p-2">
                     {searchResults.map((result) => (
                       <button
                         key={result.ticker}
                         data-testid={`search-result-${result.ticker}`}
                         onClick={() => selectStock(result.ticker)}
-                        className="w-full text-left p-3 hover:bg-accent rounded-lg transition-colors duration-200"
+                        className="w-full text-left p-2 sm:p-3 hover:bg-accent rounded-lg transition-colors duration-200"
                       >
                         <div className="flex items-center justify-between">
-                          <div>
-                            <div className="font-semibold" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                          <div className="min-w-0 flex-1">
+                            <div className="font-semibold text-sm" style={{ fontFamily: 'Outfit, sans-serif' }}>
                               {result.ticker}
                             </div>
-                            <div className="text-sm text-muted-foreground">{result.name}</div>
+                            <div className="text-xs sm:text-sm text-muted-foreground truncate">{result.name}</div>
                           </div>
                           {result.exchange && (
-                            <Badge variant="outline" className="text-xs">
+                            <Badge variant="outline" className="text-xs ml-2 flex-shrink-0">
                               {result.exchange}
                             </Badge>
                           )}
@@ -1024,14 +1024,14 @@ const HomePage = () => {
             </div>
             
             {/* Right side buttons - pushed to far right */}
-            <div className="flex items-center gap-2 flex-shrink-0 ml-auto">
+            <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0 ml-auto">
               {/* View Mode Toggle */}
               <Button
                 data-testid="view-mode-toggle"
                 variant="outline"
                 size="sm"
                 onClick={() => setViewMode(isDense ? 'spacious' : 'dense')}
-                className="h-11 px-4 flex items-center gap-2 btn-outline-gold"
+                className="h-9 sm:h-11 px-2 sm:px-4 flex items-center gap-2 btn-outline-gold"
               >
                 {isDense ? <LayoutList className="w-4 h-4" /> : <LayoutList className="w-4 h-4" />}
                 <span className="hidden sm:inline">{isDense ? 'Expand' : 'Dense'}</span>
@@ -1043,7 +1043,7 @@ const HomePage = () => {
                 variant="outline"
                 size="sm"
                 onClick={() => setSidebarOpen(true)}
-                className="h-11 px-4 flex items-center gap-2 btn-outline-gold"
+                className="h-9 sm:h-11 px-2 sm:px-4 flex items-center gap-2 btn-outline-gold"
               >
                 <Menu className="w-4 h-4" />
                 <span className="hidden sm:inline">Menu</span>
@@ -1054,14 +1054,14 @@ const HomePage = () => {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-[1600px] mx-auto px-6 py-8 lg:px-8 lg:py-10 relative z-10">
+      <main className="max-w-[1600px] mx-auto px-3 py-4 sm:px-6 sm:py-8 lg:px-8 lg:py-10 relative z-10">
         {/* Pinned Stocks Section - At the top, always visible when there are pinned stocks */}
         {pinnedStocks.length > 0 && (
-          <div className="mb-8 relative z-20" data-testid="pinned-stocks-section">
-            <div className="flex items-center gap-2 mb-4">
-              <span className="text-xl">📌</span>
+          <div className="mb-4 sm:mb-8 relative z-20" data-testid="pinned-stocks-section">
+            <div className="flex items-center gap-2 mb-3 sm:mb-4">
+              <span className="text-lg sm:text-xl">📌</span>
               <h2
-                className="text-xl font-semibold text-white section-title-gold"
+                className="text-base sm:text-xl font-semibold text-white section-title-gold"
                 style={{ fontFamily: 'Outfit, sans-serif' }}
               >
                 Pinned Stocks
@@ -1069,24 +1069,24 @@ const HomePage = () => {
               <span className="text-xs text-gray-500">({pinnedStocks.length})</span>
             </div>
             
-            <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide" data-testid="pinned-stocks-container">
+            <div className="flex gap-2 sm:gap-4 overflow-x-auto pb-3 sm:pb-4 scrollbar-hide -mx-3 px-3 sm:mx-0 sm:px-0" data-testid="pinned-stocks-container">
               {pinnedStocks.map((stock) => (
                 <Card
                   key={stock.ticker}
                   data-testid={`pinned-stock-${stock.ticker}`}
-                  className="min-w-[200px] bg-[rgba(15,15,20,0.95)] border border-[rgba(255,255,255,0.15)] hover:border-[#d946ef]/50 transition-colors duration-200 cursor-pointer flex-shrink-0 shadow-lg"
+                  className="min-w-[150px] sm:min-w-[200px] bg-[rgba(15,15,20,0.95)] border border-[rgba(255,255,255,0.15)] hover:border-[#d946ef]/50 transition-colors duration-200 cursor-pointer flex-shrink-0 shadow-lg"
                   onClick={() => selectStock(stock.ticker)}
                 >
-                  <CardContent className="p-4">
+                  <CardContent className="p-3 sm:p-4">
                     <div className="flex items-start justify-between">
-                      <div>
+                      <div className="min-w-0 flex-1">
                         <div
-                          className="text-lg font-bold text-white"
+                          className="text-base sm:text-lg font-bold text-white"
                           style={{ fontFamily: 'DM Mono, monospace' }}
                         >
                           {stock.ticker}
                         </div>
-                        <div className="text-sm text-gray-400 mt-1 line-clamp-2">
+                        <div className="text-xs sm:text-sm text-gray-400 mt-1 line-clamp-1 sm:line-clamp-2">
                           {stock.company_name}
                         </div>
                       </div>
@@ -1096,7 +1096,7 @@ const HomePage = () => {
                           e.stopPropagation();
                           unpinStock(stock.ticker);
                         }}
-                        className="text-gray-400 hover:text-red-400 transition-colors"
+                        className="text-gray-400 hover:text-red-400 transition-colors ml-2"
                       >
                         <X className="w-4 h-4" />
                       </button>
@@ -1109,18 +1109,18 @@ const HomePage = () => {
         )}
 
         {/* Categories Section - Collapsible */}
-        <div className="mb-10" data-testid="categories-section" id="categories-section">
-          <div className="flex items-center justify-between mb-6">
+        <div className="mb-6 sm:mb-10" data-testid="categories-section" id="categories-section">
+          <div className="flex items-center justify-between mb-4 sm:mb-6">
             <button
               onClick={() => setCategoriesCollapsed(!categoriesCollapsed)}
               className="flex items-center gap-2 group"
               data-testid="categories-toggle"
             >
               <ChevronDown 
-                className={`w-5 h-5 text-[#d946ef] transition-transform duration-300 ${categoriesCollapsed ? '-rotate-90' : ''}`}
+                className={`w-4 h-4 sm:w-5 sm:h-5 text-[#d946ef] transition-transform duration-300 ${categoriesCollapsed ? '-rotate-90' : ''}`}
               />
               <h2
-                className="text-xl font-semibold text-white section-title-gold group-hover:text-[#f0abfc] transition-colors"
+                className="text-base sm:text-xl font-semibold text-white section-title-gold group-hover:text-[#f0abfc] transition-colors"
                 style={{ fontFamily: 'Outfit, sans-serif' }}
               >
                 Explore by Category
@@ -1132,33 +1132,33 @@ const HomePage = () => {
             
             {/* Market Selector - Hide when collapsed */}
             {!categoriesCollapsed && (
-              <div className="flex gap-1 bg-[rgba(255,255,255,0.03)] p-1.5 rounded-xl border border-[rgba(255,255,255,0.06)]" data-testid="market-selector">
+              <div className="flex gap-0.5 sm:gap-1 bg-[rgba(255,255,255,0.03)] p-1 sm:p-1.5 rounded-xl border border-[rgba(255,255,255,0.06)]" data-testid="market-selector">
                 <Button
                   size="sm"
                   variant={selectedMarket === 'all' ? 'default' : 'ghost'}
                   onClick={() => setSelectedMarket('all')}
                   data-testid="market-all"
-                  className={`text-xs rounded-lg ${selectedMarket === 'all' ? 'bg-[#d946ef] text-[#0a0a0f] hover:bg-[#f0abfc]' : 'text-gray-400 hover:text-white'}`}
+                  className={`text-xs px-2 sm:px-3 rounded-lg ${selectedMarket === 'all' ? 'bg-[#d946ef] text-[#0a0a0f] hover:bg-[#f0abfc]' : 'text-gray-400 hover:text-white'}`}
                 >
-                  🌍 All
+                  <span className="hidden sm:inline">🌍 </span>All
                 </Button>
                 <Button
                   size="sm"
                   variant={selectedMarket === 'us' ? 'default' : 'ghost'}
                   onClick={() => setSelectedMarket('us')}
                   data-testid="market-us"
-                  className={`text-xs rounded-lg ${selectedMarket === 'us' ? 'bg-[#d946ef] text-[#0a0a0f] hover:bg-[#f0abfc]' : 'text-gray-400 hover:text-white'}`}
+                  className={`text-xs px-2 sm:px-3 rounded-lg ${selectedMarket === 'us' ? 'bg-[#d946ef] text-[#0a0a0f] hover:bg-[#f0abfc]' : 'text-gray-400 hover:text-white'}`}
                 >
-                  🇺🇸 US
+                  <span className="hidden sm:inline">🇺🇸 </span>US
                 </Button>
                 <Button
                   size="sm"
                   variant={selectedMarket === 'india' ? 'default' : 'ghost'}
                   onClick={() => setSelectedMarket('india')}
                   data-testid="market-india"
-                  className={`text-xs rounded-lg ${selectedMarket === 'india' ? 'bg-[#d946ef] text-[#0a0a0f] hover:bg-[#f0abfc]' : 'text-gray-400 hover:text-white'}`}
+                  className={`text-xs px-2 sm:px-3 rounded-lg ${selectedMarket === 'india' ? 'bg-[#d946ef] text-[#0a0a0f] hover:bg-[#f0abfc]' : 'text-gray-400 hover:text-white'}`}
                 >
-                  🇮🇳 India
+                  <span className="hidden sm:inline">🇮🇳 </span>India
                 </Button>
               </div>
             )}
@@ -1168,7 +1168,7 @@ const HomePage = () => {
           <div 
             className={`transition-all duration-400 ease-out overflow-hidden ${categoriesCollapsed ? 'max-h-0 opacity-0' : 'max-h-[2000px] opacity-100'}`}
           >
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-5 stagger-children">
+            <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 sm:gap-5 stagger-children">
               {categories.map((category) => (
                 <Card
                   key={category.slug}
@@ -1176,9 +1176,9 @@ const HomePage = () => {
                   onClick={() => handleCategoryClick(category.slug)}
                   data-testid={`category-${category.slug}`}
                 >
-                  <CardContent className="p-6 text-center">
-                    <CategoryIcon icon={category.icon} isLucide={category.isLucide} />
-                    <div className="text-sm font-semibold text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                  <CardContent className="p-3 sm:p-6 text-center">
+                    <CategoryIcon icon={category.icon} isLucide={category.isLucide} className="text-2xl sm:text-4xl mb-1 sm:mb-3" />
+                    <div className="text-xs sm:text-sm font-semibold text-white line-clamp-1" style={{ fontFamily: 'Outfit, sans-serif' }}>
                       {category.name}
                     </div>
                   </CardContent>
@@ -1203,12 +1203,12 @@ const HomePage = () => {
                   >
                     <X className="w-4 h-4 text-red-400" />
                   </button>
-                  <CardContent className="p-6 text-center">
-                    <div className="text-4xl mb-3">⭐</div>
-                    <div className="text-sm font-semibold text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                  <CardContent className="p-3 sm:p-6 text-center">
+                    <div className="text-2xl sm:text-4xl mb-1 sm:mb-3">⭐</div>
+                    <div className="text-xs sm:text-sm font-semibold text-white line-clamp-1" style={{ fontFamily: 'Outfit, sans-serif' }}>
                       {category.name}
                     </div>
-                    <div className="text-xs text-gray-400 mt-1">
+                    <div className="text-[10px] sm:text-xs text-gray-400 mt-0.5 sm:mt-1">
                       {category.tickers.length} stocks
                     </div>
                   </CardContent>
@@ -1221,9 +1221,9 @@ const HomePage = () => {
                 onClick={() => setShowCreateDialog(true)}
                 data-testid="create-category-button"
               >
-                <CardContent className="p-6 text-center flex flex-col items-center justify-center h-full">
-                  <Plus className="w-8 h-8 text-primary mb-2" />
-                  <div className="text-sm font-semibold text-primary" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                <CardContent className="p-3 sm:p-6 text-center flex flex-col items-center justify-center h-full">
+                  <Plus className="w-6 h-6 sm:w-8 sm:h-8 text-primary mb-1 sm:mb-2" />
+                  <div className="text-xs sm:text-sm font-semibold text-primary" style={{ fontFamily: 'Outfit, sans-serif' }}>
                     Custom
                   </div>
                 </CardContent>
@@ -1636,7 +1636,7 @@ const HomePage = () => {
         {selectedStock && stockQuote && viewMode === 'spacious' && (
           <div className="mt-4 space-y-4 fade-in">
             {/* Financials, Analysis & News - 3 Column Layout */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
               {/* Column 1: Financials Section */}
               <Card className="premium-card gold-gradient-border h-fit">
                 <CardHeader className="pb-3 pt-4 px-4">
@@ -1835,16 +1835,16 @@ const HomePage = () => {
 
             {/* AI Deep Analysis - Full Width Health Report */}
             <Card className="premium-card gold-gradient-border" data-testid="ai-deep-analysis">
-              <CardHeader className="pb-3 pt-4 px-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <CardTitle className="text-sm font-semibold text-white section-title-gold flex items-center gap-2" style={{ fontFamily: 'Outfit, sans-serif' }}>
-                      <BrainCircuit className="w-4 h-4 text-[#d946ef]" />
-                      AI Deep Analysis
+              <CardHeader className="pb-2 sm:pb-3 pt-3 sm:pt-4 px-3 sm:px-4">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
+                    <CardTitle className="text-xs sm:text-sm font-semibold text-white section-title-gold flex items-center gap-1.5 sm:gap-2" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                      <BrainCircuit className="w-4 h-4 text-[#d946ef] flex-shrink-0" />
+                      <span className="truncate">AI Deep Analysis</span>
                     </CardTitle>
                     {healthReport && healthReport.verdict && (
                       <Badge 
-                        className={`text-xs px-2 py-0.5 ${
+                        className={`text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 flex-shrink-0 ${
                           healthReport.verdict === 'BUY' ? 'bg-green-500/20 text-green-400 border-green-500/30' :
                           healthReport.verdict === 'HOLD' ? 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' :
                           'bg-red-500/20 text-red-400 border-red-500/30'
@@ -1860,10 +1860,10 @@ const HomePage = () => {
                     size="sm"
                     onClick={refreshHealthReport}
                     disabled={refreshingHealthReport}
-                    className="flex items-center gap-2 btn-outline-gold"
+                    className="flex items-center gap-1 sm:gap-2 btn-outline-gold flex-shrink-0"
                     data-testid="refresh-ai-analysis"
                   >
-                    <RefreshCw className={`w-4 h-4 ${refreshingHealthReport ? 'animate-spin' : ''}`} />
+                    <RefreshCw className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${refreshingHealthReport ? 'animate-spin' : ''}`} />
                     <span className="hidden sm:inline">{refreshingHealthReport ? 'Refreshing...' : 'Refresh'}</span>
                   </Button>
                 </div>
@@ -1873,18 +1873,18 @@ const HomePage = () => {
                   </p>
                 )}
               </CardHeader>
-              <CardContent>
+              <CardContent className="px-3 sm:px-6">
                 {healthReport && healthReport.quarters && healthReport.quarters.length > 0 ? (
-                  <div className="space-y-6">
+                  <div className="space-y-4 sm:space-y-6">
                     {/* Core Vitals Matrix */}
                     <div>
-                      <h4 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
+                      <h4 className="text-xs sm:text-sm font-semibold text-white mb-2 sm:mb-3 flex items-center gap-2">
                         <span className="w-2 h-2 bg-[#d946ef] rounded-full"></span>
                         Core Vitals Matrix
                       </h4>
                       {healthReport.quarters && healthReport.quarters.length > 0 ? (
-                        <div className="overflow-x-auto">
-                          <table className="w-full text-xs">
+                        <div className="overflow-x-auto -mx-3 px-3 sm:mx-0 sm:px-0">
+                          <table className="w-full text-xs" style={{ minWidth: '600px' }}>
                             <thead>
                               <tr className="border-b border-[rgba(255,255,255,0.1)]">
                                 <th className="text-left py-2 px-3 text-gray-400 font-medium">Metric</th>
@@ -1957,7 +1957,7 @@ const HomePage = () => {
                     </div>
 
                     {/* Key Metrics & Risk Assessment */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                       {/* Current Metrics */}
                       <div className="p-4 bg-[rgba(255,255,255,0.02)] rounded-lg border border-[rgba(255,255,255,0.05)]">
                         <h5 className="text-sm font-semibold text-white mb-3">Key Metrics</h5>
@@ -2156,14 +2156,14 @@ const HomePage = () => {
 
         {/* Empty State */}
         {stackedStocks.length === 0 && pinnedStocks.length === 0 && (
-          <div className="flex flex-col items-center justify-center min-h-[60vh]" data-testid="empty-state">
+          <div className="flex flex-col items-center justify-center min-h-[40vh] sm:min-h-[60vh] px-4" data-testid="empty-state">
             <div className="text-center max-w-md">
-              <TrendingUp className="w-16 h-16 mx-auto mb-4 text-[#d946ef] opacity-50" />
-              <h2 className="text-2xl font-semibold mb-2 gold-text" style={{ fontFamily: 'Outfit, sans-serif' }}>
+              <TrendingUp className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 text-[#d946ef] opacity-50" />
+              <h2 className="text-xl sm:text-2xl font-semibold mb-2 gold-text" style={{ fontFamily: 'Outfit, sans-serif' }}>
                 Ready for Moonshot
               </h2>
-              <p className="text-gray-400">
-                Search for a stock by ticker or company name to get started. Pin your favorites for quick access. You can stack up to {MAX_STACKED_STOCKS} stocks!
+              <p className="text-sm sm:text-base text-gray-400">
+                Search for a stock by ticker or company name to get started. Pin your favorites for quick access.
               </p>
             </div>
           </div>
@@ -2205,7 +2205,7 @@ const HomePage = () => {
       
       {/* Stock Comparison Chart Modal */}
       {showComparisonChart && stackedStocks.length >= 2 && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/70 backdrop-blur-sm">
           <div className="w-full max-w-5xl">
             <ComparisonChart 
               stocks={stackedStocks}

@@ -132,14 +132,28 @@
   50% { opacity: 1; transform: scale(1.02); }
 }
 
-/* Card hover lift effect */
+/* Card hover lift effect - only on devices with hover */
 .card-hover-lift {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.card-hover-lift:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(217, 70, 239, 0.15);
+@media (hover: hover) {
+  .card-hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(217, 70, 239, 0.15);
+  }
+}
+
+/* Mobile-specific utility classes */
+@media (max-width: 640px) {
+  .mobile-full-width {
+    width: 100%;
+  }
+  
+  .mobile-scroll-x {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
 }
 
 /* Stock price color classes */

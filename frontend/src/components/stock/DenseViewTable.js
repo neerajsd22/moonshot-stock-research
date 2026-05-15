@@ -12,9 +12,9 @@ const DenseViewTable = ({
   return (
     <div className="fade-in" data-testid="dense-view-container">
       <Card className="premium-card gold-gradient-border overflow-hidden">
-        <CardHeader className="p-4 border-b border-[rgba(255,255,255,0.06)]">
+        <CardHeader className="p-3 sm:p-4 border-b border-[rgba(255,255,255,0.06)]">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-lg text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
+            <CardTitle className="text-sm sm:text-lg text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
               Stacked Stocks ({stackedStocks.length}/{maxStocks})
             </CardTitle>
             <Button
@@ -30,8 +30,8 @@ const DenseViewTable = ({
           </div>
         </CardHeader>
         <CardContent className="p-0">
-          <div className="overflow-x-auto">
-            <table className="w-full" data-testid="dense-stocks-table">
+          <div className="overflow-x-auto -webkit-overflow-scrolling-touch">
+            <table className="w-full" style={{ minWidth: '800px' }} data-testid="dense-stocks-table">
               <thead>
                 <tr className="bg-[rgba(255,255,255,0.02)] border-b border-[rgba(255,255,255,0.06)]">
                   <th className="text-left p-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Ticker</th>

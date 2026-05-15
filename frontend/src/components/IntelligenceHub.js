@@ -45,29 +45,29 @@ const GradeBadge = ({ grade }) => {
 const AccordionHeader = ({ icon: Icon, title, summary, badge, badgeColor, isOpen, onClick, loading }) => (
   <button
     onClick={onClick}
-    className={`w-full flex items-center justify-between p-3 rounded-lg transition-all ${
+    className={`w-full flex items-center justify-between p-2 sm:p-3 rounded-lg transition-all ${
       isOpen 
         ? 'bg-[rgba(217,70,239,0.1)] border border-[rgba(217,70,239,0.3)]' 
         : 'bg-[rgba(255,255,255,0.03)] border border-transparent hover:bg-[rgba(255,255,255,0.05)]'
     }`}
   >
-    <div className="flex items-center gap-3 min-w-0 flex-1">
+    <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
       {isOpen ? (
-        <ChevronDown className="w-4 h-4 text-[#d946ef] flex-shrink-0" />
+        <ChevronDown className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#d946ef] flex-shrink-0" />
       ) : (
-        <ChevronRight className="w-4 h-4 text-gray-400 flex-shrink-0" />
+        <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400 flex-shrink-0" />
       )}
-      <Icon className={`w-4 h-4 flex-shrink-0 ${isOpen ? 'text-[#d946ef]' : 'text-gray-400'}`} />
-      <span className={`text-sm font-medium ${isOpen ? 'text-white' : 'text-gray-300'}`}>{title}</span>
+      <Icon className={`w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0 ${isOpen ? 'text-[#d946ef]' : 'text-gray-400'}`} />
+      <span className={`text-xs sm:text-sm font-medium truncate ${isOpen ? 'text-white' : 'text-gray-300'}`}>{title}</span>
     </div>
-    <div className="flex items-center gap-2 flex-shrink-0">
+    <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0 ml-2">
       {loading ? (
         <RefreshCw className="w-3 h-3 text-gray-400 animate-spin" />
       ) : (
         <>
-          <span className="text-xs text-gray-400 hidden sm:inline">{summary}</span>
+          <span className="text-[10px] sm:text-xs text-gray-400 hidden sm:inline truncate max-w-[120px]">{summary}</span>
           {badge && (
-            <Badge className={`text-xs px-2 py-0 ${badgeColor || 'bg-gray-500/30 text-gray-300'}`}>
+            <Badge className={`text-[10px] sm:text-xs px-1.5 sm:px-2 py-0 ${badgeColor || 'bg-gray-500/30 text-gray-300'}`}>
               {badge}
             </Badge>
           )}
@@ -635,12 +635,12 @@ const IntelligenceHub = ({ ticker }) => {
 
   return (
     <Card className="premium-card gold-gradient-border">
-      <CardHeader className="pb-2 pt-3 px-4">
+      <CardHeader className="pb-2 pt-3 px-3 sm:px-4">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-base text-white flex items-center gap-2" style={{ fontFamily: 'Outfit, sans-serif' }}>
+          <CardTitle className="text-sm sm:text-base text-white flex items-center gap-1.5 sm:gap-2" style={{ fontFamily: 'Outfit, sans-serif' }}>
             <Brain className="w-4 h-4 text-[#d946ef]" />
             Intelligence Hub
-            <span className="text-xs text-[#d946ef] bg-[rgba(217,70,239,0.2)] px-2 py-1 rounded-md font-semibold border border-[rgba(217,70,239,0.4)]">Beta</span>
+            <span className="text-[10px] sm:text-xs text-[#d946ef] bg-[rgba(217,70,239,0.2)] px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md font-semibold border border-[rgba(217,70,239,0.4)]">Beta</span>
           </CardTitle>
           <Button
             variant="ghost"
@@ -652,7 +652,7 @@ const IntelligenceHub = ({ ticker }) => {
           </Button>
         </div>
       </CardHeader>
-      <CardContent className="px-3 pb-3 space-y-1">
+      <CardContent className="px-2 sm:px-3 pb-3 space-y-1">
         {/* 5 Signals */}
         <div>
           <AccordionHeader

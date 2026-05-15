@@ -80,14 +80,14 @@ const StockCardWithChart = ({
       className={`premium-card gold-gradient-border transition-all duration-200 ${isSelected ? 'ring-2 ring-[#d946ef]/50' : ''}`}
       onClick={() => onSelect && onSelect(ticker)}
     >
-      <CardContent className="p-4">
+      <CardContent className="p-3 sm:p-4">
         {/* Top Row: Ticker, Price, Actions */}
-        <div className="flex items-start justify-between gap-3 mb-3">
+        <div className="flex items-start justify-between gap-2 sm:gap-3 mb-2 sm:mb-3">
           {/* Left: Ticker & Company */}
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
               <h2
-                className="text-xl lg:text-2xl font-bold text-white"
+                className="text-lg sm:text-xl lg:text-2xl font-bold text-white"
                 style={{ fontFamily: 'Outfit, sans-serif' }}
                 data-testid={`stock-ticker-${ticker}`}
               >
@@ -107,18 +107,18 @@ const StockCardWithChart = ({
           </div>
           
           {/* Center: Price & Change */}
-          <div className="text-right">
-            <div className="text-xl lg:text-2xl font-bold text-white mono-numbers">
+          <div className="text-right flex-shrink-0">
+            <div className="text-lg sm:text-xl lg:text-2xl font-bold text-white mono-numbers">
               {getCurrencySymbol(ticker, quote.currency)}{quote.price?.toFixed(2)}
             </div>
-            <div className={`text-xs font-medium mono-numbers flex items-center justify-end gap-1 ${quote.change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+            <div className={`text-[10px] sm:text-xs font-medium mono-numbers flex items-center justify-end gap-1 ${quote.change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
               {quote.change >= 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
               {quote.change >= 0 ? '+' : ''}{quote.change?.toFixed(2)} ({quote.change_percent?.toFixed(2)}%)
             </div>
           </div>
           
           {/* Right: Actions */}
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1 sm:gap-1.5 flex-shrink-0">
             <Button
               variant="outline"
               size="sm"
@@ -126,7 +126,7 @@ const StockCardWithChart = ({
                 e.stopPropagation();
                 isStockPinned(quote.ticker) ? onUnpin(quote.ticker) : onPin(quote.ticker, quote.company_name);
               }}
-              className="h-7 px-2 text-xs btn-outline-gold"
+              className="h-7 px-1.5 sm:px-2 text-xs btn-outline-gold"
             >
               <Pin className={`w-3 h-3 ${isStockPinned(quote.ticker) ? 'fill-[#d946ef] text-[#d946ef]' : ''}`} />
             </Button>
@@ -137,7 +137,7 @@ const StockCardWithChart = ({
                 e.stopPropagation();
                 onDismiss(ticker);
               }}
-              className="h-7 px-2 text-xs text-red-400 border-red-400/30 hover:bg-red-500/10"
+              className="h-7 px-1.5 sm:px-2 text-xs text-red-400 border-red-400/30 hover:bg-red-500/10"
               data-testid={`dismiss-stock-${ticker}`}
             >
               <X className="w-3 h-3" />
@@ -148,26 +148,28 @@ const StockCardWithChart = ({
         {/* Chart Section */}
         <div className="relative">
           {/* Period Tabs & Advanced Button */}
-          <div className="flex items-center justify-between mb-3">
-            <Tabs value={currentPeriod} onValueChange={(val) => onPeriodChange && onPeriodChange(val, ticker)}>
-              <TabsList className="h-8 bg-[rgba(255,255,255,0.03)] p-0.5 rounded-md">
-                {['1mo', '3mo', '6mo', '1y', '5y'].map(p => (
-                  <TabsTrigger 
-                    key={p} 
-                    value={p} 
-                    className="h-7 px-3 text-xs font-medium data-[state=active]:bg-[#d946ef] data-[state=active]:text-[#0a0a0f]"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    {p.toUpperCase()}
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-            </Tabs>
+          <div className="flex items-center justify-between mb-2 sm:mb-3 gap-2">
+            <div className="overflow-x-auto scrollbar-hide flex-shrink min-w-0">
+              <Tabs value={currentPeriod} onValueChange={(val) => onPeriodChange && onPeriodChange(val, ticker)}>
+                <TabsList className="h-7 sm:h-8 bg-[rgba(255,255,255,0.03)] p-0.5 rounded-md">
+                  {['1mo', '3mo', '6mo', '1y', '5y'].map(p => (
+                    <TabsTrigger 
+                      key={p} 
+                      value={p} 
+                      className="h-6 sm:h-7 px-2 sm:px-3 text-[10px] sm:text-xs font-medium data-[state=active]:bg-[#d946ef] data-[state=active]:text-[#0a0a0f]"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {p.toUpperCase()}
+                    </TabsTrigger>
+                  ))}
+                </TabsList>
+              </Tabs>
+            </div>
             
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
               {/* Period Performance */}
               {priceRange && (
-                <span className={`text-sm font-medium mono-numbers ${isUp ? 'text-green-400' : 'text-red-400'}`}>
+                <span className={`text-xs sm:text-sm font-medium mono-numbers ${isUp ? 'text-green-400' : 'text-red-400'}`}>
                   {isUp ? '+' : ''}{periodChange}%
                 </span>
               )}
@@ -179,17 +181,17 @@ const StockCardWithChart = ({
                     e.stopPropagation();
                     onAdvancedChart(ticker);
                   }}
-                  className="h-6 px-2 text-[10px] btn-outline-gold"
+                  className="h-6 px-1.5 sm:px-2 text-[10px] btn-outline-gold"
                 >
-                  <BarChart3 className="w-3 h-3 mr-1" />
-                  Advanced
+                  <BarChart3 className="w-3 h-3 sm:mr-1" />
+                  <span className="hidden sm:inline">Advanced</span>
                 </Button>
               )}
             </div>
           </div>
           
-          {/* Chart - 30% larger */}
-          <div ref={chartRef} className="h-[160px]" data-testid={`stock-chart-${ticker}`}>
+          {/* Chart */}
+          <div ref={chartRef} className="h-[130px] sm:h-[160px]" data-testid={`stock-chart-${ticker}`}>
             {historicalData.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
                 <ComposedChart data={historicalData} margin={{ top: 10, right: 10, left: 10, bottom: 5 }}>
@@ -247,51 +249,51 @@ const StockCardWithChart = ({
         </div>
 
         {/* Key Stats Row - Aligned */}
-        <div className="grid grid-cols-5 lg:grid-cols-9 gap-4 mt-4 pt-4 border-t border-[rgba(255,255,255,0.08)]">
+        <div className="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-9 gap-2 sm:gap-4 mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-[rgba(255,255,255,0.08)]">
           {quote.day_open && (
             <div className="flex flex-col items-center">
-              <div className="text-[11px] text-gray-400 mb-1">Open</div>
-              <div className="text-sm font-medium text-white mono-numbers">
+              <div className="text-[10px] sm:text-[11px] text-gray-400 mb-0.5 sm:mb-1">Open</div>
+              <div className="text-xs sm:text-sm font-medium text-white mono-numbers">
                 {getCurrencySymbol(ticker, quote.currency)}{quote.day_open.toFixed(2)}
               </div>
             </div>
           )}
           {quote.day_high && (
             <div className="flex flex-col items-center">
-              <div className="text-[11px] text-gray-400 mb-1">High</div>
-              <div className="text-sm font-medium text-white mono-numbers">
+              <div className="text-[10px] sm:text-[11px] text-gray-400 mb-0.5 sm:mb-1">High</div>
+              <div className="text-xs sm:text-sm font-medium text-white mono-numbers">
                 {getCurrencySymbol(ticker, quote.currency)}{quote.day_high.toFixed(2)}
               </div>
             </div>
           )}
           {quote.day_low && (
             <div className="flex flex-col items-center">
-              <div className="text-[11px] text-gray-400 mb-1">Low</div>
-              <div className="text-sm font-medium text-white mono-numbers">
+              <div className="text-[10px] sm:text-[11px] text-gray-400 mb-0.5 sm:mb-1">Low</div>
+              <div className="text-xs sm:text-sm font-medium text-white mono-numbers">
                 {getCurrencySymbol(ticker, quote.currency)}{quote.day_low.toFixed(2)}
               </div>
             </div>
           )}
           {quote.market_cap && (
             <div className="flex flex-col items-center">
-              <div className="text-[11px] text-gray-400 mb-1">Mkt Cap</div>
-              <div className="text-sm font-medium text-white mono-numbers">
+              <div className="text-[10px] sm:text-[11px] text-gray-400 mb-0.5 sm:mb-1">Mkt Cap</div>
+              <div className="text-xs sm:text-sm font-medium text-white mono-numbers">
                 ${(quote.market_cap / 1e9).toFixed(0)}B
               </div>
             </div>
           )}
           {quote.pe_ratio && (
             <div className="flex flex-col items-center">
-              <div className="text-[11px] text-gray-400 mb-1">P/E</div>
-              <div className="text-sm font-medium text-white mono-numbers">
+              <div className="text-[10px] sm:text-[11px] text-gray-400 mb-0.5 sm:mb-1">P/E</div>
+              <div className="text-xs sm:text-sm font-medium text-white mono-numbers">
                 {quote.pe_ratio.toFixed(1)}
               </div>
             </div>
           )}
           {quote.dividend_yield !== null && quote.dividend_yield !== undefined && (
-            <div className="flex flex-col items-center hidden lg:flex">
-              <div className="text-[11px] text-gray-400 mb-1">Div</div>
-              <div className="text-sm font-medium text-white mono-numbers">
+            <div className="flex flex-col items-center hidden sm:flex">
+              <div className="text-[10px] sm:text-[11px] text-gray-400 mb-0.5 sm:mb-1">Div</div>
+              <div className="text-xs sm:text-sm font-medium text-white mono-numbers">
                 {quote.dividend_yield.toFixed(2)}%
               </div>
             </div>

@@ -64,7 +64,31 @@ code {
 }
 
 html {
-    font-size: 20.8px; /* 30% increase from 16px base */
+    font-size: 16px;
+}
+
+@media (min-width: 640px) {
+    html {
+        font-size: 18px;
+    }
+}
+
+@media (min-width: 1024px) {
+    html {
+        font-size: 20.8px; /* 30% increase from 16px base — desktop only */
+    }
+}
+
+/* Mobile touch improvements */
+@media (max-width: 640px) {
+    body {
+        -webkit-tap-highlight-color: transparent;
+        overscroll-behavior-y: contain;
+    }
+    
+    button, a, input, select, textarea {
+        touch-action: manipulation;
+    }
 }
 
 @layer base {
@@ -145,13 +169,15 @@ html {
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     
-    .premium-card:hover {
-        border-color: rgba(217, 70, 239, 0.3);
-        box-shadow: 
-            0 8px 32px rgba(0, 0, 0, 0.5),
-            0 0 0 1px rgba(217, 70, 239, 0.15),
-            inset 0 1px 0 rgba(255, 255, 255, 0.08);
-        transform: translateY(-2px);
+    @media (hover: hover) {
+        .premium-card:hover {
+            border-color: rgba(217, 70, 239, 0.3);
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(217, 70, 239, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.08);
+            transform: translateY(-2px);
+        }
     }
     
     .purple-gradient-border {

@@ -130,16 +130,16 @@ const AccessGate = ({ children }) => {
   // Show celebration screen during confetti
   if (showConfetti) {
     return (
-      <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center">
+      <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center px-4">
         <div className="text-center animate-bounce-in">
-          <TrendingUp className="w-20 h-20 mx-auto mb-6 text-[#d946ef]" />
+          <TrendingUp className="w-14 h-14 sm:w-20 sm:h-20 mx-auto mb-4 sm:mb-6 text-[#d946ef]" />
           <h1 
-            className="text-5xl font-bold gold-text mb-4"
+            className="text-3xl sm:text-5xl font-bold gold-text mb-3 sm:mb-4"
             style={{ fontFamily: 'Outfit, sans-serif' }}
           >
             Welcome!
           </h1>
-          <p className="text-xl text-gray-400" style={{ fontFamily: 'DM Sans, sans-serif' }}>
+          <p className="text-base sm:text-xl text-gray-400" style={{ fontFamily: 'DM Sans, sans-serif' }}>
             Get ready to discover your next big win...
           </p>
         </div>
@@ -155,19 +155,19 @@ const AccessGate = ({ children }) => {
     <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center p-4" data-testid="access-gate">
       <div className="w-full max-w-md">
         {/* Logo */}
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center gap-3 mb-3">
-            <TrendingUp className="w-12 h-12 text-[#d946ef]" />
+        <div className="text-center mb-6 sm:mb-8">
+          <div className="flex items-center justify-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+            <TrendingUp className="w-9 h-9 sm:w-12 sm:h-12 text-[#d946ef]" />
             <div>
               <h1 
-                className="text-4xl font-bold gold-text"
+                className="text-2xl sm:text-4xl font-bold gold-text"
                 style={{ fontFamily: 'Outfit, sans-serif' }}
               >
                 Moonshot
               </h1>
             </div>
           </div>
-          <p className="text-gray-400 text-lg" style={{ fontFamily: 'DM Sans, sans-serif' }}>
+          <p className="text-sm sm:text-lg text-gray-400" style={{ fontFamily: 'DM Sans, sans-serif' }}>
             Discover Your Next Big Win
           </p>
         </div>

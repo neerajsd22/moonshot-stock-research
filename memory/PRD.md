@@ -35,6 +35,8 @@ Build a comprehensive stock analysis application called "Moonshot" with stock se
 - **[May 2026] Pull-to-refresh** - Native touch gesture for mobile data refresh
 - **[May 2026] Landing page** - Vertical spotlight scroll with Hero, AI Deep Analysis showcase, Intelligence Hub showcase, features grid, stats strip, and embedded access code input
 - **[May 2026] Drag-and-drop pinned stocks** - Reorder pinned stocks by dragging, persists to backend via order field
+- **[May 2026] Categories popover** - Moved categories from home page into a compact header popover flyout (Explore button), with market tabs and scrollable list
+- **[May 2026] Stock visibility fix** - Categories auto-hide when stocks are stacked; auto-scroll to newly selected stock
 
 ## Responsive Design Implementation (May 2026)
 - HTML font-size scaling: 16px mobile -> 18px tablet -> 20.8px desktop

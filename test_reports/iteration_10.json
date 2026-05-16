@@ -1,0 +1,31 @@
+{
+  "summary": "Verified the NaN-in-history bug fix end-to-end. Backend: 30/30 pytest cases passed against the live preview URL covering (a) MSFT /history at 1mo/3mo/6mo/1y/5y, (b) /history?period=1y for 17 cross-sector tickers (AAPL, GOOGL, NVDA, TSLA, AMZN, META, CRM, ABT, JNJ, KO, V, PFE, ORCL, NFLX, BAC, INTC, PG), (c) JSON-compliance assertion that no 'NaN' or 'Infinity' tokens appear in any response body and all OHLC fields are finite floats, (d) graceful 404 for /api/stocks/INVALIDTICKER/history, (e) regression of MSFT's other endpoints (quote, earnings-snapshot, earnings-link, health-report, news, bull-bear-sentiment) all 200. Frontend: logged in with QZ91U2U8, added MSFT via search-then-click — the stock card rendered with the 1Y price chart, full OHLC stats row, Financials section (Earnings Report link, FCF $37.01B, Gross Margin 68.3%, ROE 34.0%, Target $561.56), Analysis section (Bull/Bear sentiment), Latest News (3 articles with thumbnails), and Intelligence Hub with 5 Signals · 71/100 · BUY. AI Deep Analysis block confirmed visible via data-testid. Zero console errors and zero page errors during the entire flow. The MSFT-clicks-but-card-doesn't-render regression is fully fixed.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_stock_history_nan_fix.py",
+    "/app/test_reports/pytest/history_nan_iter10.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Defensive consistency: get_stock_quote, get_earnings_snapshot, get_health_report, and any other endpoint that returns floats from yfinance should adopt the same NaN/Inf guard pattern (drop NaN rows + per-row try/except). Today only get_stock_history was hardened — the next ex-dividend or split row could surface the same JSON-serialization 500 elsewhere.",
+    "Consider centralizing the OHLC-row sanitizer as a small helper (def to_safe_ohlc(row)) so the same logic is reused and unit-testable instead of inlined inside get_stock_history.",
+    "The stacked stock card has no top-level data-testid (e.g. stock-card-{TICKER}) — adding one would make full-flow Playwright assertions cleaner; today the test has to rely on stock-details-block-{TICKER}/ai-deep-analysis-{TICKER} as proxies.",
+    "App.js still ~1900 lines; the search-then-add-stock orchestration and stacked render loop are good candidates to extract into <StackedStockItem/> as already flagged in iter9."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_stock_history_nan_fix.py",
+    "/app/test_reports/iteration_10.json"
+  ],
+  "success_rate": {"backend": "100% (30/30 pytest)", "frontend": "100% — MSFT card + all sections render with zero errors"},
+  "test_credentials": {"access_code": "QZ91U2U8"},
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Bug fix: /app/backend/server.py::get_stock_history (lines 820-860) now drops NaN OHLC rows + safe Volume int conversion. Regression suite at /app/backend/tests/test_stock_history_nan_fix.py covers 17 tickers x finite-float assertions. Frontend stock card has NO stock-card-{TICKER} testid — assert via stock-details-block-{TICKER}, ai-deep-analysis-{TICKER}, or stacked-stocks-container instead. Search input testid is stock-search-input (NOT search-input). Access-code submit testid is access-submit (NOT access-code-submit).",
+  "rca_of_the_issue": "ROOT CAUSE: yfinance.history(period='1y') for MSFT included a 2025-05-15 ex-dividend marker row whose Open/High/Low/Close were NaN. FastAPI's default JSONResponse encoder (orjson/json) rejects NaN/Infinity because they are not valid JSON tokens per RFC 8259, raising ValueError 'Out of range float values are not JSON compliant' and surfacing as a 500 from /api/stocks/MSFT/history. App.js fetchStockData uses Promise.all to fan out quote/history/earnings/news/etc., so a single 500 rejected the combined promise and skipped the entire setStackedStocks append — visually the MSFT search-and-click produced nothing. FIX (lines 831-852 of server.py): hist.dropna(subset=['Open','High','Low','Close']) before iterating, plus per-row try/except and safe int(Volume) only when pd.notna(Volume). VERIFIED: 30 backend regression tests + live MSFT frontend flow both green."
+}

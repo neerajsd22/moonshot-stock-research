@@ -828,17 +828,29 @@ async def get_stock_history(ticker: str, period: str = "1y"):
             if hist.empty:
                 raise ValueError("No historical data available")
             
-            return [
-                {
-                    "date": date.strftime('%Y-%m-%d'),
-                    "open": float(row['Open']),
-                    "high": float(row['High']),
-                    "low": float(row['Low']),
-                    "close": float(row['Close']),
-                    "volume": int(row['Volume'])
-                }
-                for date, row in hist.iterrows()
-            ]
+            # yfinance can return rows with NaN OHLC values (e.g. ex-dividend
+            # markers with no trade data). Drop those before serializing — NaN
+            # is not JSON-compliant and would otherwise crash the response.
+            hist = hist.dropna(subset=['Open', 'High', 'Low', 'Close'])
+            
+            if hist.empty:
+                raise ValueError("No historical data available")
+            
+            rows = []
+            for date, row in hist.iterrows():
+                try:
+                    rows.append({
+                        "date": date.strftime('%Y-%m-%d'),
+                        "open": float(row['Open']),
+                        "high": float(row['High']),
+                        "low": float(row['Low']),
+                        "close": float(row['Close']),
+                        "volume": int(row['Volume']) if pd.notna(row['Volume']) else 0,
+                    })
+                except (ValueError, TypeError):
+                    # Belt-and-suspenders: skip any row that still has bad numeric data
+                    continue
+            return rows
         
         history = await run_in_threadpool(fetch_history)
         return history

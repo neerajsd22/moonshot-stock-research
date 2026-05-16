@@ -214,6 +214,40 @@ class TriggeredAlert(BaseModel):
     triggered_at: datetime
 
 
+# Portfolio Models -----------------------------------------------------------
+class PortfolioPosition(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    ticker: str
+    company_name: Optional[str] = None
+    shares: float
+    avg_cost: float
+    buy_date: Optional[str] = None  # ISO YYYY-MM-DD
+    dividends_ytd: float = 0.0
+    added_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class PortfolioPositionCreate(BaseModel):
+    ticker: str
+    shares: float
+    avg_cost: float
+    buy_date: Optional[str] = None
+    company_name: Optional[str] = None
+
+
+class PortfolioPositionUpdate(BaseModel):
+    shares: Optional[float] = None
+    avg_cost: Optional[float] = None
+    buy_date: Optional[str] = None
+    dividends_ytd: Optional[float] = None
+
+
+class PortfolioImportRequest(BaseModel):
+    text: str  # CSV content or pasted rows
+    confirm: bool = False  # if False, returns preview only; if True, persists
+
+
 # Authentication Models
 class PinnedStockCreate(BaseModel):
     ticker: str
@@ -2017,6 +2051,269 @@ async def delete_price_alert(alert_id: str):
         raise HTTPException(status_code=404, detail="Price alert not found")
     
     return {"message": "Price alert deleted successfully"}
+
+
+# ===== Portfolio Endpoints ==================================================
+
+def _build_position_payload(pos: dict, quote: Optional[dict]) -> dict:
+    """Combine a stored position with a live quote to compute P&L fields."""
+    shares = safe_float(pos.get("shares"), 0) or 0
+    avg_cost = safe_float(pos.get("avg_cost"), 0) or 0
+    cost_basis = shares * avg_cost
+
+    price = None
+    day_change = 0.0
+    company_name = pos.get("company_name") or pos["ticker"]
+    if quote:
+        price = safe_float(quote.get("price"))
+        day_change = safe_float(quote.get("change"), 0) or 0
+        company_name = quote.get("company_name") or company_name
+
+    market_value = (price * shares) if price is not None else None
+    unrealized = (market_value - cost_basis) if market_value is not None else None
+    unrealized_pct = (
+        (unrealized / cost_basis * 100) if (unrealized is not None and cost_basis) else None
+    )
+    today_change = day_change * shares
+    today_change_pct = (
+        ((day_change / (price - day_change)) * 100)
+        if price is not None and (price - day_change) > 0
+        else None
+    )
+
+    return {
+        "id": pos["id"],
+        "ticker": pos["ticker"],
+        "company_name": company_name,
+        "shares": shares,
+        "avg_cost": avg_cost,
+        "buy_date": pos.get("buy_date"),
+        "dividends_ytd": safe_float(pos.get("dividends_ytd"), 0) or 0,
+        "cost_basis": cost_basis,
+        "price": price,
+        "market_value": market_value,
+        "unrealized_pnl": unrealized,
+        "unrealized_pnl_pct": unrealized_pct,
+        "today_change": today_change,
+        "today_change_pct": today_change_pct,
+        "currency": quote.get("currency", "USD") if quote else "USD",
+    }
+
+
+async def _fetch_quote_safe(ticker: str) -> Optional[dict]:
+    """Fetch live quote in a threadpool. Returns None on any failure."""
+    try:
+        def f():
+            stock = ticker_cache.get_or_create(ticker.upper())
+            info = stock.info
+            price = safe_float(info.get("currentPrice")) or safe_float(info.get("regularMarketPrice"))
+            prev = safe_float(info.get("previousClose")) or safe_float(info.get("regularMarketPreviousClose"))
+            if price is None:
+                return None
+            change = (price - prev) if prev is not None else 0.0
+            return {
+                "price": price,
+                "change": change,
+                "currency": info.get("currency", "USD"),
+                "company_name": info.get("longName") or info.get("shortName") or ticker.upper(),
+            }
+        return await run_in_threadpool(f)
+    except Exception as e:
+        logger.warning(f"Portfolio quote fetch failed for {ticker}: {e}")
+        return None
+
+
+@api_router.get("/portfolio")
+async def get_portfolio():
+    """List every position with live P&L."""
+    docs = await db.portfolio_positions.find({}, {"_id": 0}).sort("added_at", 1).to_list(500)
+    if not docs:
+        return []
+    tickers = list({d["ticker"] for d in docs})
+    quotes = {}
+    for t in tickers:
+        q = await _fetch_quote_safe(t)
+        if q is not None:
+            quotes[t] = q
+    return [_build_position_payload(d, quotes.get(d["ticker"])) for d in docs]
+
+
+@api_router.get("/portfolio/summary")
+async def get_portfolio_summary():
+    """Aggregate summary used by the header dot indicator. Lightweight."""
+    docs = await db.portfolio_positions.find({}, {"_id": 0}).to_list(500)
+    if not docs:
+        return {
+            "is_empty": True,
+            "position_count": 0,
+            "total_value": 0,
+            "total_cost": 0,
+            "total_pnl": 0,
+            "total_pnl_pct": 0,
+            "today_change": 0,
+            "today_change_pct": 0,
+            "best_performer": None,
+            "worst_performer": None,
+            "allocation": [],
+        }
+
+    tickers = list({d["ticker"] for d in docs})
+    quotes = {}
+    for t in tickers:
+        q = await _fetch_quote_safe(t)
+        if q is not None:
+            quotes[t] = q
+
+    positions = [_build_position_payload(d, quotes.get(d["ticker"])) for d in docs]
+    total_cost = sum(p["cost_basis"] for p in positions)
+    total_value = sum(p["market_value"] for p in positions if p["market_value"] is not None)
+    total_pnl = total_value - total_cost
+    total_pnl_pct = (total_pnl / total_cost * 100) if total_cost else 0
+    today_change = sum(p["today_change"] for p in positions if p["today_change"] is not None)
+    prev_total_value = total_value - today_change
+    today_change_pct = (today_change / prev_total_value * 100) if prev_total_value else 0
+
+    # Best & worst by unrealized %
+    rated = [p for p in positions if p["unrealized_pnl_pct"] is not None]
+    best = max(rated, key=lambda p: p["unrealized_pnl_pct"], default=None)
+    worst = min(rated, key=lambda p: p["unrealized_pnl_pct"], default=None)
+
+    # Allocation %
+    allocation = []
+    if total_value:
+        for p in positions:
+            if p["market_value"]:
+                allocation.append({
+                    "ticker": p["ticker"],
+                    "value": p["market_value"],
+                    "percent": p["market_value"] / total_value * 100,
+                })
+        allocation.sort(key=lambda a: a["percent"], reverse=True)
+
+    def _slim(p):
+        return None if p is None else {
+            "ticker": p["ticker"],
+            "unrealized_pnl": p["unrealized_pnl"],
+            "unrealized_pnl_pct": p["unrealized_pnl_pct"],
+        }
+
+    return {
+        "is_empty": False,
+        "position_count": len(positions),
+        "total_value": total_value,
+        "total_cost": total_cost,
+        "total_pnl": total_pnl,
+        "total_pnl_pct": total_pnl_pct,
+        "today_change": today_change,
+        "today_change_pct": today_change_pct,
+        "best_performer": _slim(best),
+        "worst_performer": _slim(worst),
+        "allocation": allocation,
+    }
+
+
+@api_router.post("/portfolio", response_model=PortfolioPosition)
+async def add_portfolio_position(payload: PortfolioPositionCreate):
+    """Add a single position manually."""
+    ticker = payload.ticker.strip().upper()
+    if not ticker:
+        raise HTTPException(status_code=400, detail="Ticker is required")
+    if payload.shares <= 0:
+        raise HTTPException(status_code=400, detail="Shares must be positive")
+    if payload.avg_cost <= 0:
+        raise HTTPException(status_code=400, detail="Avg cost must be positive")
+
+    company_name = payload.company_name
+    if not company_name:
+        q = await _fetch_quote_safe(ticker)
+        if q:
+            company_name = q.get("company_name")
+
+    pos = PortfolioPosition(
+        ticker=ticker,
+        shares=payload.shares,
+        avg_cost=payload.avg_cost,
+        buy_date=payload.buy_date,
+        company_name=company_name or ticker,
+    )
+    doc = pos.model_dump()
+    await db.portfolio_positions.insert_one(doc.copy())
+    return pos
+
+
+@api_router.put("/portfolio/{position_id}")
+async def update_portfolio_position(position_id: str, payload: PortfolioPositionUpdate):
+    """Edit a position's shares, cost, date, or dividends YTD."""
+    update_fields = {k: v for k, v in payload.model_dump().items() if v is not None}
+    if not update_fields:
+        raise HTTPException(status_code=400, detail="No fields to update")
+    result = await db.portfolio_positions.update_one(
+        {"id": position_id}, {"$set": update_fields}
+    )
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Position not found")
+    return {"message": "Position updated"}
+
+
+@api_router.delete("/portfolio/{position_id}")
+async def delete_portfolio_position(position_id: str):
+    """Remove a position."""
+    result = await db.portfolio_positions.delete_one({"id": position_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Position not found")
+    return {"message": "Position deleted"}
+
+
+@api_router.post("/portfolio/import")
+async def import_portfolio(payload: PortfolioImportRequest):
+    """
+    Two-phase import:
+    - confirm=False (default): parse + return preview { positions, mapping, broker, warnings }
+    - confirm=True: insert parsed positions into MongoDB and return the inserted docs
+    """
+    from portfolio_import import parse_input
+
+    result = parse_input(payload.text)
+
+    preview = {
+        "positions": result.positions,
+        "mapping": result.mapping,
+        "broker": result.broker,
+        "warnings": result.warnings,
+        "headers": result.headers,
+        "count": len(result.positions),
+    }
+
+    if not payload.confirm:
+        return preview
+
+    if not result.positions:
+        raise HTTPException(status_code=400, detail="No valid positions to import")
+
+    inserted = []
+    for p in result.positions:
+        q = await _fetch_quote_safe(p["ticker"])
+        company_name = q.get("company_name") if q else p["ticker"]
+        pos = PortfolioPosition(
+            ticker=p["ticker"],
+            shares=p["shares"],
+            avg_cost=p["avg_cost"],
+            buy_date=p.get("buy_date"),
+            company_name=company_name,
+        )
+        doc = pos.model_dump()
+        await db.portfolio_positions.insert_one(doc.copy())
+        inserted.append(pos.model_dump(mode="json"))
+
+    return {
+        "imported": len(inserted),
+        "positions": inserted,
+        "warnings": result.warnings,
+        "broker": result.broker,
+    }
+
+
+
 
 
 @api_router.get("/price-alerts/check")

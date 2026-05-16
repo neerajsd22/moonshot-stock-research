@@ -41,6 +41,8 @@ import StockDetailsBlock from './components/stock/StockDetailsBlock';
 import CategoryIcon from './components/CategoryIcon';
 import SortablePinnedStock from './components/SortablePinnedStock';
 import AboutUs from './components/AboutUs';
+import PortfolioPage from './components/portfolio/PortfolioPage';
+import PortfolioButton from './components/portfolio/PortfolioButton';
 import { BACKGROUND_OPTIONS } from './components/backgroundOptions';
 
 import {
@@ -1327,6 +1329,9 @@ const HomePage = () => {
                 {isCompact ? <LayoutList className="w-4 h-4" /> : <LayoutList className="w-4 h-4" />}
                 <span className="hidden sm:inline">{isCompact ? 'Expand' : 'Compact'}</span>
               </Button>
+
+              {/* Portfolio Button with live P&L pulse dot */}
+              <PortfolioButton />
               
               {/* Menu Button */}
               <Button
@@ -1902,6 +1907,7 @@ function App() {
             <AccessGate>
               <Routes>
                 <Route path="/" element={<HomePage />} />
+                <Route path="/portfolio" element={<PortfolioPage />} />
                 <Route path="/categories" element={<CategoriesPage />} />
                 <Route path="/category/:categoryName" element={<CategoryPage />} />
               </Routes>

@@ -3,7 +3,9 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Pin, X, BarChart3, TrendingUp, TrendingDown } from 'lucide-react';
+import { Pin, X, BarChart3, TrendingUp, TrendingDown, Bell } from 'lucide-react';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Input } from '@/components/ui/input';
 import {
   ComposedChart,
   Area,
@@ -24,10 +26,15 @@ const StockCardWithChart = ({
   currentPeriod,
   onAdvancedChart,
   isSelected,
-  onSelect
+  onSelect,
+  alertCount = 0,
+  onCreateAlert
 }) => {
   const { quote, ticker, historicalData = [] } = stock;
   const chartRef = useRef(null);
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertPrice, setAlertPrice] = useState('');
+  const [alertCondition, setAlertCondition] = useState('above');
   
   // Calculate chart color based on price movement
   const chartColor = historicalData.length > 1 
@@ -119,6 +126,88 @@ const StockCardWithChart = ({
           
           {/* Right: Actions */}
           <div className="flex items-center gap-1 sm:gap-1.5 flex-shrink-0">
+            {/* Alert Bell */}
+            <Popover open={alertOpen} onOpenChange={setAlertOpen}>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={(e) => e.stopPropagation()}
+                  className="h-7 px-1.5 sm:px-2 text-xs btn-outline-gold relative"
+                  data-testid={`alert-bell-${ticker}`}
+                >
+                  <Bell className={`w-3 h-3 ${alertCount > 0 ? 'text-[#d946ef]' : ''}`} />
+                  {alertCount > 0 && (
+                    <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-[#d946ef] text-[#0a0a0f] text-[9px] font-bold rounded-full flex items-center justify-center">
+                      {alertCount}
+                    </span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent
+                align="end"
+                sideOffset={4}
+                className="w-[220px] p-3 bg-[#0f0f14] border border-[rgba(217,70,239,0.2)] shadow-2xl rounded-xl"
+                onClick={(e) => e.stopPropagation()}
+                data-testid={`alert-popover-${ticker}`}
+              >
+                <div className="text-xs font-medium text-white mb-2" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                  Set Price Alert
+                </div>
+                <div className="flex gap-1 mb-2">
+                  <Button
+                    size="sm"
+                    variant={alertCondition === 'above' ? 'default' : 'ghost'}
+                    onClick={() => setAlertCondition('above')}
+                    className={`flex-1 h-7 text-[11px] rounded-md ${alertCondition === 'above' ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'text-gray-400'}`}
+                    data-testid={`alert-above-${ticker}`}
+                  >
+                    Above
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant={alertCondition === 'below' ? 'default' : 'ghost'}
+                    onClick={() => setAlertCondition('below')}
+                    className={`flex-1 h-7 text-[11px] rounded-md ${alertCondition === 'below' ? 'bg-red-500/20 text-red-400 border border-red-500/30' : 'text-gray-400'}`}
+                    data-testid={`alert-below-${ticker}`}
+                  >
+                    Below
+                  </Button>
+                </div>
+                <div className="flex gap-1">
+                  <Input
+                    type="number"
+                    step="0.01"
+                    placeholder={`$${quote.price?.toFixed(0) || '0'}`}
+                    value={alertPrice}
+                    onChange={(e) => setAlertPrice(e.target.value)}
+                    className="h-7 text-xs flex-1 bg-[rgba(255,255,255,0.03)] border-[rgba(255,255,255,0.08)]"
+                    onClick={(e) => e.stopPropagation()}
+                    data-testid={`alert-price-input-${ticker}`}
+                  />
+                  <Button
+                    size="sm"
+                    className="h-7 px-3 text-[11px] bg-[#d946ef] text-[#0a0a0f] hover:bg-[#f0abfc]"
+                    disabled={!alertPrice}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (onCreateAlert && alertPrice) {
+                        onCreateAlert(ticker, quote.company_name || ticker, parseFloat(alertPrice), alertCondition);
+                        setAlertPrice('');
+                        setAlertOpen(false);
+                      }
+                    }}
+                    data-testid={`alert-save-${ticker}`}
+                  >
+                    Set
+                  </Button>
+                </div>
+                <div className="text-[10px] text-gray-500 mt-1.5">
+                  Current: {getCurrencySymbol(ticker, quote.currency)}{quote.price?.toFixed(2)}
+                </div>
+              </PopoverContent>
+            </Popover>
+
             <Button
               variant="outline"
               size="sm"

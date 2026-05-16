@@ -37,6 +37,8 @@ Build a comprehensive stock analysis application called "Moonshot" with stock se
 - **[May 2026] Drag-and-drop pinned stocks** - Reorder pinned stocks by dragging, persists to backend via order field
 - **[May 2026] Categories popover** - Moved categories from home page into a compact header popover flyout (Explore button), with market tabs and scrollable list
 - **[May 2026] Stock visibility fix** - Categories auto-hide when stocks are stacked; auto-scroll to newly selected stock
+- **[May 2026] Compact view** - Replaced Dense table with compact sparkline view (ticker + mini chart + price + change%), toggled via header button
+- **[May 2026] Price Alerts (Option C)** - Bell icon on stock cards with quick-set popover (above/below + target price), alert count badge on Menu button, inline alert summary in sidebar with distance tracking and delete
 
 ## Responsive Design Implementation (May 2026)
 - HTML font-size scaling: 16px mobile -> 18px tablet -> 20.8px desktop
@@ -59,9 +61,7 @@ Build a comprehensive stock analysis application called "Moonshot" with stock se
 ### P2 (Nice to have)
 - Keyboard shortcuts (/ to focus search, Esc to close)
 - Confirmation dialog before "Dismiss All"
-- Compact view mode (ticker + mini sparkline + price)
 - Portfolio tracker with P&L dashboard
-- Price alert notifications
 - Side-by-side stock comparison tool
 
 ### Refactoring

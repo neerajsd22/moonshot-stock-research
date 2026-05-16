@@ -178,6 +178,7 @@ const HomePage = () => {
   const [showPriceAlertManager, setShowPriceAlertManager] = useState(false);
   const [showAdvancedChart, setShowAdvancedChart] = useState(false);
   const [alertCount, setAlertCount] = useState(0);
+  const [activeAlerts, setActiveAlerts] = useState([]);
   const [selectedMarket, setSelectedMarket] = useState('all'); // 'all', 'us', 'india'
   const [showCategorySettings, setShowCategorySettings] = useState(false);
   const [enabledCategories, setEnabledCategories] = useState(() => {
@@ -337,10 +338,42 @@ const HomePage = () => {
     try {
       const response = await axios.get(`${API}/price-alerts?active_only=true`);
       setAlertCount(response.data.length);
+      setActiveAlerts(response.data);
     } catch (error) {
       console.error('Error fetching alert count:', error);
     }
   };
+
+  // Create a price alert
+  const createPriceAlert = async (ticker, companyName, targetPrice, condition) => {
+    try {
+      await axios.post(`${API}/price-alerts`, {
+        ticker: ticker.toUpperCase(),
+        company_name: companyName,
+        target_price: targetPrice,
+        condition,
+      });
+      toast.success(`Alert set: ${ticker} ${condition} $${targetPrice.toFixed(2)}`);
+      fetchAlertCount();
+    } catch (error) {
+      toast.error('Failed to create alert');
+    }
+  };
+
+  // Delete a price alert
+  const deletePriceAlert = async (alertId) => {
+    try {
+      await axios.delete(`${API}/price-alerts/${alertId}`);
+      fetchAlertCount();
+    } catch (error) {
+      toast.error('Failed to delete alert');
+    }
+  };
+
+  // Get alert count for a specific ticker
+  const getAlertCountForTicker = useCallback((ticker) => {
+    return activeAlerts.filter(a => a.ticker === ticker.toUpperCase() && a.is_active).length;
+  }, [activeAlerts]);
 
   // Auto-refresh selected stock quote every 30 seconds
   useEffect(() => {
@@ -999,19 +1032,64 @@ const HomePage = () => {
               <span>Watchlists</span>
             </button>
             
-            <button
-              onClick={() => { setShowPriceAlertManager(true); setSidebarOpen(false); }}
-              className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-gray-300 hover:bg-[rgba(217,70,239,0.1)] hover:text-white transition-colors relative"
-              data-testid="sidebar-alerts"
-            >
-              <Bell className="w-5 h-5 text-[#d946ef]" />
-              <span>Price Alerts</span>
-              {alertCount > 0 && (
-                <Badge className="ml-auto bg-[#d946ef] text-[#0a0a0f] text-xs">
-                  {alertCount}
-                </Badge>
+            <div data-testid="sidebar-alerts-section">
+              <button
+                onClick={() => { setShowPriceAlertManager(true); setSidebarOpen(false); }}
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-gray-300 hover:bg-[rgba(217,70,239,0.1)] hover:text-white transition-colors relative"
+                data-testid="sidebar-alerts"
+              >
+                <Bell className="w-5 h-5 text-[#d946ef]" />
+                <span>Price Alerts</span>
+                {alertCount > 0 && (
+                  <Badge className="ml-auto bg-[#d946ef] text-[#0a0a0f] text-xs">
+                    {alertCount}
+                  </Badge>
+                )}
+              </button>
+
+              {/* Inline Alert Summary */}
+              {activeAlerts.length > 0 && (
+                <div className="px-3 pb-2 space-y-1">
+                  {activeAlerts.slice(0, 5).map((alert) => {
+                    const currentPrice = stackedStocks.find(s => s.ticker === alert.ticker)?.quote?.price;
+                    const distance = currentPrice ? (alert.target_price - currentPrice) : null;
+                    return (
+                      <div
+                        key={alert.id}
+                        className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-[rgba(255,255,255,0.02)] group"
+                        data-testid={`sidebar-alert-${alert.id}`}
+                      >
+                        <div className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${alert.condition === 'above' ? 'bg-green-400' : 'bg-red-400'}`} />
+                        <div className="min-w-0 flex-1">
+                          <div className="text-[11px] text-gray-300 truncate">
+                            <span className="font-medium text-white">{alert.ticker}</span>
+                            {' '}{alert.condition}{' '}
+                            <span className="mono-numbers">${alert.target_price.toFixed(2)}</span>
+                          </div>
+                          {distance !== null && (
+                            <div className="text-[10px] text-gray-500 mono-numbers">
+                              {Math.abs(distance) < 0.01 ? 'At target' : `$${Math.abs(distance).toFixed(2)} ${distance > 0 ? 'away' : 'past'}`}
+                            </div>
+                          )}
+                        </div>
+                        <button
+                          onClick={(e) => { e.stopPropagation(); deletePriceAlert(alert.id); }}
+                          className="text-gray-600 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0"
+                          data-testid={`delete-alert-${alert.id}`}
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </div>
+                    );
+                  })}
+                  {activeAlerts.length > 5 && (
+                    <div className="text-[10px] text-gray-500 text-center py-1">
+                      +{activeAlerts.length - 5} more
+                    </div>
+                  )}
+                </div>
               )}
-            </button>
+            </div>
             
             <button
               onClick={() => { setShowCategorySettings(true); setSidebarOpen(false); }}
@@ -1262,10 +1340,15 @@ const HomePage = () => {
                 variant="outline"
                 size="sm"
                 onClick={() => setSidebarOpen(true)}
-                className="h-9 sm:h-11 px-2 sm:px-4 flex items-center gap-2 btn-outline-gold"
+                className="h-9 sm:h-11 px-2 sm:px-4 flex items-center gap-2 btn-outline-gold relative"
               >
                 <Menu className="w-4 h-4" />
                 <span className="hidden sm:inline">Menu</span>
+                {alertCount > 0 && (
+                  <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-[#d946ef] text-[#0a0a0f] text-[9px] font-bold rounded-full flex items-center justify-center" data-testid="menu-alert-badge">
+                    {alertCount}
+                  </span>
+                )}
               </Button>
             </div>
           </div>
@@ -1382,6 +1465,8 @@ const HomePage = () => {
                       setHistoricalData(stockData.historicalData);
                     }
                   }}
+                  alertCount={getAlertCountForTicker(stock.ticker)}
+                  onCreateAlert={createPriceAlert}
                 />
               </div>
             ))}

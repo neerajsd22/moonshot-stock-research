@@ -634,6 +634,13 @@ const HomePage = () => {
       setNewsArticles(stockData.newsArticles);
       setComparisonPoints([]);
       setComparisonMode(false);
+      
+      // Scroll to stacked stocks area after render
+      setTimeout(() => {
+        const container = document.querySelector('[data-testid="stacked-stocks-container"]') || 
+                          document.querySelector('[data-testid="dense-stocks-table"]');
+        if (container) container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 400);
     }
     
     // End animation after data loads
@@ -1197,8 +1204,8 @@ const HomePage = () => {
           </div>
         )}
 
-        {/* Categories Section - Collapsible */}
-        <div className="mb-6 sm:mb-10" data-testid="categories-section" id="categories-section">
+        {/* Categories Section - Collapsible (auto-collapse when stocks are loaded) */}
+        <div className={`mb-6 sm:mb-10 ${stackedStocks.length > 0 ? 'hidden' : ''}`} data-testid="categories-section" id="categories-section">
           <div className="flex items-center justify-between mb-4 sm:mb-6">
             <button
               onClick={() => setCategoriesCollapsed(!categoriesCollapsed)}

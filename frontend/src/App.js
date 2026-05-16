@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import '@/App.css';
 import axios from 'axios';
-import { Search, TrendingUp, Pin, X, LayoutList, ExternalLink, Plus, List, Bell, BarChart3, Settings, BrainCircuit, Cpu, ChevronDown, CalendarDays, RefreshCw, Menu, ChevronLeft, GripVertical, Grid3X3 } from 'lucide-react';
+import { Search, TrendingUp, Pin, X, LayoutList, ExternalLink, Plus, List, Bell, BarChart3, Settings, BrainCircuit, ChevronDown, CalendarDays, RefreshCw, Menu, ChevronLeft, Grid3X3 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -26,8 +26,7 @@ import IntelligenceHub from './components/IntelligenceHub';
 import PullToRefreshIndicator from './components/PullToRefreshIndicator';
 import { usePullToRefresh } from './hooks/usePullToRefresh';
 import { DndContext, closestCenter, PointerSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core';
-import { SortableContext, horizontalListSortingStrategy, useSortable, arrayMove } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
+import { SortableContext, horizontalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
 // Refactored stock components
 import {
   StockCardWithChart,
@@ -38,18 +37,10 @@ import {
   ResearchAnalysis,
 } from './components/stock';
 import CompactViewTable from './components/stock/CompactViewTable';
-import { ParticleNetwork, AuroraBorealis, MatrixRain, BokehBlur, NoiseGradient, MeshGradient } from './components/AnimatedBackground';
+import CategoryIcon from './components/CategoryIcon';
+import SortablePinnedStock from './components/SortablePinnedStock';
+import { BACKGROUND_OPTIONS } from './components/backgroundOptions';
 
-// Background options for selection
-const BACKGROUND_OPTIONS = {
-  particles: { name: 'Particle Network', component: ParticleNetwork, description: 'Connected dots that react to mouse' },
-  aurora: { name: 'Aurora Borealis', component: AuroraBorealis, description: 'Slow-moving northern lights effect' },
-  matrix: { name: 'Matrix Rain', component: MatrixRain, description: 'Subtle falling financial symbols' },
-  bokeh: { name: 'Bokeh Blur', component: BokehBlur, description: 'Out-of-focus city lights effect' },
-  noise: { name: 'Noise Gradient', component: NoiseGradient, description: 'Modern grainy texture with color shifts' },
-  mesh: { name: 'Mesh Gradient', component: MeshGradient, description: 'Smooth animated color blobs' },
-  none: { name: 'None', component: () => null, description: 'No animated background' },
-};
 import {
   LineChart,
   ComposedChart,
@@ -65,72 +56,6 @@ import {
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
-
-// Lucide icon mapping for categories
-const LUCIDE_ICONS = {
-  BrainCircuit: BrainCircuit,
-  Cpu: Cpu,
-};
-
-// Helper to render category icon
-const CategoryIcon = ({ icon, isLucide, className = "text-2xl sm:text-4xl mb-1 sm:mb-3" }) => {
-  if (isLucide && LUCIDE_ICONS[icon]) {
-    const IconComponent = LUCIDE_ICONS[icon];
-    return <div className={className}><IconComponent className="w-7 h-7 sm:w-10 sm:h-10 text-primary mx-auto" /></div>;
-  }
-  return <div className={className}>{icon}</div>;
-};
-
-// Sortable pinned stock card
-const SortablePinnedStock = ({ stock, onSelect, onUnpin }) => {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: stock.ticker });
-  
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-    zIndex: isDragging ? 50 : 'auto',
-  };
-
-  return (
-    <Card
-      ref={setNodeRef}
-      style={style}
-      data-testid={`pinned-stock-${stock.ticker}`}
-      className={`min-w-[150px] sm:min-w-[200px] bg-[rgba(15,15,20,0.95)] border border-[rgba(255,255,255,0.15)] hover:border-[#d946ef]/50 transition-colors duration-200 cursor-pointer flex-shrink-0 shadow-lg ${isDragging ? 'ring-2 ring-[#d946ef]/50' : ''}`}
-      onClick={() => onSelect(stock.ticker)}
-    >
-      <CardContent className="p-3 sm:p-4">
-        <div className="flex items-start justify-between">
-          <button
-            {...attributes}
-            {...listeners}
-            className="text-gray-500 hover:text-gray-300 cursor-grab active:cursor-grabbing mr-2 mt-0.5 touch-none"
-            onClick={(e) => e.stopPropagation()}
-            data-testid={`drag-handle-${stock.ticker}`}
-          >
-            <GripVertical className="w-4 h-4" />
-          </button>
-          <div className="min-w-0 flex-1">
-            <div className="text-base sm:text-lg font-bold text-white" style={{ fontFamily: 'DM Mono, monospace' }}>
-              {stock.ticker}
-            </div>
-            <div className="text-xs sm:text-sm text-gray-400 mt-1 line-clamp-1 sm:line-clamp-2">
-              {stock.company_name}
-            </div>
-          </div>
-          <button
-            data-testid={`unpin-button-${stock.ticker}`}
-            onClick={(e) => { e.stopPropagation(); onUnpin(stock.ticker); }}
-            className="text-gray-400 hover:text-red-400 transition-colors ml-2"
-          >
-            <X className="w-4 h-4" />
-          </button>
-        </div>
-      </CardContent>
-    </Card>
-  );
-};
 
 const HomePage = () => {
   const navigate = useNavigate();

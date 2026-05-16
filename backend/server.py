@@ -640,7 +640,6 @@ async def search_stocks(q: str, exchange: str = "all"):
         
         results = []
         query_lower = query.lower()
-        query_upper = query.upper()
         
         # Build search dictionary based on exchange filter
         search_stocks = {}
@@ -674,42 +673,55 @@ async def search_stocks(q: str, exchange: str = "all"):
                     "exchange": exch
                 })
         
-        # If no results in predefined stocks, try fetching from Yahoo Finance
-        if not results:
-            # Try different suffixes based on exchange filter
-            suffixes_to_try = []
-            if exchange in ['all', 'us']:
-                suffixes_to_try.append('')  # US stocks
-            if exchange in ['all', 'nse']:
-                suffixes_to_try.append('.NS')  # NSE
-            if exchange in ['all', 'bse']:
-                suffixes_to_try.append('.BO')  # BSE
+        # Always supplement with Yahoo Finance fuzzy search so that full company
+        # names like "Salesforce" or "Abbott Laboratories" resolve to their
+        # correct tickers (CRM, ABT) even when not in our predefined dictionaries.
+        try:
+            def yf_search(qs):
+                s = yf.Search(qs, max_results=15)
+                return s.quotes or []
             
-            for suffix in suffixes_to_try:
-                ticker_to_try = query_upper + suffix
+            yf_quotes = await run_in_threadpool(yf_search, query)
+            
+            for q in yf_quotes:
+                quote_type = q.get('quoteType')
+                if quote_type not in ('EQUITY', 'ETF', 'INDEX'):
+                    continue
                 
-                def get_ticker_info(t):
-                    stock = yf.Ticker(t)
-                    info = stock.info
-                    return info
+                sym = q.get('symbol') or ''
+                if not sym:
+                    continue
                 
-                try:
-                    info = await run_in_threadpool(get_ticker_info, ticker_to_try)
-                    
-                    if info and 'symbol' in info and info.get('regularMarketPrice'):
-                        exch = info.get('exchange', '')
-                        if suffix == '.NS':
-                            exch = 'NSE'
-                        elif suffix == '.BO':
-                            exch = 'BSE'
-                        
-                        results.append({
-                            "ticker": info.get('symbol', ticker_to_try),
-                            "name": info.get('longName', info.get('shortName', ticker_to_try)),
-                            "exchange": exch
-                        })
-                except Exception as e:
-                    logger.warning(f"Could not fetch info for {ticker_to_try}: {str(e)}")
+                # Determine exchange and apply exchange filter
+                if sym.endswith('.NS'):
+                    exch = 'NSE'
+                    if exchange not in ('all', 'nse'):
+                        continue
+                elif sym.endswith('.BO'):
+                    exch = 'BSE'
+                    if exchange not in ('all', 'bse'):
+                        continue
+                elif sym.startswith('^'):
+                    exch = 'Index'
+                    # indexes available in all filters
+                elif '.' in sym or '=' in sym or '-' in sym:
+                    # Foreign listings (e.g. .DE, .MX, .BA, .NE) — skip to keep
+                    # results focused on US / Indian exchanges
+                    continue
+                else:
+                    exch = q.get('exchDisp') or 'NASDAQ/NYSE'
+                    if exchange not in ('all', 'us'):
+                        continue
+                
+                name = q.get('longname') or q.get('shortname') or sym
+                
+                results.append({
+                    "ticker": sym,
+                    "name": name,
+                    "exchange": exch,
+                })
+        except Exception as e:
+            logger.warning(f"Yahoo Finance Search fallback failed for '{query}': {str(e)}")
         
         # Remove duplicates and limit to top 15 results
         seen = set()

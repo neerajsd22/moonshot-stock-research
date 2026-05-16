@@ -1747,8 +1747,13 @@ async def get_stocks_by_category(category_name: str):
                     # Get 1 year historical data for sparkline
                     hist_1y = stock.history(period="1y")
                     
-                    current_price = info.get('currentPrice', hist_1d['Close'].iloc[-1] if not hist_1d.empty else 0)
-                    previous_close = info.get('previousClose', info.get('regularMarketPreviousClose', current_price))
+                    last_close = safe_float(hist_1d['Close'].iloc[-1]) if not hist_1d.empty else None
+                    current_price = safe_float(info.get('currentPrice')) or last_close or 0
+                    previous_close = (
+                        safe_float(info.get('previousClose'))
+                        or safe_float(info.get('regularMarketPreviousClose'))
+                        or current_price
+                    )
                     
                     change = current_price - previous_close
                     change_percent = (change / previous_close * 100) if previous_close else 0
@@ -1756,22 +1761,26 @@ async def get_stocks_by_category(category_name: str):
                     # Prepare sparkline data (sample every 7 days to keep it light)
                     sparkline_data = []
                     if not hist_1y.empty:
-                        # Sample every 7 days for ~52 data points
-                        step = max(1, len(hist_1y) // 52)
-                        for i in range(0, len(hist_1y), step):
-                            sparkline_data.append(float(hist_1y['Close'].iloc[i]))
+                        # Drop ex-dividend/split rows with NaN Close before sampling
+                        clean_hist = hist_1y.dropna(subset=['Close'])
+                        if not clean_hist.empty:
+                            step = max(1, len(clean_hist) // 52)
+                            for i in range(0, len(clean_hist), step):
+                                v = safe_float(clean_hist['Close'].iloc[i])
+                                if v is not None:
+                                    sparkline_data.append(v)
                     
                     return {
                         'ticker': ticker,
                         'name': info.get('longName', info.get('shortName', ticker)),
-                        'price': float(current_price),
-                        'change': float(change),
-                        'change_percent': float(change_percent),
-                        'market_cap': info.get('marketCap'),
+                        'price': current_price,
+                        'change': change,
+                        'change_percent': change_percent,
+                        'market_cap': safe_float(info.get('marketCap')),
                         'sector': info.get('sector', ''),
-                        'pe_ratio': info.get('trailingPE'),
-                        'high_52week': info.get('fiftyTwoWeekHigh'),
-                        'low_52week': info.get('fiftyTwoWeekLow'),
+                        'pe_ratio': safe_float(info.get('trailingPE')),
+                        'high_52week': safe_float(info.get('fiftyTwoWeekHigh')),
+                        'low_52week': safe_float(info.get('fiftyTwoWeekLow')),
                         'sparkline': sparkline_data
                     }
                 

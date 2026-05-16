@@ -40,6 +40,33 @@ const PortfolioSummary = ({ summary, onAdd, onImport }) => {
             <div className={`text-xs mt-1 mono-numbers ${colorClass(summary.total_pnl)}`}>
               {fmtPct(summary.total_pnl_pct)}
             </div>
+            {summary.sp500_return_pct !== null && summary.sp500_return_pct !== undefined && (
+              <div
+                className="text-[11px] mt-1.5 flex flex-wrap items-center gap-1.5"
+                data-testid="summary-vs-sp500"
+                title={`Cost-weighted S&P 500 return over your holding periods. As of ${summary.sp500_as_of || ''}`}
+              >
+                <span className={`mono-numbers ${colorClass(summary.total_pnl_pct)}`}>
+                  {fmtPct(summary.total_pnl_pct)}
+                </span>
+                <span className="text-gray-500">vs</span>
+                <span className={`mono-numbers ${colorClass(summary.sp500_return_pct)}`}>
+                  {fmtPct(summary.sp500_return_pct)}
+                </span>
+                <span className="text-gray-500">S&amp;P 500</span>
+                {summary.sp500_diff_pct !== null && summary.sp500_diff_pct !== undefined && (
+                  <span
+                    className={`ml-0.5 px-1.5 py-0.5 rounded text-[10px] font-semibold mono-numbers border ${
+                      summary.sp500_diff_pct >= 0
+                        ? 'bg-green-500/10 text-green-400 border-green-500/30'
+                        : 'bg-red-500/10 text-red-400 border-red-500/30'
+                    }`}
+                  >
+                    {summary.sp500_diff_pct >= 0 ? '↑ beating' : '↓ trailing'} by {Math.abs(summary.sp500_diff_pct).toFixed(2)}%
+                  </span>
+                )}
+              </div>
+            )}
           </div>
         </div>
 

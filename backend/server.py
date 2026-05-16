@@ -9,7 +9,7 @@ from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict
 from typing import List, Optional, Dict, Any
 import uuid
-from datetime import datetime, timezone
+from datetime import datetime, timezone, date
 import yfinance as yf
 import asyncio
 import pandas as pd
@@ -2055,6 +2055,90 @@ async def delete_price_alert(alert_id: str):
 
 # ===== Portfolio Endpoints ==================================================
 
+# Cache S&P 500 5y history so the /summary polling doesn't hammer yfinance.
+_SP500_CACHE = {"hist": None, "fetched_at": None}
+_SP500_TTL_SECONDS = 600  # 10 minutes is fine — S&P intraday move rarely shifts a YTD reading meaningfully
+
+
+async def _get_sp500_history():
+    """Returns yfinance ^GSPC 5y daily history (cached for 10 min)."""
+    now = datetime.now(timezone.utc)
+    cached = _SP500_CACHE["hist"]
+    fetched_at = _SP500_CACHE["fetched_at"]
+    if cached is not None and fetched_at and (now - fetched_at).total_seconds() < _SP500_TTL_SECONDS:
+        return cached
+    try:
+        def fetch():
+            sp = ticker_cache.get_or_create("^GSPC")
+            return sp.history(period="5y", auto_adjust=True)
+        hist = await run_in_threadpool(fetch)
+        if hist is not None and not hist.empty:
+            _SP500_CACHE["hist"] = hist
+            _SP500_CACHE["fetched_at"] = now
+        return hist
+    except Exception as e:
+        logger.warning(f"S&P 500 fetch failed: {e}")
+        return None
+
+
+async def _calc_sp500_benchmark(docs: list) -> Optional[dict]:
+    """
+    Cost-weighted S&P 500 benchmark: each position's S&P return from its
+    buy_date (or YTD if no buy_date) to today, weighted by cost_basis.
+    Returns dict {sp500_return_pct, as_of} or None on failure.
+    """
+    if not docs:
+        return None
+    hist = await _get_sp500_history()
+    if hist is None or hist.empty:
+        return None
+
+    latest_close = safe_float(hist["Close"].iloc[-1])
+    if latest_close is None or latest_close <= 0:
+        return None
+    latest_date = hist.index[-1].date()
+    ytd_start = date(latest_date.year, 1, 1)
+
+    total_weighted = 0.0
+    total_weight = 0.0
+    for d in docs:
+        shares = safe_float(d.get("shares"), 0) or 0
+        avg_cost = safe_float(d.get("avg_cost"), 0) or 0
+        cost_basis = shares * avg_cost
+        if cost_basis <= 0:
+            continue
+
+        buy_date_str = d.get("buy_date")
+        position_start = ytd_start
+        if buy_date_str:
+            try:
+                position_start = datetime.strptime(buy_date_str, "%Y-%m-%d").date()
+            except (ValueError, TypeError):
+                position_start = ytd_start
+        # Don't compare future-dated buys against past S&P
+        if position_start > latest_date:
+            continue
+
+        # Find first S&P close on or after position_start
+        mask = hist.index.date >= position_start
+        if not mask.any():
+            continue
+        start_close = safe_float(hist.loc[mask].iloc[0]["Close"])
+        if start_close is None or start_close <= 0:
+            continue
+
+        position_sp_return = (latest_close / start_close - 1) * 100
+        total_weighted += position_sp_return * cost_basis
+        total_weight += cost_basis
+
+    if total_weight == 0:
+        return None
+    return {
+        "sp500_return_pct": total_weighted / total_weight,
+        "as_of": latest_date.isoformat(),
+    }
+
+
 def _build_position_payload(pos: dict, quote: Optional[dict]) -> dict:
     """Combine a stored position with a live quote to compute P&L fields."""
     shares = safe_float(pos.get("shares"), 0) or 0
@@ -2197,6 +2281,14 @@ async def get_portfolio_summary():
             "unrealized_pnl_pct": p["unrealized_pnl_pct"],
         }
 
+    sp500 = await _calc_sp500_benchmark(docs)
+    sp500_return_pct = sp500["sp500_return_pct"] if sp500 else None
+    sp500_as_of = sp500["as_of"] if sp500 else None
+    sp500_diff_pct = (
+        total_pnl_pct - sp500_return_pct
+        if sp500_return_pct is not None else None
+    )
+
     return {
         "is_empty": False,
         "position_count": len(positions),
@@ -2209,6 +2301,9 @@ async def get_portfolio_summary():
         "best_performer": _slim(best),
         "worst_performer": _slim(worst),
         "allocation": allocation,
+        "sp500_return_pct": sp500_return_pct,
+        "sp500_diff_pct": sp500_diff_pct,
+        "sp500_as_of": sp500_as_of,
     }
 
 

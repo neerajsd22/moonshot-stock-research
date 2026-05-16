@@ -1,0 +1,46 @@
+{
+  "summary": "Tested new 'vs S&P 500' benchmark feature on PortfolioSummary card. Added 7 new pytest cases to existing /app/backend/tests/test_portfolio_tracker.py covering: empty-summary null contract, AAPL long-period sp500 return range, no-buy-date YTD fallback, cost-weighted (not simple) average, future-date skip, invalid-date fallback, and 10-min cache consistency. 26/27 backend tests pass; full regression of CRUD/import suite still green. The only failure is the empty-portfolio S&P 500 null-key contract: backend returns the summary dict WITHOUT the sp500_return_pct / sp500_diff_pct / sp500_as_of keys when portfolio is empty (spec requires them present and explicitly null). Frontend verified end-to-end via Playwright: with AAPL(100@180, buy_date=2024-01-15) the card shows '+66.79% vs +55.45% S&P 500 ↑ beating by 11.35%' (green pill), tooltip shows 'Cost-weighted S&P 500 return over your holding periods. As of 2026-05-15'. On empty portfolio the entire summary card is hidden (no crash, no empty UI). Cache works (two rapid /summary calls return identical sp500_as_of). yfinance ^GSPC live fetch worked on every call — no rate-limit retries triggered.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {
+        "endpoint": "GET /api/portfolio/summary",
+        "issue": "On empty portfolio the response object OMITS the sp500_return_pct, sp500_diff_pct and sp500_as_of keys entirely (server.py L2229-2242). Spec requires the keys to be present and explicitly null. Frontend currently handles this via `=== null && !== undefined` so UI is not broken, but any API consumer expecting the contract will fail. Fix: add the three null keys to the empty-branch return dict."
+      }
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_portfolio_tracker.py",
+    "/app/test_reports/pytest/portfolio_tracker.xml",
+    "/app/test_reports/pytest/sp500_benchmark.xml"
+  ],
+  "action_items": [
+    "Backend: in /app/backend/server.py get_portfolio_summary() (~L2229), add 'sp500_return_pct': None, 'sp500_diff_pct': None, 'sp500_as_of': None to the empty-branch return dict for contract parity with the populated branch."
+  ],
+  "critical_code_review_comments": [
+    "_get_sp500_history correctly caches in module-level dict keyed by datetime.now(timezone.utc) — TTL math is correct and threadpool-safe for FastAPI's single-process worker. For multi-worker deployments the cache will be per-worker (acceptable trade-off).",
+    "_calc_sp500_benchmark correctly handles all edge cases: empty docs, hist=None, hist.empty, cost_basis<=0, invalid buy_date (try/except → YTD fallback), future buy_date (position_start > latest_date → skip), missing mask matches, NaN start_close. Robust.",
+    "Cost-weighting is correctly implemented as sum(return_i * cost_basis_i) / sum(cost_basis_i) — verified by the test_cost_weighted_average_not_simple which compared big-AAPL vs big-AAPL+small-NVDA and got <1pp difference (small position has negligible influence).",
+    "PortfolioSummary.js uses an explicit null-AND-undefined guard `!== null && !== undefined` for sp500_return_pct, which correctly hides the row in both 'feature unavailable' and 'key missing' scenarios. Good defensive coding.",
+    "Inline tooltip via native `title` attribute is a tiny UX gap vs the Tooltip primitive used elsewhere — keyboard users on mobile won't see it. Consider using shadcn Tooltip for consistency. Non-blocking.",
+    "server.py is now ~4064 lines — splitting still warranted (flagged across iterations 11/12/13)."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_portfolio_tracker.py (added TestSP500Benchmark class with 7 tests)"
+  ],
+  "success_rate": {
+    "backend": "96% (26/27 — only the null-key contract test fails)",
+    "frontend": "100% on the tested critical paths (vs S&P 500 row visible with AAPL, correct beating pill, tooltip, hidden on empty)"
+  },
+  "test_credentials": "Access code QZ91U2U8 (localStorage.access_code)",
+  "seed_data_creation": "All sp500 tests use the autouse clean_portfolio fixture (DELETE before+after every test). No persistent seed data left in MongoDB.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "The 7 new S&P 500 tests live under class TestSP500Benchmark in /app/backend/tests/test_portfolio_tracker.py. They depend on live yfinance ^GSPC; if it rate-limits, test_aapl_long_period_sp500_return retries once. test_cost_weighted_average_not_simple deliberately calls _clear_portfolio mid-test to compare combined-vs-AAPL-only returns — uses BASE_URL not the fixture. The only failing test (test_empty_summary_returns_null_sp500_fields) is intentional: it documents the missing null-keys bug on empty branch. Once main agent adds the three None keys to server.py L2230-2242, all 27 tests should pass.",
+  "rca of the issue": "Bug: empty /api/portfolio/summary omits the three new sp500_* keys. Reproduction: curl https://.../api/portfolio/summary on empty portfolio → keys absent. Root cause: when main agent wired the new fields into the populated branch (server.py ~L2284-2306), the empty-portfolio early return at L2230-2242 was not updated to mirror the new contract. Mitigation: add 'sp500_return_pct': None, 'sp500_diff_pct': None, 'sp500_as_of': None to the empty-branch dict literal."
+}

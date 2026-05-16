@@ -42,6 +42,7 @@ Build a comprehensive stock analysis application called "Moonshot" with stock se
 - **[May 2026] Price Alerts generic search** - Sidebar Price Alert Manager now includes search dropdown to set alerts on any stock (not just the active one)
 - **[Feb 2026] Stock search fuzzy lookup** - Full company names like "Salesforce" and "Abbott Laboratories" now resolve to correct tickers (CRM, ABT) via yfinance Search supplementing the predefined ticker dictionaries; foreign exchange listings filtered out
 - **[Feb 2026] App.js refactor (pass 1)** - Extracted `CategoryIcon` (+ LUCIDE_ICONS), `SortablePinnedStock`, and `BACKGROUND_OPTIONS` into dedicated files under `/components`. App.js reduced from 2,411 to 2,335 lines with no behavior changes.
+- **[Feb 2026] Per-stock inline details accordion (Option A)** - Previously only the latest stacked stock showed Financials/Analysis/News/Intelligence Hub/AI Deep Analysis. Now: the last stock auto-expands those sections inline below its card, and older stocks each get a "Show full analysis" toggle button that expands an inline `StockDetailsBlock` for that specific ticker. Per-ticker refresh state (`refreshingTickers` Set) supports parallel refreshes. Old standalone selectedStock detail block removed.
 
 ## Responsive Design Implementation (May 2026)
 - HTML font-size scaling: 16px mobile -> 18px tablet -> 20.8px desktop

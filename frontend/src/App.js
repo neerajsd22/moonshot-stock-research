@@ -37,6 +37,7 @@ import {
   ExportButton,
   ResearchAnalysis,
 } from './components/stock';
+import CompactViewTable from './components/stock/CompactViewTable';
 import { ParticleNetwork, AuroraBorealis, MatrixRain, BokehBlur, NoiseGradient, MeshGradient } from './components/AnimatedBackground';
 
 // Background options for selection
@@ -639,7 +640,7 @@ const HomePage = () => {
       // Scroll to stacked stocks area after render
       setTimeout(() => {
         const container = document.querySelector('[data-testid="stacked-stocks-container"]') || 
-                          document.querySelector('[data-testid="dense-stocks-table"]');
+                          document.querySelector('[data-testid="compact-view-container"]');
         if (container) container.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 400);
     }
@@ -846,7 +847,7 @@ const HomePage = () => {
     return pinnedStocks.some((stock) => stock.ticker === ticker);
   };
 
-  const isDense = viewMode === 'dense';
+  const isCompact = viewMode === 'dense';
 
   // US Market categories
   const usCategories = [
@@ -1248,11 +1249,11 @@ const HomePage = () => {
                 data-testid="view-mode-toggle"
                 variant="outline"
                 size="sm"
-                onClick={() => setViewMode(isDense ? 'spacious' : 'dense')}
+                onClick={() => setViewMode(isCompact ? 'spacious' : 'dense')}
                 className="h-9 sm:h-11 px-2 sm:px-4 flex items-center gap-2 btn-outline-gold"
               >
-                {isDense ? <LayoutList className="w-4 h-4" /> : <LayoutList className="w-4 h-4" />}
-                <span className="hidden sm:inline">{isDense ? 'Expand' : 'Dense'}</span>
+                {isCompact ? <LayoutList className="w-4 h-4" /> : <LayoutList className="w-4 h-4" />}
+                <span className="hidden sm:inline">{isCompact ? 'Expand' : 'Compact'}</span>
               </Button>
               
               {/* Menu Button */}
@@ -1314,13 +1315,23 @@ const HomePage = () => {
         {/* Fun Loading Animation when fetching stock data */}
         {loadingTicker && <LoadingAnimation ticker={loadingTicker} />}
 
-        {/* Dense View - Compact table showing all stacked stocks with Key Stats */}
+        {/* Compact View - Ticker + Sparkline + Price rows */}
         {viewMode === 'dense' && stackedStocks.length > 0 && (
-          <DenseViewTable
+          <CompactViewTable
             stackedStocks={stackedStocks}
             maxStocks={MAX_STACKED_STOCKS}
             onExpand={() => setViewMode('spacious')}
             onDismiss={dismissStock}
+            onSelectStock={(ticker) => {
+              setViewMode('spacious');
+              setSelectedStock(ticker);
+              const stock = stackedStocks.find(s => s.ticker === ticker);
+              if (stock) {
+                setStockQuote(stock.quote);
+                setHistoricalData(stock.historicalData);
+                setHealthReport(stock.healthReport);
+              }
+            }}
             getCurrencySymbol={getCurrencySymbol}
           />
         )}

@@ -2239,6 +2239,9 @@ async def get_portfolio_summary():
             "best_performer": None,
             "worst_performer": None,
             "allocation": [],
+            "sp500_return_pct": None,
+            "sp500_diff_pct": None,
+            "sp500_as_of": None,
         }
 
     tickers = list({d["ticker"] for d in docs})

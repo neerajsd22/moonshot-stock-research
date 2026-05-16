@@ -40,6 +40,7 @@ import CompactViewTable from './components/stock/CompactViewTable';
 import StockDetailsBlock from './components/stock/StockDetailsBlock';
 import CategoryIcon from './components/CategoryIcon';
 import SortablePinnedStock from './components/SortablePinnedStock';
+import AboutUs from './components/AboutUs';
 import { BACKGROUND_OPTIONS } from './components/backgroundOptions';
 
 import {
@@ -1897,13 +1898,17 @@ function App() {
       <Routes>
         <Route path="/admin" element={<AdminPage />} />
         <Route path="/*" element={
-          <AccessGate>
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/categories" element={<CategoriesPage />} />
-              <Route path="/category/:categoryName" element={<CategoryPage />} />
-            </Routes>
-          </AccessGate>
+          <>
+            <AccessGate>
+              <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/categories" element={<CategoriesPage />} />
+                <Route path="/category/:categoryName" element={<CategoryPage />} />
+              </Routes>
+            </AccessGate>
+            {/* Floating About Us button — appears on landing page and authenticated app */}
+            <AboutUs />
+          </>
         } />
       </Routes>
       <Toaster />

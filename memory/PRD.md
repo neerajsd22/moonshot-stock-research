@@ -39,6 +39,9 @@ Build a comprehensive stock analysis application called "Moonshot" with stock se
 - **[May 2026] Stock visibility fix** - Categories auto-hide when stocks are stacked; auto-scroll to newly selected stock
 - **[May 2026] Compact view** - Replaced Dense table with compact sparkline view (ticker + mini chart + price + change%), toggled via header button
 - **[May 2026] Price Alerts (Option C)** - Bell icon on stock cards with quick-set popover (above/below + target price), alert count badge on Menu button, inline alert summary in sidebar with distance tracking and delete
+- **[May 2026] Price Alerts generic search** - Sidebar Price Alert Manager now includes search dropdown to set alerts on any stock (not just the active one)
+- **[Feb 2026] Stock search fuzzy lookup** - Full company names like "Salesforce" and "Abbott Laboratories" now resolve to correct tickers (CRM, ABT) via yfinance Search supplementing the predefined ticker dictionaries; foreign exchange listings filtered out
+- **[Feb 2026] App.js refactor (pass 1)** - Extracted `CategoryIcon` (+ LUCIDE_ICONS), `SortablePinnedStock`, and `BACKGROUND_OPTIONS` into dedicated files under `/components`. App.js reduced from 2,411 to 2,335 lines with no behavior changes.
 
 ## Responsive Design Implementation (May 2026)
 - HTML font-size scaling: 16px mobile -> 18px tablet -> 20.8px desktop
@@ -56,14 +59,16 @@ Build a comprehensive stock analysis application called "Moonshot" with stock se
 ### P0 (Critical) - None
 
 ### P1 (Important)
+- Keyboard shortcuts (/ to focus search, Esc to close modals/sidebar)
 - React Native mobile app (separate codebase)
 
 ### P2 (Nice to have)
-- Keyboard shortcuts (/ to focus search, Esc to close)
 - Confirmation dialog before "Dismiss All"
 - Portfolio tracker with P&L dashboard
 - Side-by-side stock comparison tool
 
 ### Refactoring
 - Remove orphaned CategoriesPage.js (still routed but functionally duplicated)
-- Break down App.js (~2200+ lines) into smaller modules
+- Continue breaking down App.js (still ~2,335 lines). Next candidates: Header, Sidebar, StockList layout sections.
+- Modularize server.py (~3,650 lines) into routers/services per resource (search, quotes, alerts, intelligence). Move predefined ticker dictionaries out of `search_stocks()` to module-level constants.
+- Add TTL cache (~60s) around yfinance Search lookups to reduce rate-limit risk.

@@ -47,19 +47,31 @@ const PortfolioSummary = ({ summary, onAdd, onImport }) => {
         {(summary.best_performer || summary.worst_performer) && (
           <div className="flex flex-wrap gap-2">
             {summary.best_performer && (
-              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-green-500/10 border border-green-500/30 text-xs">
-                <TrendingUp className="w-3 h-3 text-green-400" />
+              <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs border ${
+                (summary.best_performer.unrealized_pnl_pct ?? 0) >= 0
+                  ? 'bg-green-500/10 border-green-500/30'
+                  : 'bg-red-500/10 border-red-500/30'
+              }`}>
+                <TrendingUp className={`w-3 h-3 ${(summary.best_performer.unrealized_pnl_pct ?? 0) >= 0 ? 'text-green-400' : 'text-red-400'}`} />
                 <span className="text-gray-400">Best:</span>
                 <span className="text-white font-semibold">{summary.best_performer.ticker}</span>
-                <span className="text-green-400 mono-numbers">{fmtPct(summary.best_performer.unrealized_pnl_pct)}</span>
+                <span className={`mono-numbers ${colorClass(summary.best_performer.unrealized_pnl_pct)}`}>
+                  {fmtPct(summary.best_performer.unrealized_pnl_pct)}
+                </span>
               </div>
             )}
             {summary.worst_performer && summary.worst_performer.ticker !== summary.best_performer?.ticker && (
-              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-500/10 border border-red-500/30 text-xs">
-                <TrendingDown className="w-3 h-3 text-red-400" />
+              <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs border ${
+                (summary.worst_performer.unrealized_pnl_pct ?? 0) >= 0
+                  ? 'bg-green-500/10 border-green-500/30'
+                  : 'bg-red-500/10 border-red-500/30'
+              }`}>
+                <TrendingDown className={`w-3 h-3 ${(summary.worst_performer.unrealized_pnl_pct ?? 0) >= 0 ? 'text-green-400' : 'text-red-400'}`} />
                 <span className="text-gray-400">Worst:</span>
                 <span className="text-white font-semibold">{summary.worst_performer.ticker}</span>
-                <span className="text-red-400 mono-numbers">{fmtPct(summary.worst_performer.unrealized_pnl_pct)}</span>
+                <span className={`mono-numbers ${colorClass(summary.worst_performer.unrealized_pnl_pct)}`}>
+                  {fmtPct(summary.worst_performer.unrealized_pnl_pct)}
+                </span>
               </div>
             )}
           </div>

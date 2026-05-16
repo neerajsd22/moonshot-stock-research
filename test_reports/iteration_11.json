@@ -1,0 +1,34 @@
+{
+  "summary": "Defensive NaN/Inf JSON-safety hardening pass verified end-to-end. 87/87 pytest tests passed across /api/stocks/{ticker}/quote, /earnings-snapshot, /health-report, and /history for 20 tickers (18 US + RELIANCE.NS + TCS.NS). No NaN/Infinity/-Infinity tokens in any response body; every numeric leaf walked recursively and asserted finite or None. Pre-market / post-market sub-objects validated (null or finite-only dict). Graceful-failure paths for INVALIDTICKER preserved: /quote -> 404, /history -> 404, /earnings-snapshot -> 200 with all-null structured payload, /health-report -> NOT 500 (200 or 404). Backend defensive hardening is solid.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_nan_inf_defensive_hardening.py",
+    "/app/test_reports/pytest/nan_inf_hardening.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "safe_float / safe_int / safe_pct helpers are clean, single-responsibility, and consistently applied across the three target endpoints — good defensive pattern.",
+    "get_stock_quote correctly guards on (current_price is None or previous_close is None) before doing division — prevents ZeroDivisionError and silent NaN.",
+    "earnings-snapshot exception fallback returns the same schema with all None values, which is preferable to a 500 for a non-critical sidecar endpoint.",
+    "Minor: server.py is 3672 lines — recommend splitting into modules (stock_routes, health_report, admin, etc.) per the >700-line guideline. Not blocking for this hardening pass.",
+    "Pre-existing E722 bare-except lint warnings were flagged by main agent as out of scope and were not addressed here."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_nan_inf_defensive_hardening.py (NEW)"
+  ],
+  "success_rate": {"backend": "100% (87/87)", "frontend": "skipped per request"},
+  "test_credentials": "Access code QZ91U2U8 provided; not required for the /api/stocks/* endpoints under test (no auth gate on those routes).",
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "test_nan_inf_defensive_hardening.py is the canonical regression for NaN/Inf JSON safety across /quote, /earnings-snapshot, /health-report, /history. It walks every numeric leaf recursively, so any future yfinance field that leaks NaN will be caught. Health-report uses 180s timeout (LLM + multi-call). Total runtime ~31s on the preview env.",
+  "rca of the issue": "N/A — this iteration verified a preventive hardening pass, no live bug. The original NaN-in-history regression was fixed and verified in iteration_10; this pass extended the same safe_float/safe_int/safe_pct pattern to /quote, /earnings-snapshot, and the risk_scores debt_eq calc in /health-report. All paths confirmed JSON-compliant and finite."
+}

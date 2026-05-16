@@ -84,6 +84,23 @@ def safe_round(value, decimals=1, default=None):
         return default
     return round(f, decimals)
 
+def safe_int(value, default=None):
+    """Convert value to int, returning default if NaN, Inf, or None"""
+    f = safe_float(value)
+    if f is None:
+        return default
+    try:
+        return int(f)
+    except (ValueError, TypeError, OverflowError):
+        return default
+
+def safe_pct(value, default=None):
+    """Convert a 0..1 ratio to a 0..100 percentage, safe against NaN/Inf/None"""
+    f = safe_float(value)
+    if f is None:
+        return default
+    return f * 100
+
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -751,61 +768,64 @@ async def get_stock_quote(ticker: str):
             if hist.empty:
                 raise ValueError("No data available")
             
-            current_price = info.get('currentPrice', hist['Close'].iloc[-1])
-            previous_close = info.get('previousClose', info.get('regularMarketPreviousClose', current_price))
+            current_price = safe_float(info.get('currentPrice')) or safe_float(hist['Close'].iloc[-1])
+            previous_close = (
+                safe_float(info.get('previousClose'))
+                or safe_float(info.get('regularMarketPreviousClose'))
+                or current_price
+            )
+            
+            if current_price is None or previous_close is None:
+                raise ValueError("Price data unavailable")
             
             change = current_price - previous_close
             change_percent = (change / previous_close * 100) if previous_close else 0
             
-            # Get day's open, high, low from today's data
-            day_open = info.get('open', hist['Open'].iloc[-1] if not hist.empty else None)
-            day_high = info.get('dayHigh', hist['High'].iloc[-1] if not hist.empty else None)
-            day_low = info.get('dayLow', hist['Low'].iloc[-1] if not hist.empty else None)
+            # Day OHLC — fall back to today's history row, then sanitize.
+            day_open = safe_float(info.get('open')) or safe_float(hist['Open'].iloc[-1] if not hist.empty else None)
+            day_high = safe_float(info.get('dayHigh')) or safe_float(hist['High'].iloc[-1] if not hist.empty else None)
+            day_low = safe_float(info.get('dayLow')) or safe_float(hist['Low'].iloc[-1] if not hist.empty else None)
             
-            # Get P/E ratio and dividend yield
-            pe_ratio = info.get('trailingPE', info.get('forwardPE'))
-            dividend_yield = info.get('dividendYield')
+            pe_ratio = safe_float(info.get('trailingPE')) or safe_float(info.get('forwardPE'))
+            dividend_yield = safe_float(info.get('dividendYield'))
             
-            # Get market state
             market_state = info.get('marketState', 'CLOSED')
             
-            # Get pre-market data
-            pre_market_price = info.get('preMarketPrice')
-            pre_market_change = info.get('preMarketChange')
-            pre_market_change_percent = info.get('preMarketChangePercent')
+            pre_market_price = safe_float(info.get('preMarketPrice'))
+            pre_market_change = safe_float(info.get('preMarketChange'))
+            pre_market_change_percent = safe_float(info.get('preMarketChangePercent'))
             
-            # Get after-hours (post-market) data
-            post_market_price = info.get('postMarketPrice')
-            post_market_change = info.get('postMarketChange')
-            post_market_change_percent = info.get('postMarketChangePercent')
+            post_market_price = safe_float(info.get('postMarketPrice'))
+            post_market_change = safe_float(info.get('postMarketChange'))
+            post_market_change_percent = safe_float(info.get('postMarketChangePercent'))
             
             return {
                 "ticker": ticker.upper(),
-                "price": float(current_price),
-                "change": float(change),
-                "change_percent": float(change_percent),
-                "volume": info.get('volume'),
-                "market_cap": info.get('marketCap'),
-                "high_52week": info.get('fiftyTwoWeekHigh'),
-                "low_52week": info.get('fiftyTwoWeekLow'),
+                "price": current_price,
+                "change": change,
+                "change_percent": change_percent,
+                "volume": safe_int(info.get('volume')),
+                "market_cap": safe_float(info.get('marketCap')),
+                "high_52week": safe_float(info.get('fiftyTwoWeekHigh')),
+                "low_52week": safe_float(info.get('fiftyTwoWeekLow')),
                 "company_name": info.get('longName', info.get('shortName', ticker.upper())),
                 "currency": info.get('currency', 'USD'),
-                "day_open": float(day_open) if day_open else None,
-                "day_high": float(day_high) if day_high else None,
-                "day_low": float(day_low) if day_low else None,
-                "pe_ratio": float(pe_ratio) if pe_ratio else None,
-                "dividend_yield": float(dividend_yield * 100) if dividend_yield else None,
+                "day_open": day_open,
+                "day_high": day_high,
+                "day_low": day_low,
+                "pe_ratio": pe_ratio,
+                "dividend_yield": (dividend_yield * 100) if dividend_yield is not None else None,
                 "market_state": market_state,
                 "pre_market": {
-                    "price": float(pre_market_price) if pre_market_price else None,
-                    "change": float(pre_market_change) if pre_market_change else None,
-                    "change_percent": float(pre_market_change_percent * 100) if pre_market_change_percent else None
-                } if pre_market_price else None,
+                    "price": pre_market_price,
+                    "change": pre_market_change,
+                    "change_percent": (pre_market_change_percent * 100) if pre_market_change_percent is not None else None,
+                } if pre_market_price is not None else None,
                 "post_market": {
-                    "price": float(post_market_price) if post_market_price else None,
-                    "change": float(post_market_change) if post_market_change else None,
-                    "change_percent": float(post_market_change_percent * 100) if post_market_change_percent else None
-                } if post_market_price else None
+                    "price": post_market_price,
+                    "change": post_market_change,
+                    "change_percent": (post_market_change_percent * 100) if post_market_change_percent is not None else None,
+                } if post_market_price is not None else None,
             }
         
         quote_data = await run_in_threadpool(fetch_quote)
@@ -898,38 +918,22 @@ async def get_earnings_snapshot(ticker: str):
             stock = ticker_cache.get_or_create(ticker.upper())
             info = stock.info
             
-            # Get financial data
-            capex = info.get('capitalExpenditures')
-            free_cash_flow = info.get('freeCashflow')
-            gross_margins = info.get('grossMargins')
-            return_on_equity = info.get('returnOnEquity')
-            
-            # Get earnings estimates
-            earnings_estimate = info.get('earningsQuarterlyGrowth')
-            revenue_estimate = info.get('revenueGrowth')
-            target_mean_price = info.get('targetMeanPrice')
             recommendation = info.get('recommendationKey', 'N/A')
-            
-            # Additional useful metrics
-            operating_margins = info.get('operatingMargins')
-            profit_margins = info.get('profitMargins')
-            revenue = info.get('totalRevenue')
-            net_income = info.get('netIncomeToCommon')
             
             return {
                 "ticker": ticker.upper(),
-                "capex": capex,
-                "free_cash_flow": free_cash_flow,
-                "gross_margin": float(gross_margins * 100) if gross_margins else None,
-                "operating_margin": float(operating_margins * 100) if operating_margins else None,
-                "profit_margin": float(profit_margins * 100) if profit_margins else None,
-                "return_on_equity": float(return_on_equity * 100) if return_on_equity else None,
-                "earnings_growth": float(earnings_estimate * 100) if earnings_estimate else None,
-                "revenue_growth": float(revenue_estimate * 100) if revenue_estimate else None,
-                "target_price": target_mean_price,
+                "capex": safe_float(info.get('capitalExpenditures')),
+                "free_cash_flow": safe_float(info.get('freeCashflow')),
+                "gross_margin": safe_pct(info.get('grossMargins')),
+                "operating_margin": safe_pct(info.get('operatingMargins')),
+                "profit_margin": safe_pct(info.get('profitMargins')),
+                "return_on_equity": safe_pct(info.get('returnOnEquity')),
+                "earnings_growth": safe_pct(info.get('earningsQuarterlyGrowth')),
+                "revenue_growth": safe_pct(info.get('revenueGrowth')),
+                "target_price": safe_float(info.get('targetMeanPrice')),
                 "recommendation": recommendation.upper() if recommendation else 'N/A',
-                "revenue": revenue,
-                "net_income": net_income
+                "revenue": safe_float(info.get('totalRevenue')),
+                "net_income": safe_float(info.get('netIncomeToCommon')),
             }
         
         snapshot = await run_in_threadpool(fetch_earnings_snapshot)
@@ -1069,7 +1073,7 @@ async def get_stock_health_report(ticker: str):
             
             # Risk assessment (simplified) - None-safe comparisons
             held_by_inst = current_metrics.get('held_by_institutions')
-            debt_eq = info.get('debtToEquity')
+            debt_eq = safe_float(info.get('debtToEquity'))
             
             risk_scores = {
                 "regulatory_risk": 3 if info.get('sector') in ['Technology', 'Healthcare', 'Financial Services'] else 2,

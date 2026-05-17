@@ -61,7 +61,7 @@ const AboutUs = () => {
         data-testid="about-us-button"
         aria-label="About Us"
         data-hidden={hidden ? 'true' : 'false'}
-        className={`fixed bottom-4 left-4 sm:bottom-6 sm:left-6 z-40 flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full
+        className={`fixed bottom-20 right-4 sm:bottom-20 sm:right-6 z-40 flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full
                    bg-[rgba(15,15,20,0.85)] backdrop-blur-md
                    border border-[rgba(217,70,239,0.35)] hover:border-[#d946ef]
                    text-xs sm:text-sm text-gray-300 hover:text-white

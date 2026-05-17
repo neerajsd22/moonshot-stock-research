@@ -55,7 +55,7 @@ const MobileSearchSheet = ({
           onClick={() => setOpen(true)}
           data-testid="mobile-search-fab"
           aria-label="Search stocks"
-          className="fixed bottom-20 right-5 sm:bottom-6 lg:bottom-6 z-40 w-14 h-14 rounded-full lg:hidden
+          className="fixed bottom-5 left-5 z-40 w-14 h-14 rounded-full lg:hidden
                      flex items-center justify-center text-white
                      transition-transform duration-200 hover:scale-105 active:scale-95
                      shadow-[0_8px_24px_rgba(217,70,239,0.5),0_0_0_4px_rgba(217,70,239,0.15)]"

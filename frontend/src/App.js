@@ -1088,15 +1088,6 @@ const HomePage = () => {
             </div>
             
             <button
-              onClick={() => { setShowCategorySettings(true); setSidebarOpen(false); }}
-              className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-gray-300 hover:bg-[rgba(217,70,239,0.1)] hover:text-white transition-colors"
-              data-testid="sidebar-categories"
-            >
-              <Settings className="w-5 h-5 text-[#d946ef]" />
-              <span>Categories</span>
-            </button>
-            
-            <button
               onClick={() => { setShowBackgroundPicker(true); setSidebarOpen(false); }}
               className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-gray-300 hover:bg-[rgba(217,70,239,0.1)] hover:text-white transition-colors"
               data-testid="sidebar-theme"
@@ -1318,6 +1309,9 @@ const HomePage = () => {
                 </PopoverContent>
               </Popover>
 
+              {/* Portfolio Button with live P&L pulse dot */}
+              <PortfolioButton />
+              
               {/* View Mode Toggle */}
               <Button
                 data-testid="view-mode-toggle"
@@ -1325,14 +1319,11 @@ const HomePage = () => {
                 size="sm"
                 onClick={() => setViewMode(isCompact ? 'spacious' : 'dense')}
                 className="flex-col sm:flex-row h-12 sm:h-11 px-2 sm:px-4 gap-0.5 sm:gap-2 btn-outline-gold"
-                title={isCompact ? 'Switch to expanded view' : 'Switch to compact view'}
+                title={isCompact ? 'Switch to expanded view' : 'Switch to condensed view'}
               >
                 {isCompact ? <Maximize2 className="w-4 h-4" /> : <Rows3 className="w-4 h-4" />}
-                <span className="text-[9px] sm:text-sm leading-none sm:leading-normal">{isCompact ? 'Expand' : 'Compact'}</span>
+                <span className="text-[9px] sm:text-sm leading-none sm:leading-normal">{isCompact ? 'Expand' : 'Condense'}</span>
               </Button>
-
-              {/* Portfolio Button with live P&L pulse dot */}
-              <PortfolioButton />
               
               {/* Menu Button */}
               <Button

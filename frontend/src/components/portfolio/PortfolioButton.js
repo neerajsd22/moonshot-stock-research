@@ -34,11 +34,7 @@ const PortfolioButton = () => {
       onClick={() => navigate('/portfolio')}
       data-testid="portfolio-header-button"
       title={tooltip}
-      className="relative flex flex-col sm:flex-row items-center gap-0.5 sm:gap-2 px-2 sm:px-3 h-12 sm:h-10 rounded-lg
-                 border border-[rgba(255,255,255,0.08)] bg-[rgba(255,255,255,0.03)]
-                 hover:border-[#d946ef]/50 hover:bg-[rgba(217,70,239,0.06)]
-                 text-gray-300 hover:text-white
-                 transition-all duration-200"
+      className="relative inline-flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-2 h-12 sm:h-11 px-2 sm:px-4 rounded-md text-sm font-medium btn-outline-gold transition-all duration-200"
       style={{ fontFamily: 'Outfit, sans-serif' }}
     >
       <span className="relative flex items-center">

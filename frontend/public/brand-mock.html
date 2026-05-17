@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Moonshot — Brand Placement Mocks</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=DM+Mono:wght@500&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+body {
+  background: #0a0a0f;
+  color: #fff;
+  font-family: 'Outfit', sans-serif;
+  margin: 0;
+  padding: 32px 16px 80px;
+}
+.gold-text {
+  background: linear-gradient(135deg, #d946ef 0%, #f0abfc 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.btn-outline-gold {
+  border: 1px solid rgba(217, 70, 239, 0.4);
+  color: #f0abfc;
+  background: transparent;
+}
+.gold-gradient-border {
+  border: 1px solid rgba(217, 70, 239, 0.25);
+  box-shadow: 0 0 20px rgba(217, 70, 239, 0.05);
+}
+.mono { font-family: 'DM Mono', monospace; }
+
+.phone {
+  width: 390px;
+  height: 700px;
+  background: #0a0a0f;
+  border: 8px solid #1c1c24;
+  border-radius: 40px;
+  margin: 0 auto;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.6);
+}
+.phone-notch {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 24px;
+  background: #1c1c24;
+  border-radius: 0 0 16px 16px;
+  z-index: 50;
+}
+.bg-particles {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(217,70,239,0.15) 0%, transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(168,85,247,0.1) 0%, transparent 40%);
+}
+
+.label-pill {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #d946ef;
+  color: #0a0a0f;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+  z-index: 60;
+}
+.recommended-label {
+  background: linear-gradient(135deg, #d946ef 0%, #fbbf24 100%);
+}
+
+.fab {
+  position: absolute;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+  box-shadow: 0 8px 24px rgba(217, 70, 239, 0.5), 0 0 0 4px rgba(217, 70, 239, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  z-index: 40;
+}
+.fab svg { width: 24px; height: 24px; }
+
+.dot-up {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #4ade80;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(390px, 1fr));
+  gap: 40px;
+  max-width: 1400px;
+  margin: 0 auto 24px;
+}
+.caption {
+  text-align: center;
+  margin-top: 16px;
+  font-size: 13px;
+  color: #9ca3af;
+  max-width: 360px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.5;
+}
+.caption b { color: #f0abfc; }
+h1 { font-size: 28px; font-weight: 700; text-align: center; margin: 0 0 8px; }
+.subtitle { text-align: center; color: #9ca3af; margin: 0 0 40px; font-size: 14px; }
+
+.btn-cell {
+  border: 1px solid rgba(217, 70, 239, 0.4);
+  color: #f0abfc;
+  background: transparent;
+  border-radius: 6px;
+  height: 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  font-size: 10px;
+  position: relative;
+}
+</style>
+</head>
+<body>
+
+<h1>Where Does <span class="gold-text">Moonshot</span> Live on Mobile?</h1>
+<p class="subtitle">4 placement options. All compatible with the bottom-sheet FAB you picked.</p>
+
+<div class="row">
+
+  <!-- OPTION 1: ABOVE the header buttons -->
+  <div>
+    <div class="phone">
+      <span class="label-pill">1 · Above Header Row</span>
+      <div class="phone-notch"></div>
+      <div class="bg-particles"></div>
+      <div class="px-3 pt-7 pb-2 relative z-10">
+        <!-- Brand line, centered -->
+        <div class="flex items-center justify-center gap-2 mb-2">
+          <svg class="w-5 h-5 text-[#d946ef]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+          <span class="gold-text font-bold text-lg" style="letter-spacing:-0.01em;">Moonshot</span>
+        </div>
+        <!-- Button row -->
+        <div class="grid grid-cols-4 gap-1.5">
+          <div class="btn-cell">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="2"/><path d="M16 8l-4 8-4-8 4 4z" stroke-width="2"/></svg>
+            Explore
+          </div>
+          <div class="btn-cell">
+            <div class="relative">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M21 12V8H5a2 2 0 010-4h14v4M3 18v2a2 2 0 002 2h14v-6h-2a2 2 0 110-4h2v-2h-9"/></svg>
+              <span class="dot-up"></span>
+            </div>
+            Portfolio
+          </div>
+          <div class="btn-cell">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="2" rx="1"/><rect x="3" y="11" width="18" height="2" rx="1"/><rect x="3" y="16" width="18" height="2" rx="1"/></svg>
+            Condense
+          </div>
+          <div class="btn-cell">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="6" cy="12" r="1.5" fill="currentColor"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="18" cy="12" r="1.5" fill="currentColor"/></svg>
+            Menu
+            <span class="absolute -top-1 -right-1 w-4 h-4 bg-[#d946ef] text-[#0a0a0f] text-[9px] font-bold rounded-full flex items-center justify-center">1</span>
+          </div>
+        </div>
+      </div>
+      <!-- Content -->
+      <div class="px-3 pt-3 relative z-10">
+        <div class="flex items-center gap-2 mb-2">
+          <svg class="w-4 h-4 text-[#d946ef]" fill="currentColor" viewBox="0 0 24 24"><path d="M3 7h18M5 7v10a2 2 0 002 2h10a2 2 0 002-2V7"/></svg>
+          <span class="text-sm gold-text font-semibold">Pinned Stocks</span>
+        </div>
+        <div class="flex gap-2">
+          <div class="gold-gradient-border bg-[rgba(15,15,20,0.95)] rounded-lg p-3 min-w-[130px]">
+            <div class="mono font-bold">GOOGL</div>
+            <div class="text-xs text-gray-400">Alphabet Inc.</div>
+          </div>
+          <div class="gold-gradient-border bg-[rgba(15,15,20,0.95)] rounded-lg p-3 min-w-[130px]">
+            <div class="mono font-bold">AAPL</div>
+            <div class="text-xs text-gray-400">Apple Inc.</div>
+          </div>
+        </div>
+      </div>
+      <div class="fab" style="bottom: 20px; right: 20px;">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+      </div>
+    </div>
+    <p class="caption"><b>Above the buttons</b> — centered logo + wordmark sits as its own line at the top. Premium feel.<br/><span style="color:#94a3b8;">Cost: +28px header height</span></p>
+  </div>
+
+
+  <!-- OPTION 2: Inline with logo, left edge -->
+  <div>
+    <div class="phone">
+      <span class="label-pill recommended-label">2 · Inline with Logo ✨</span>
+      <div class="phone-notch"></div>
+      <div class="bg-particles"></div>
+      <div class="px-3 pt-8 pb-2 relative z-10">
+        <div class="flex items-center gap-2">
+          <!-- Logo + wordmark group -->
+          <div class="flex items-center gap-1.5 flex-shrink-0">
+            <svg class="w-6 h-6 text-[#d946ef]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+            <span class="gold-text font-bold text-sm" style="letter-spacing:-0.01em;">Moonshot</span>
+          </div>
+          <!-- 4 buttons inline -->
+          <div class="flex-1 grid grid-cols-4 gap-1">
+            <div class="btn-cell" style="font-size:9px;">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="2"/></svg>
+              Explore
+            </div>
+            <div class="btn-cell" style="font-size:9px;">
+              <div class="relative">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M21 12V8H5a2 2 0 010-4h14v4M3 18v2a2 2 0 002 2h14v-6h-2a2 2 0 110-4h2v-2h-9"/></svg>
+                <span class="dot-up"></span>
+              </div>
+              Port…
+            </div>
+            <div class="btn-cell" style="font-size:9px;">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="2" rx="1"/><rect x="3" y="11" width="18" height="2" rx="1"/></svg>
+              Cond…
+            </div>
+            <div class="btn-cell" style="font-size:9px;">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>
+              Menu
+              <span class="absolute -top-1 -right-1 w-4 h-4 bg-[#d946ef] text-[#0a0a0f] text-[9px] font-bold rounded-full flex items-center justify-center">1</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="px-3 pt-3 relative z-10">
+        <div class="flex items-center gap-2 mb-2">
+          <svg class="w-4 h-4 text-[#d946ef]" fill="currentColor" viewBox="0 0 24 24"><path d="M3 7h18M5 7v10a2 2 0 002 2h10a2 2 0 002-2V7"/></svg>
+          <span class="text-sm gold-text font-semibold">Pinned Stocks</span>
+        </div>
+        <div class="flex gap-2">
+          <div class="gold-gradient-border bg-[rgba(15,15,20,0.95)] rounded-lg p-3 min-w-[130px]">
+            <div class="mono font-bold">GOOGL</div>
+            <div class="text-xs text-gray-400">Alphabet Inc.</div>
+          </div>
+          <div class="gold-gradient-border bg-[rgba(15,15,20,0.95)] rounded-lg p-3 min-w-[130px]">
+            <div class="mono font-bold">AAPL</div>
+            <div class="text-xs text-gray-400">Apple Inc.</div>
+          </div>
+        </div>
+      </div>
+      <div class="fab" style="bottom: 20px; right: 20px;">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+      </div>
+    </div>
+    <p class="caption"><b>Inline with the logo</b> — wordmark sits next to the arrow icon, button labels truncate to "Port…" / "Cond…" to make space.<br/><span style="color:#94a3b8;">Cost: button labels truncated on phones &lt;400px</span></p>
+  </div>
+
+
+  <!-- OPTION 3: Subtle subtitle "Moonshot" inside FAB -->
+  <div>
+    <div class="phone">
+      <span class="label-pill">3 · Watermark Behind Content</span>
+      <div class="phone-notch"></div>
+      <div class="bg-particles"></div>
+      <!-- BIG faint wordmark -->
+      <div style="position:absolute; top:80px; left:0; right:0; text-align:center; z-index:1; opacity:0.06; font-size:64px; font-weight:800; letter-spacing:-0.04em;" class="gold-text">
+        Moonshot
+      </div>
+      <div class="px-3 pt-8 pb-2 relative z-10">
+        <div class="flex items-center gap-2">
+          <svg class="w-7 h-7 text-[#d946ef] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+          <div class="flex-1 grid grid-cols-4 gap-1">
+            <div class="btn-cell">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="2"/></svg>
+              Explore
+            </div>
+            <div class="btn-cell">
+              <div class="relative">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M21 12V8H5a2 2 0 010-4h14v4M3 18v2a2 2 0 002 2h14v-6h-2a2 2 0 110-4h2v-2h-9"/></svg>
+                <span class="dot-up"></span>
+              </div>
+              Portfolio
+            </div>
+            <div class="btn-cell">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="2" rx="1"/></svg>
+              Condense
+            </div>
+            <div class="btn-cell">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="6" cy="12" r="1.5" fill="currentColor"/></svg>
+              Menu
+              <span class="absolute -top-1 -right-1 w-4 h-4 bg-[#d946ef] text-[#0a0a0f] text-[9px] font-bold rounded-full flex items-center justify-center">1</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="px-3 pt-3 relative z-10">
+        <div class="flex items-center gap-2 mb-2">
+          <svg class="w-4 h-4 text-[#d946ef]" fill="currentColor" viewBox="0 0 24 24"><path d="M3 7h18M5 7v10a2 2 0 002 2h10a2 2 0 002-2V7"/></svg>
+          <span class="text-sm gold-text font-semibold">Pinned Stocks</span>
+        </div>
+        <div class="flex gap-2">
+          <div class="gold-gradient-border bg-[rgba(15,15,20,0.95)] rounded-lg p-3 min-w-[130px]">
+            <div class="mono font-bold">GOOGL</div>
+            <div class="text-xs text-gray-400">Alphabet Inc.</div>
+          </div>
+          <div class="gold-gradient-border bg-[rgba(15,15,20,0.95)] rounded-lg p-3 min-w-[130px]">
+            <div class="mono font-bold">AAPL</div>
+            <div class="text-xs text-gray-400">Apple Inc.</div>
+          </div>
+        </div>
+      </div>
+      <div class="fab" style="bottom: 20px; right: 20px;">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+      </div>
+    </div>
+    <p class="caption"><b>Watermark behind content</b> — huge faint gold wordmark sits behind the page (6% opacity). Visible only on empty/quiet pages, invisible when content fills the screen.<br/><span style="color:#94a3b8;">Cost: zero — pure decoration</span></p>
+  </div>
+
+
+  <!-- OPTION 4: Inside the FAB tooltip + bottom sheet header -->
+  <div>
+    <div class="phone">
+      <span class="label-pill">4 · Inside the Bottom Sheet</span>
+      <div class="phone-notch"></div>
+      <div class="bg-particles"></div>
+      <div class="px-3 pt-8 pb-2 relative z-10 opacity-30">
+        <div class="flex items-center gap-2">
+          <svg class="w-6 h-6 text-[#d946ef]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+          <div class="flex-1 grid grid-cols-4 gap-1">
+            <div class="btn-cell"></div>
+            <div class="btn-cell"></div>
+            <div class="btn-cell"></div>
+            <div class="btn-cell"></div>
+          </div>
+        </div>
+      </div>
+      <div style="position:absolute;inset:0;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);z-index:20;"></div>
+      <!-- Bottom sheet with branded header -->
+      <div style="position:absolute;bottom:0;left:0;right:0;z-index:30;" class="gold-gradient-border bg-[rgba(10,10,15,0.98)] rounded-t-3xl p-5 pb-8 shadow-2xl">
+        <div style="width:48px;height:5px;border-radius:99px;background:rgba(255,255,255,0.15);margin:0 auto 16px;"></div>
+        <!-- Branded sheet header -->
+        <div class="flex items-center justify-center gap-1.5 mb-4 pb-3" style="border-bottom: 1px solid rgba(255,255,255,0.08);">
+          <svg class="w-4 h-4 text-[#d946ef]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+          <span class="gold-text font-bold text-sm">Moonshot</span>
+          <span class="text-xs text-gray-500" style="margin-left:6px;">· Stock Search</span>
+        </div>
+        <div class="flex items-center gap-2 mb-3 pb-3" style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+          <svg class="w-5 h-5 text-[#d946ef]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          <input class="flex-1 bg-transparent outline-none text-base" style="color:#fff" value="Salesforce" />
+        </div>
+        <button class="w-full text-left p-2.5 rounded-lg" style="background:rgba(217,70,239,0.08);">
+          <div class="mono font-bold">CRM</div>
+          <div class="text-xs text-gray-400">Salesforce, Inc.</div>
+        </button>
+      </div>
+    </div>
+    <p class="caption"><b>Branding lives inside the search sheet</b> — title appears every time user opens search ("Moonshot · Stock Search"). Header row stays icon-only & minimal.<br/><span style="color:#94a3b8;">Cost: brand only seen on open</span></p>
+  </div>
+
+</div>
+
+<div style="max-width: 800px; margin: 56px auto 0; color: #d1d5db; font-size: 14px; line-height: 1.7; padding: 0 24px;">
+  <div style="text-align:center; margin-bottom:24px; color:#f0abfc; font-size:16px; font-weight:600; letter-spacing:0.05em; text-transform:uppercase;">Trade-offs</div>
+  <table style="width:100%; border-collapse: collapse; font-size: 13px;">
+    <thead>
+      <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+        <th style="padding: 12px; text-align: left; color: #f0abfc;">Option</th>
+        <th style="padding: 12px; text-align: left; color: #f0abfc;">Brand visible?</th>
+        <th style="padding: 12px; text-align: left; color: #f0abfc;">Header height</th>
+        <th style="padding: 12px; text-align: left; color: #f0abfc;">Button labels</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+        <td style="padding: 10px 12px;">1 · Above row</td>
+        <td style="padding: 10px 12px;">Always, prominent</td>
+        <td style="padding: 10px 12px;">+28px taller</td>
+        <td style="padding: 10px 12px;">Full ✓</td>
+      </tr>
+      <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+        <td style="padding: 10px 12px;">2 · Inline with logo</td>
+        <td style="padding: 10px 12px;">Always, small</td>
+        <td style="padding: 10px 12px;">Unchanged</td>
+        <td style="padding: 10px 12px;">Truncated on small phones</td>
+      </tr>
+      <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+        <td style="padding: 10px 12px;">3 · Watermark</td>
+        <td style="padding: 10px 12px;">Subtle, ambient</td>
+        <td style="padding: 10px 12px;">Unchanged</td>
+        <td style="padding: 10px 12px;">Full ✓</td>
+      </tr>
+      <tr>
+        <td style="padding: 10px 12px;">4 · Inside search sheet</td>
+        <td style="padding: 10px 12px;">Only when search open</td>
+        <td style="padding: 10px 12px;">Unchanged</td>
+        <td style="padding: 10px 12px;">Full ✓</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div style="margin-top: 32px; padding: 16px; border-radius: 12px; background: rgba(217, 70, 239, 0.08); border: 1px solid rgba(217, 70, 239, 0.25);">
+    <div style="font-weight: 600; color: #f0abfc; margin-bottom: 8px;">My recommendation: Option 1 OR Hybrid (1 + 4)</div>
+    <div>
+      <b>Option 1 (Above row)</b> gives the cleanest, most professional look — your brand always visible without crowding any button. The +28px header bump is well worth it.<br/><br/>
+      Even better: <b>Combine 1 + 4</b> — brand appears in both the header AND inside the search sheet. Maximum reinforcement, zero downside.
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

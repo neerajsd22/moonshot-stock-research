@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Moonshot — Search FAB Mocks</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=DM+Mono:wght@500&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+body {
+  background: #0a0a0f;
+  color: #fff;
+  font-family: 'Outfit', sans-serif;
+  margin: 0;
+  padding: 32px 16px 80px;
+}
+.gold-text {
+  background: linear-gradient(135deg, #d946ef 0%, #f0abfc 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.btn-outline-gold {
+  border: 1px solid rgba(217, 70, 239, 0.4);
+  color: #f0abfc;
+  background: transparent;
+}
+.gold-gradient-border {
+  border: 1px solid rgba(217, 70, 239, 0.25);
+  box-shadow: 0 0 20px rgba(217, 70, 239, 0.05);
+}
+.mono { font-family: 'DM Mono', monospace; }
+
+.phone {
+  width: 390px;
+  height: 700px;
+  background: #0a0a0f;
+  border: 8px solid #1c1c24;
+  border-radius: 40px;
+  margin: 0 auto;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.6);
+}
+.phone-notch {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 24px;
+  background: #1c1c24;
+  border-radius: 0 0 16px 16px;
+  z-index: 50;
+}
+
+/* Subtle particle bg */
+.bg-particles {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(217,70,239,0.15) 0%, transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(168,85,247,0.1) 0%, transparent 40%);
+}
+
+.label-pill {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #d946ef;
+  color: #0a0a0f;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+  z-index: 60;
+}
+
+.fab {
+  position: absolute;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+  box-shadow: 0 8px 24px rgba(217, 70, 239, 0.5), 0 0 0 4px rgba(217, 70, 239, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  z-index: 40;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.fab:hover { transform: scale(1.05); }
+.fab svg { width: 24px; height: 24px; }
+.fab-pulse {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid rgba(217, 70, 239, 0.5);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+.dot-up {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #4ade80;
+  box-shadow: 0 0 4px rgba(74, 222, 128, 0.6);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(390px, 1fr));
+  gap: 40px;
+  max-width: 1400px;
+  margin: 0 auto 24px;
+}
+.caption {
+  text-align: center;
+  margin-top: 16px;
+  font-size: 13px;
+  color: #9ca3af;
+  max-width: 360px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.5;
+}
+.caption b { color: #f0abfc; }
+h1 { font-size: 28px; font-weight: 700; text-align: center; margin: 0 0 8px; }
+h1 .gold-text { font-weight: 800; }
+.subtitle { text-align: center; color: #9ca3af; margin: 0 0 40px; font-size: 14px; }
+.section-title {
+  text-align: center;
+  margin: 56px 0 24px;
+  color: #f0abfc;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+</style>
+</head>
+<body>
+
+<h1>Moonshot · Mobile Search <span class="gold-text">FAB</span> Mocks</h1>
+<p class="subtitle">Three states, two layout options. Pick what you like.</p>
+
+<!-- ROW 1: CURRENT (for comparison) -->
+<div class="section-title">▼ For Reference: Current Layout</div>
+<div class="row">
+  <div>
+    <div class="phone">
+      <div class="phone-notch"></div>
+      <div class="bg-particles"></div>
+      <!-- Header current -->
+      <div class="px-3 pt-8 pb-2 relative z-10">
+        <div class="flex items-center gap-2 mb-2">
+          <svg class="w-6 h-6 text-[#d946ef]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+          <div class="relative flex-1">
+            <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            <input class="pl-9 h-9 w-full text-sm rounded-lg" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); color: #fff;" placeholder="Search stocks..." />
+          </div>
+        </div>
+        <div class="flex justify-end gap-1 mt-1">
+          <div class="btn-outline-gold rounded-md w-[58px] h-12 flex flex-col items-center justify-center text-[9px] gap-0.5">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="2"/><path d="M16 8l-4 8-4-8 4 4z" stroke-width="2"/></svg>
+            Explore
+          </div>
+          <div class="btn-outline-gold rounded-md w-[62px] h-12 flex flex-col items-center justify-center text-[9px] gap-0.5 relative">
+            <div class="relative">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12V8H5a2 2 0 010-4h14v4M3 18v2a2 2 0 002 2h14v-6h-2a2 2 0 110-4h2v-2h-9"/></svg>
+              <span class="dot-up"></span>
+            </div>
+            Portfolio
+          </div>
+          <div class="btn-outline-gold rounded-md w-[58px] h-12 flex flex-col items-center justify-center text-[9px] gap-0.5">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="2" rx="1"/><rect x="3" y="11" width="18" height="2" rx="1"/><rect x="3" y="16" width="18" height="2" rx="1"/></svg>
+            Condense
+          </div>
+          <div class="btn-outline-gold rounded-md w-[46px] h-12 flex flex-col items-center justify-center text-[9px] gap-0.5 relative">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="6" cy="12" r="1.5" fill="currentColor"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="18" cy="12" r="1.5" fill="currentColor"/></svg>
+            Menu
+            <span class="absolute -top-1 -right-1 w-4 h-4 bg-[#d946ef] text-[#0a0a0f] text-[9px] font-bold rounded-full flex items-center justify-center">1</span>
+          </div>
+        </div>
+      </div>
+      <!-- Content sample -->
+      <div class="px-3 pt-2 relative z-10">
+        <div class="flex items-center gap-2 mb-2">
+          <svg class="w-4 h-4 text-[#d946ef]" fill="currentColor" viewBox="0 0 24 24"><path d="M3 7h18M5 7v10a2 2 0 002 2h10a2 2 0 002-2V7M9 11v6M15 11v6"/></svg>
+          <span class="text-sm gold-text font-semibold">Pinned Stocks</span>
+          <span class="text-xs text-gray-500">(3)</span>
+        </div>
+        <div class="flex gap-2">
+          <div class="gold-gradient-border bg-[rgba(15,15,20,0.95)] rounded-lg p-3 min-w-[120px]">
+            <div class="mono font-bold">GOOGL</div>
+            <div class="text-xs text-gray-400">Alphabet Inc.</div>
+          </div>
+          <div class="gold-gradient-border bg-[rgba(15,15,20,0.95)] rounded-lg p-3 min-w-[120px]">
+            <div class="mono font-bold">AAPL</div>
+            <div class="text-xs text-gray-400">Apple Inc.</div>
+          </div>
+          <div class="gold-gradient-border bg-[rgba(15,15,20,0.95)] rounded-lg p-3 min-w-[120px]">
+            <div class="mono font-bold">MSFT</div>
+            <div class="text-xs text-gray-400">Microsoft</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="caption"><b>Current</b><br/>Search bar always visible. 4 buttons cramped on the right. Two rows.</p>
+  </div>
+</div>
+
+
+<!-- ROW 2: OPTION A — FAB collapsed, buttons centered & breathing -->
+<div class="section-title">▼ Option A: FAB Closed — 4 Buttons Get Equal Spacing</div>
+<div class="row">
+
+  <!-- A1: Idle -->
+  <div>
+    <div class="phone">
+      <span class="label-pill">A · Idle</span>
+      <div class="phone-notch"></div>
+      <div class="bg-particles"></div>
+      <!-- Single-row header: logo + 4 buttons spread -->
+      <div class="px-3 pt-8 pb-2 relative z-10">
+        <div class="flex items-center gap-1.5">
+          <svg class="w-6 h-6 text-[#d946ef] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+          <div class="flex-1 grid grid-cols-4 gap-1">
+            <div class="btn-outline-gold rounded-md h-12 flex flex-col items-center justify-center text-[10px] gap-0.5">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="2"/><path d="M16 8l-4 8-4-8 4 4z" stroke-width="2"/></svg>
+              Explore
+            </div>
+            <div class="btn-outline-gold rounded-md h-12 flex flex-col items-center justify-center text-[10px] gap-0.5 relative">
+              <div class="relative">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12V8H5a2 2 0 010-4h14v4M3 18v2a2 2 0 002 2h14v-6h-2a2 2 0 110-4h2v-2h-9"/></svg>
+                <span class="dot-up"></span>
+              </div>
+              Portfolio
+            </div>
+            <div class="btn-outline-gold rounded-md h-12 flex flex-col items-center justify-center text-[10px] gap-0.5">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="2" rx="1"/><rect x="3" y="11" width="18" height="2" rx="1"/><rect x="3" y="16" width="18" height="2" rx="1"/></svg>
+              Condense
+            </div>
+            <div class="btn-outline-gold rounded-md h-12 flex flex-col items-center justify-center text-[10px] gap-0.5 relative">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="6" cy="12" r="1.5" fill="currentColor"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="18" cy="12" r="1.5" fill="currentColor"/></svg>
+              Menu
+              <span class="absolute -top-1 -right-1 w-4 h-4 bg-[#d946ef] text-[#0a0a0f] text-[9px] font-bold rounded-full flex items-center justify-center">1</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Content -->
+      <div class="px-3 pt-2 relative z-10">
+        <div class="flex items-center gap-2 mb-2">
+          <svg class="w-4 h-4 text-[#d946ef]" fill="currentColor" viewBox="0 0 24 24"><path d="M3 7h18M5 7v10a2 2 0 002 2h10a2 2 0 002-2V7M9 11v6M15 11v6"/></svg>
+          <span class="text-sm gold-text font-semibold">Pinned Stocks</span>
+          <span class="text-xs text-gray-500">(3)</span>
+        </div>
+        <div class="flex gap-2">
+          <div class="gold-gradient-border bg-[rgba(15,15,20,0.95)] rounded-lg p-3 min-w-[130px]">
+            <div class="mono font-bold">GOOGL</div>
+            <div class="text-xs text-gray-400">Alphabet Inc.</div>
+          </div>
+          <div class="gold-gradient-border bg-[rgba(15,15,20,0.95)] rounded-lg p-3 min-w-[130px]">
+            <div class="mono font-bold">AAPL</div>
+            <div class="text-xs text-gray-400">Apple Inc.</div>
+          </div>
+        </div>
+      </div>
+      <!-- FAB -->
+      <div class="fab" style="bottom: 20px; right: 20px;">
+        <div class="fab-pulse"></div>
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+      </div>
+    </div>
+    <p class="caption">Single header row. <b>4 buttons get equal grid spacing</b>. FAB pulses bottom-right inviting a tap.</p>
+  </div>
+
+  <!-- A2: FAB tapped, expanded search -->
+  <div>
+    <div class="phone">
+      <span class="label-pill">A · Search Open</span>
+      <div class="phone-notch"></div>
+      <div class="bg-particles"></div>
+      <!-- Faded background -->
+      <div style="position:absolute;inset:0;background:rgba(0,0,0,0.5);backdrop-filter:blur(8px);z-index:20;"></div>
+      <!-- Same header underneath -->
+      <div class="px-3 pt-8 pb-2 relative z-10 opacity-30">
+        <div class="flex items-center gap-1.5">
+          <svg class="w-6 h-6 text-[#d946ef]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+          <div class="flex-1 grid grid-cols-4 gap-1">
+            <div class="btn-outline-gold rounded-md h-12"></div>
+            <div class="btn-outline-gold rounded-md h-12"></div>
+            <div class="btn-outline-gold rounded-md h-12"></div>
+            <div class="btn-outline-gold rounded-md h-12"></div>
+          </div>
+        </div>
+      </div>
+      <!-- Search sheet -->
+      <div style="position:absolute;top:80px;left:16px;right:16px;z-index:30;" class="gold-gradient-border bg-[rgba(20,20,25,0.98)] rounded-2xl p-4 shadow-2xl">
+        <div class="flex items-center gap-2 mb-3">
+          <svg class="w-5 h-5 text-[#d946ef]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          <input class="flex-1 bg-transparent outline-none text-base placeholder-gray-500" style="color:#fff" value="Salesforce" autofocus />
+          <button class="text-gray-400 text-xl leading-none">×</button>
+        </div>
+        <div class="space-y-1">
+          <button class="w-full text-left p-2 rounded-lg hover:bg-[rgba(217,70,239,0.1)]" style="background:rgba(217,70,239,0.05);">
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="mono font-bold">CRM</div>
+                <div class="text-xs text-gray-400">Salesforce, Inc.</div>
+              </div>
+              <span class="text-[10px] px-1.5 py-0.5 rounded-full" style="border:1px solid rgba(255,255,255,0.15); color:#9ca3af;">NYSE</span>
+            </div>
+          </button>
+          <button class="w-full text-left p-2 rounded-lg">
+            <div class="mono font-bold">SAP</div>
+            <div class="text-xs text-gray-400">SAP SE</div>
+          </button>
+        </div>
+      </div>
+      <!-- FAB transformed to X -->
+      <div class="fab" style="bottom: 20px; right: 20px; background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%); box-shadow: 0 4px 12px rgba(0,0,0,0.4);">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
+      </div>
+    </div>
+    <p class="caption">Tap the FAB → <b>floating search sheet drops in</b> with autofocus and live results. Tap × or outside to dismiss.</p>
+  </div>
+
+</div>
+
+
+<!-- ROW 3: OPTION B — Bottom Sheet style -->
+<div class="section-title">▼ Option B: Bottom-Sheet Style (Slides Up From Bottom)</div>
+<div class="row">
+
+  <!-- B1: Idle (same as A1) -->
+  <div>
+    <div class="phone">
+      <span class="label-pill">B · Idle</span>
+      <div class="phone-notch"></div>
+      <div class="bg-particles"></div>
+      <div class="px-3 pt-8 pb-2 relative z-10">
+        <div class="flex items-center gap-1.5">
+          <svg class="w-6 h-6 text-[#d946ef] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+          <div class="flex-1 grid grid-cols-4 gap-1">
+            <div class="btn-outline-gold rounded-md h-12 flex flex-col items-center justify-center text-[10px] gap-0.5">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="2"/><path d="M16 8l-4 8-4-8 4 4z" stroke-width="2"/></svg>
+              Explore
+            </div>
+            <div class="btn-outline-gold rounded-md h-12 flex flex-col items-center justify-center text-[10px] gap-0.5 relative">
+              <div class="relative">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12V8H5a2 2 0 010-4h14v4M3 18v2a2 2 0 002 2h14v-6h-2a2 2 0 110-4h2v-2h-9"/></svg>
+                <span class="dot-up"></span>
+              </div>
+              Portfolio
+            </div>
+            <div class="btn-outline-gold rounded-md h-12 flex flex-col items-center justify-center text-[10px] gap-0.5">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="2" rx="1"/><rect x="3" y="11" width="18" height="2" rx="1"/><rect x="3" y="16" width="18" height="2" rx="1"/></svg>
+              Condense
+            </div>
+            <div class="btn-outline-gold rounded-md h-12 flex flex-col items-center justify-center text-[10px] gap-0.5 relative">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="6" cy="12" r="1.5" fill="currentColor"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="18" cy="12" r="1.5" fill="currentColor"/></svg>
+              Menu
+              <span class="absolute -top-1 -right-1 w-4 h-4 bg-[#d946ef] text-[#0a0a0f] text-[9px] font-bold rounded-full flex items-center justify-center">1</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="px-3 pt-2 relative z-10">
+        <div class="flex items-center gap-2 mb-2">
+          <svg class="w-4 h-4 text-[#d946ef]" fill="currentColor" viewBox="0 0 24 24"><path d="M3 7h18M5 7v10a2 2 0 002 2h10a2 2 0 002-2V7"/></svg>
+          <span class="text-sm gold-text font-semibold">Pinned Stocks</span>
+        </div>
+        <div class="flex gap-2">
+          <div class="gold-gradient-border bg-[rgba(15,15,20,0.95)] rounded-lg p-3 min-w-[130px]">
+            <div class="mono font-bold">GOOGL</div>
+            <div class="text-xs text-gray-400">Alphabet Inc.</div>
+          </div>
+          <div class="gold-gradient-border bg-[rgba(15,15,20,0.95)] rounded-lg p-3 min-w-[130px]">
+            <div class="mono font-bold">AAPL</div>
+            <div class="text-xs text-gray-400">Apple Inc.</div>
+          </div>
+        </div>
+      </div>
+      <div class="fab" style="bottom: 20px; right: 20px;">
+        <div class="fab-pulse"></div>
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+      </div>
+    </div>
+    <p class="caption">Identical idle layout to Option A.</p>
+  </div>
+
+  <!-- B2: Bottom sheet open -->
+  <div>
+    <div class="phone">
+      <span class="label-pill">B · Sheet Slides Up</span>
+      <div class="phone-notch"></div>
+      <div class="bg-particles"></div>
+      <div class="px-3 pt-8 pb-2 relative z-10 opacity-30">
+        <div class="flex items-center gap-1.5">
+          <svg class="w-6 h-6 text-[#d946ef]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+          <div class="flex-1 grid grid-cols-4 gap-1">
+            <div class="btn-outline-gold rounded-md h-12"></div>
+            <div class="btn-outline-gold rounded-md h-12"></div>
+            <div class="btn-outline-gold rounded-md h-12"></div>
+            <div class="btn-outline-gold rounded-md h-12"></div>
+          </div>
+        </div>
+      </div>
+      <!-- Dimmer -->
+      <div style="position:absolute;inset:0;background:rgba(0,0,0,0.55);backdrop-filter:blur(4px);z-index:20;"></div>
+      <!-- Bottom sheet -->
+      <div style="position:absolute;bottom:0;left:0;right:0;z-index:30;" class="gold-gradient-border bg-[rgba(10,10,15,0.98)] rounded-t-3xl p-5 pb-8 shadow-2xl">
+        <!-- handle -->
+        <div style="width:48px;height:5px;border-radius:99px;background:rgba(255,255,255,0.15);margin:0 auto 16px;"></div>
+        <!-- Search input -->
+        <div class="flex items-center gap-2 mb-3 pb-3" style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+          <svg class="w-5 h-5 text-[#d946ef]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          <input class="flex-1 bg-transparent outline-none text-base" style="color:#fff" value="Salesforce" autofocus />
+        </div>
+        <div class="text-[10px] text-gray-500 uppercase tracking-wide mb-2">Results</div>
+        <div class="space-y-1">
+          <button class="w-full text-left p-2.5 rounded-lg" style="background:rgba(217,70,239,0.08);">
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="mono font-bold">CRM</div>
+                <div class="text-xs text-gray-400">Salesforce, Inc.</div>
+              </div>
+              <span class="text-[10px] px-1.5 py-0.5 rounded-full" style="border:1px solid rgba(255,255,255,0.15); color:#9ca3af;">NYSE</span>
+            </div>
+          </button>
+          <button class="w-full text-left p-2.5 rounded-lg hover:bg-[rgba(217,70,239,0.05)]">
+            <div class="mono font-bold">SAP</div>
+            <div class="text-xs text-gray-400">SAP SE</div>
+          </button>
+          <button class="w-full text-left p-2.5 rounded-lg hover:bg-[rgba(217,70,239,0.05)]">
+            <div class="mono font-bold">ORCL</div>
+            <div class="text-xs text-gray-400">Oracle Corporation</div>
+          </button>
+        </div>
+      </div>
+    </div>
+    <p class="caption">Tap FAB → <b>bottom sheet slides up from below</b>. Native mobile pattern. Drag the handle down or tap outside to dismiss.</p>
+  </div>
+
+</div>
+
+<div class="section-title">⚖ How They Differ</div>
+<div style="max-width: 800px; margin: 0 auto; color: #d1d5db; font-size: 14px; line-height: 1.7; padding: 0 24px;">
+  <table style="width:100%; border-collapse: collapse; font-size: 13px;">
+    <thead>
+      <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+        <th style="padding: 12px; text-align: left; color: #f0abfc;">Aspect</th>
+        <th style="padding: 12px; text-align: left; color: #f0abfc;">Option A · Floating Sheet</th>
+        <th style="padding: 12px; text-align: left; color: #f0abfc;">Option B · Bottom Sheet</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+        <td style="padding: 10px 12px;">Position</td>
+        <td style="padding: 10px 12px;">Drops down near the top, just below header</td>
+        <td style="padding: 10px 12px;">Slides up from the bottom of the screen</td>
+      </tr>
+      <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+        <td style="padding: 10px 12px;">Reachability</td>
+        <td style="padding: 10px 12px;">Input is far from thumb on tall phones</td>
+        <td style="padding: 10px 12px;">✓ Thumb-friendly — input is near bottom</td>
+      </tr>
+      <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+        <td style="padding: 10px 12px;">Feels like</td>
+        <td style="padding: 10px 12px;">Quick popover / overlay</td>
+        <td style="padding: 10px 12px;">Native iOS/Android sheet (Robinhood-style)</td>
+      </tr>
+      <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+        <td style="padding: 10px 12px;">Keyboard interaction</td>
+        <td style="padding: 10px 12px;">Keyboard pushes content down, may overlap</td>
+        <td style="padding: 10px 12px;">✓ Sheet hugs above keyboard naturally</td>
+      </tr>
+      <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+        <td style="padding: 10px 12px;">Result list height</td>
+        <td style="padding: 10px 12px;">Up to ~55vh (capped)</td>
+        <td style="padding: 10px 12px;">Up to ~75vh, expandable</td>
+      </tr>
+      <tr>
+        <td style="padding: 10px 12px;">Dismiss gesture</td>
+        <td style="padding: 10px 12px;">Tap × or outside</td>
+        <td style="padding: 10px 12px;">Drag handle down, tap outside, or ×</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div style="margin-top: 32px; padding: 16px; border-radius: 12px; background: rgba(217, 70, 239, 0.08); border: 1px solid rgba(217, 70, 239, 0.25);">
+    <div style="font-weight: 600; color: #f0abfc; margin-bottom: 8px;">My recommendation</div>
+    <div>
+      <b>Option B (Bottom Sheet)</b> — feels native, more thumb-friendly, and the keyboard plays nicely with it (input stays right above the keyboard). It also gives more vertical room for search results without feeling cramped.
+    </div>
+  </div>
+
+  <div style="margin-top: 16px; text-align: center; color: #9ca3af; font-size: 12px;">
+    No matter which option you pick, the desktop / tablet (≥1024px) layout stays the same as today.<br/>
+    The FAB only appears on mobile/tablet (&lt;1024px).
+  </div>
+</div>
+
+</body>
+</html>

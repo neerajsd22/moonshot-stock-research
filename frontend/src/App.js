@@ -1133,82 +1133,86 @@ const HomePage = () => {
       {/* Header */}
       <header className="sticky top-0 z-50 backdrop-blur-xl bg-[#0a0a0f]/80 border-b border-[rgba(217,70,239,0.1)]">
         <div className="max-w-[1600px] mx-auto px-3 py-2 sm:px-6 sm:py-4">
-          <div className="flex items-center gap-2 sm:gap-4">
-            {/* Logo */}
-            <div 
-              className="flex items-center gap-2 sm:gap-3 cursor-pointer group flex-shrink-0" 
-              onClick={() => {
-                setStackedStocks([]);
-                setSelectedStock(null);
-                setStockQuote(null);
-                setHistoricalData([]);
-                setComparisonPoints([]);
-                setComparisonMode(false);
-                setSearchQuery('');
-                setSearchResults([]);
-              }}
-              data-testid="home-link"
-            >
-              <TrendingUp className="w-6 h-6 sm:w-7 sm:h-7 text-[#d946ef] transition-all duration-300 group-hover:scale-110" data-testid="logo-icon" />
-              <div className="hidden sm:block">
-                <h1 className="text-xl font-bold gold-text leading-tight" style={{ fontFamily: 'Outfit, sans-serif' }} data-testid="app-title">
-                  Moonshot
-                </h1>
-                <p className="text-[10px] text-gray-400 leading-tight" style={{ fontFamily: 'Outfit, sans-serif' }}>
-                  Discover Your Next Big Win
-                </p>
+          {/* On mobile: stacked (logo+search row, buttons row). On desktop: single row. */}
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+            {/* Row 1 on mobile: Logo + Search */}
+            <div className="flex items-center gap-2 sm:gap-4 sm:flex-1 sm:min-w-0">
+              {/* Logo */}
+              <div 
+                className="flex items-center gap-2 sm:gap-3 cursor-pointer group flex-shrink-0" 
+                onClick={() => {
+                  setStackedStocks([]);
+                  setSelectedStock(null);
+                  setStockQuote(null);
+                  setHistoricalData([]);
+                  setComparisonPoints([]);
+                  setComparisonMode(false);
+                  setSearchQuery('');
+                  setSearchResults([]);
+                }}
+                data-testid="home-link"
+              >
+                <TrendingUp className="w-6 h-6 sm:w-7 sm:h-7 text-[#d946ef] transition-all duration-300 group-hover:scale-110" data-testid="logo-icon" />
+                <div className="hidden sm:block">
+                  <h1 className="text-xl font-bold gold-text leading-tight" style={{ fontFamily: 'Outfit, sans-serif' }} data-testid="app-title">
+                    Moonshot
+                  </h1>
+                  <p className="text-[10px] text-gray-400 leading-tight" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                    Discover Your Next Big Win
+                  </p>
+                </div>
+              </div>
+              
+              {/* Search Bar - Centered */}
+              <div className="relative flex-1 min-w-0 max-w-2xl">
+                <Search className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
+                <Input
+                  data-testid="stock-search-input"
+                  type="text"
+                  placeholder="Search stocks..."
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    searchStocks(e.target.value);
+                  }}
+                  className="pl-9 sm:pl-12 h-9 sm:h-11 text-sm input-premium rounded-lg w-full"
+                  style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}
+                />
+                
+                {/* Search Results Dropdown */}
+                {searchResults.length > 0 && (
+                  <Card className="absolute top-full mt-2 left-0 right-0 z-[55] max-h-[55vh] overflow-y-auto" data-testid="search-results-dropdown">
+                    <CardContent className="p-1 sm:p-2">
+                      {searchResults.map((result) => (
+                        <button
+                          key={result.ticker}
+                          data-testid={`search-result-${result.ticker}`}
+                          onClick={() => selectStock(result.ticker)}
+                          className="w-full text-left p-2 sm:p-3 hover:bg-accent rounded-lg transition-colors duration-200"
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="min-w-0 flex-1">
+                              <div className="font-semibold text-sm" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                                {result.ticker}
+                              </div>
+                              <div className="text-xs sm:text-sm text-muted-foreground truncate">{result.name}</div>
+                            </div>
+                            {result.exchange && (
+                              <Badge variant="outline" className="text-xs ml-2 flex-shrink-0">
+                                {result.exchange}
+                              </Badge>
+                            )}
+                          </div>
+                        </button>
+                      ))}
+                    </CardContent>
+                  </Card>
+                )}
               </div>
             </div>
             
-            {/* Search Bar - Centered */}
-            <div className="relative flex-1 min-w-0 max-w-2xl">
-              <Search className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
-              <Input
-                data-testid="stock-search-input"
-                type="text"
-                placeholder="Search stocks..."
-                value={searchQuery}
-                onChange={(e) => {
-                  setSearchQuery(e.target.value);
-                  searchStocks(e.target.value);
-                }}
-                className="pl-9 sm:pl-12 h-9 sm:h-11 text-sm input-premium rounded-lg w-full"
-                style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}
-              />
-              
-              {/* Search Results Dropdown */}
-              {searchResults.length > 0 && (
-                <Card className="absolute top-full mt-2 w-full z-50 max-h-[60vh] sm:max-h-[300px] overflow-y-auto" data-testid="search-results-dropdown">
-                  <CardContent className="p-1 sm:p-2">
-                    {searchResults.map((result) => (
-                      <button
-                        key={result.ticker}
-                        data-testid={`search-result-${result.ticker}`}
-                        onClick={() => selectStock(result.ticker)}
-                        className="w-full text-left p-2 sm:p-3 hover:bg-accent rounded-lg transition-colors duration-200"
-                      >
-                        <div className="flex items-center justify-between">
-                          <div className="min-w-0 flex-1">
-                            <div className="font-semibold text-sm" style={{ fontFamily: 'Outfit, sans-serif' }}>
-                              {result.ticker}
-                            </div>
-                            <div className="text-xs sm:text-sm text-muted-foreground truncate">{result.name}</div>
-                          </div>
-                          {result.exchange && (
-                            <Badge variant="outline" className="text-xs ml-2 flex-shrink-0">
-                              {result.exchange}
-                            </Badge>
-                          )}
-                        </div>
-                      </button>
-                    ))}
-                  </CardContent>
-                </Card>
-              )}
-            </div>
-            
-            {/* Right side buttons - pushed to far right */}
-            <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0 ml-auto">
+            {/* Row 2 on mobile (right side on desktop): action buttons */}
+            <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0 sm:ml-auto justify-end">
               {/* Categories Popover */}
               <Popover open={categoriesOpen} onOpenChange={setCategoriesOpen}>
                 <PopoverTrigger asChild>

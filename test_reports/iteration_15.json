@@ -1,0 +1,47 @@
+{
+  "summary": "Frontend-only testing of mobile UX improvements: (1) Bottom-sheet FAB search, (2) Centered Moonshot wordmark on mobile/tablet, (3) About Us scroll-fade. All 17 specified test scenarios passed on both mobile (390x844) and desktop (1440x900) viewports.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_results": {
+    "T1_mobile_centered_wordmark": "PASS - data-testid='app-title-mobile' visible, text='Moonshot'",
+    "T2_mobile_4_button_grid": "PASS - Explore/Portfolio/Condense/Menu all present; inline stock-search-input hidden on mobile",
+    "T3_mobile_FAB_visible": "PASS - mobile-search-fab visible at bottom-right (x=314, y=708, 56x56px) on 390px viewport",
+    "T4_mobile_sheet_opens": "PASS - sheet visible with drag handle, branded 'Moonshot · Stock Search' header, input, and X close",
+    "T5_mobile_search_Salesforce_CRM": "PASS - mobile-search-result-CRM appears for 'Salesforce' query",
+    "T6_mobile_search_NVDA_select": "PASS - clicking mobile-search-result-NVDA closes sheet and loads NVDA stock data on main page",
+    "T7_mobile_X_close": "PASS - mobile-search-close closes sheet",
+    "T8_mobile_backdrop_close": "PASS - clicking outside sheet closes it",
+    "T9_mobile_escape_close": "PASS - Escape key closes sheet",
+    "T10_about_us_at_top": "PASS - data-hidden='false', opacity=1 at scrollY=0",
+    "T11_about_us_scrolled": "PASS - data-hidden='true', opacity=0 at scrollY=400 (>240 threshold)",
+    "T12_about_us_back_to_top": "PASS - data-hidden='false', opacity=1 after scrollY returns to 0",
+    "T13_desktop_inline_search_visible": "PASS - stock-search-input visible in header on desktop",
+    "T14_desktop_FAB_hidden": "PASS - mobile-search-fab not visible on desktop (lg:hidden working)",
+    "T15_desktop_wordmark_hidden": "PASS - app-title-mobile hidden, app-title (left logo+Moonshot) visible on desktop",
+    "T16_desktop_regression_Tesla_TSLA": "PASS - typing 'Tesla' shows search-result-TSLA in dropdown; clicking loads TSLA",
+    "T17_desktop_regression_4_buttons": "PASS - Explore/Portfolio/Condense/Menu all functional; Condense toggle changes label to 'Expand'; Menu opens sidebar with Watchlists/Price Alerts/Theme/Compare/Export CSV"
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "MobileSearchSheet (~183 lines) — clean, focused component; correctly reuses parent's searchQuery/searchStocks/selectStock; proper Esc/body-scroll-lock/autofocus lifecycle.",
+    "AboutUs scroll listener uses rAF throttling and passive listener — good practice. Threshold (240px) matches spec.",
+    "FAB positioned at bottom-20 (80px) on mobile to avoid Emergent preview badge — confirmed correct in preview environment.",
+    "Note: App.js is ~1920+ lines — exceeds 700-line guideline. Consider splitting into smaller modules in a future iteration (header, stock detail, sidebar, etc.). Not blocking for this task."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (skipped per request)", "frontend": "100% (17/17)"},
+  "test_credentials": "Access code: QZ91U2U8 (set via localStorage to bypass landing page)",
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Auth gate uses access code stored in localStorage key 'access_code'. To bypass quickly, set localStorage.setItem('access_code','QZ91U2U8') then reload. All 3 mobile UX features verified working end-to-end. App.js is large (~1920 lines) - flag for future refactor.",
+  "rca of the issue": "N/A — no issues found"
+}

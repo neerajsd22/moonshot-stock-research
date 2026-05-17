@@ -41,6 +41,7 @@ import StockDetailsBlock from './components/stock/StockDetailsBlock';
 import CategoryIcon from './components/CategoryIcon';
 import SortablePinnedStock from './components/SortablePinnedStock';
 import AboutUs from './components/AboutUs';
+import MobileSearchSheet from './components/MobileSearchSheet';
 import PortfolioPage from './components/portfolio/PortfolioPage';
 import PortfolioButton from './components/portfolio/PortfolioButton';
 import { BACKGROUND_OPTIONS } from './components/backgroundOptions';
@@ -1133,10 +1134,35 @@ const HomePage = () => {
       {/* Header */}
       <header className="sticky top-0 z-50 backdrop-blur-xl bg-[#0a0a0f]/80 border-b border-[rgba(217,70,239,0.1)]">
         <div className="max-w-[1600px] mx-auto px-3 py-2 lg:px-6 lg:py-4">
-          {/* On mobile/tablet (<1024px): stacked (logo+search row, buttons row). On desktop ≥1024px: single row. */}
+          {/* Mobile/tablet: centered logo wordmark on row 1, 4 buttons on row 2 (no inline search — FAB instead).
+              Desktop ≥1024px: classic single row with inline search. */}
+          
+          {/* Mobile brand bar (hidden on lg) */}
+          <div className="flex items-center justify-center gap-2 pb-2 lg:hidden">
+            <div
+              className="flex items-center gap-2 cursor-pointer group"
+              onClick={() => {
+                setStackedStocks([]);
+                setSelectedStock(null);
+                setStockQuote(null);
+                setHistoricalData([]);
+                setComparisonPoints([]);
+                setComparisonMode(false);
+                setSearchQuery('');
+                setSearchResults([]);
+              }}
+              data-testid="home-link-mobile"
+            >
+              <TrendingUp className="w-5 h-5 text-[#d946ef] transition-all duration-300 group-hover:scale-110" />
+              <span className="gold-text font-bold text-lg" style={{ fontFamily: 'Outfit, sans-serif', letterSpacing: '-0.01em' }} data-testid="app-title-mobile">
+                Moonshot
+              </span>
+            </div>
+          </div>
+
           <div className="flex flex-col lg:flex-row lg:items-center gap-2 lg:gap-4">
-            {/* Row 1 on mobile: Logo + Search */}
-            <div className="flex items-center gap-2 lg:gap-4 lg:flex-1 lg:min-w-0">
+            {/* Desktop only: Logo + Search row */}
+            <div className="hidden lg:flex items-center gap-2 lg:gap-4 lg:flex-1 lg:min-w-0">
               {/* Logo */}
               <div 
                 className="flex items-center gap-2 sm:gap-3 cursor-pointer group flex-shrink-0" 
@@ -1211,8 +1237,8 @@ const HomePage = () => {
               </div>
             </div>
             
-            {/* Row 2 on mobile (right side on desktop ≥1024px): action buttons */}
-            <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0 lg:ml-auto justify-end">
+            {/* Buttons row — full-width grid on mobile, inline-right on desktop */}
+            <div className="grid grid-cols-4 gap-1 lg:flex lg:items-center lg:gap-2 lg:flex-shrink-0 lg:ml-auto lg:justify-end">
               {/* Categories Popover */}
               <Popover open={categoriesOpen} onOpenChange={setCategoriesOpen}>
                 <PopoverTrigger asChild>
@@ -1889,6 +1915,16 @@ const HomePage = () => {
           </div>
         </div>
       )}
+
+      {/* Mobile/tablet floating search FAB + bottom sheet */}
+      <MobileSearchSheet
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        searchStocks={searchStocks}
+        searchResults={searchResults}
+        setSearchResults={setSearchResults}
+        selectStock={selectStock}
+      />
     </div>
   );
 };

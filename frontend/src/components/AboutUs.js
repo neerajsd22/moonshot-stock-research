@@ -19,6 +19,24 @@ const Bullet = ({ children }) => (
 
 const AboutUs = () => {
   const [open, setOpen] = useState(false);
+  const [hidden, setHidden] = useState(false);
+
+  // Fade/slide out the button once the user scrolls past 240px,
+  // and bring it back when they scroll near the top.
+  useEffect(() => {
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(() => {
+        setHidden(window.scrollY > 240);
+        ticking = false;
+      });
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   // Close on Escape
   useEffect(() => {
@@ -36,18 +54,20 @@ const AboutUs = () => {
 
   return (
     <>
-      {/* Floating trigger button — bottom-left, consistent dark/purple theme */}
+      {/* Floating trigger button — bottom-left, hides on scroll */}
       <button
         type="button"
         onClick={() => setOpen(true)}
         data-testid="about-us-button"
         aria-label="About Us"
-        className="fixed bottom-4 left-4 sm:bottom-6 sm:left-6 z-40 flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full
+        data-hidden={hidden ? 'true' : 'false'}
+        className={`fixed bottom-4 left-4 sm:bottom-6 sm:left-6 z-40 flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full
                    bg-[rgba(15,15,20,0.85)] backdrop-blur-md
                    border border-[rgba(217,70,239,0.35)] hover:border-[#d946ef]
                    text-xs sm:text-sm text-gray-300 hover:text-white
                    shadow-[0_4px_16px_rgba(217,70,239,0.15)] hover:shadow-[0_6px_24px_rgba(217,70,239,0.35)]
-                   transition-all duration-200 hover:-translate-y-0.5"
+                   transition-all duration-300 hover:-translate-y-0.5
+                   ${hidden ? 'opacity-0 pointer-events-none translate-y-4' : 'opacity-100 translate-y-0'}`}
         style={{ fontFamily: 'Outfit, sans-serif' }}
       >
         <Info className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#d946ef]" />

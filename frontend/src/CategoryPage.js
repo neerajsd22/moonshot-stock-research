@@ -133,8 +133,8 @@ const CategoryPage = () => {
         ) : (
           <Card className="bg-card border border-border/50 overflow-hidden">
             <CardContent className="p-0">
-              {/* Table Header */}
-              <div className="bg-secondary/30 border-b border-border/50">
+              {/* Table Header — desktop only */}
+              <div className="hidden md:block bg-secondary/30 border-b border-border/50">
                 <div className="grid grid-cols-12 gap-4 px-6 py-4 text-sm font-semibold text-muted-foreground">
                   <div className="col-span-1">#</div>
                   <div className="col-span-2">Ticker / Name</div>
@@ -151,77 +151,153 @@ const CategoryPage = () => {
                 {stocks.map((stock, index) => (
                   <div
                     key={stock.ticker}
-                    className="grid grid-cols-12 gap-4 px-6 py-4 hover:bg-accent/50 transition-colors duration-200 cursor-pointer group"
                     onClick={() => handleStockClick(stock.ticker)}
                     data-testid={`stock-row-${stock.ticker}`}
+                    className="hover:bg-accent/50 transition-colors duration-200 cursor-pointer group"
                   >
-                    {/* Rank */}
-                    <div className="col-span-1 flex items-center">
-                      <span className="text-sm font-medium text-muted-foreground">#{index + 1}</span>
-                    </div>
-
-                    {/* Ticker / Name */}
-                    <div className="col-span-2 flex flex-col justify-center">
-                      <div className="font-bold text-lg group-hover:text-primary transition-colors" style={{ fontFamily: 'Manrope, sans-serif' }}>
-                        {stock.ticker}
+                    {/* === DESKTOP: original 12-col grid === */}
+                    <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4">
+                      {/* Rank */}
+                      <div className="col-span-1 flex items-center">
+                        <span className="text-sm font-medium text-muted-foreground">#{index + 1}</span>
                       </div>
-                      <div className="text-sm text-muted-foreground truncate">{stock.name}</div>
-                    </div>
 
-                    {/* Sparkline Chart */}
-                    <div className="col-span-2 flex items-center justify-center">
-                      <Sparkline data={stock.sparkline} width={140} height={40} />
-                    </div>
-
-                    {/* Current Price */}
-                    <div className="col-span-2 flex flex-col items-end justify-center">
-                      <div className="font-bold text-lg" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
-                        {getCurrencySymbol(stock.ticker)}{stock.price.toFixed(2)}
+                      {/* Ticker / Name */}
+                      <div className="col-span-2 flex flex-col justify-center">
+                        <div className="font-bold text-lg group-hover:text-primary transition-colors" style={{ fontFamily: 'Manrope, sans-serif' }}>
+                          {stock.ticker}
+                        </div>
+                        <div className="text-sm text-muted-foreground truncate">{stock.name}</div>
                       </div>
-                      <div 
-                        className={`text-sm font-medium flex items-center gap-1 ${stock.change_percent >= 0 ? 'text-success' : 'text-destructive'}`}
-                        style={{ fontFamily: 'JetBrains Mono, monospace' }}
-                      >
-                        {stock.change_percent >= 0 ? (
-                          <TrendingUp className="w-3 h-3" />
+
+                      {/* Sparkline Chart */}
+                      <div className="col-span-2 flex items-center justify-center">
+                        <Sparkline data={stock.sparkline} width={140} height={40} />
+                      </div>
+
+                      {/* Current Price */}
+                      <div className="col-span-2 flex flex-col items-end justify-center">
+                        <div className="font-bold text-lg" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
+                          {getCurrencySymbol(stock.ticker)}{stock.price.toFixed(2)}
+                        </div>
+                        <div
+                          className={`text-sm font-medium flex items-center gap-1 ${stock.change_percent >= 0 ? 'text-success' : 'text-destructive'}`}
+                          style={{ fontFamily: 'JetBrains Mono, monospace' }}
+                        >
+                          {stock.change_percent >= 0 ? (
+                            <TrendingUp className="w-3 h-3" />
+                          ) : (
+                            <TrendingDown className="w-3 h-3" />
+                          )}
+                          {stock.change_percent >= 0 ? '+' : ''}{stock.change_percent.toFixed(2)}%
+                        </div>
+                      </div>
+
+                      {/* Market Cap */}
+                      <div className="col-span-2 flex items-center justify-end">
+                        {stock.market_cap ? (
+                          <div className="font-semibold" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
+                            {getCurrencySymbol(stock.ticker)}{(stock.market_cap / 1e9).toFixed(2)}B
+                          </div>
                         ) : (
-                          <TrendingDown className="w-3 h-3" />
+                          <span className="text-muted-foreground text-sm">N/A</span>
                         )}
-                        {stock.change_percent >= 0 ? '+' : ''}{stock.change_percent.toFixed(2)}%
+                      </div>
+
+                      {/* 52W High */}
+                      <div className="col-span-1.5 flex items-center justify-end">
+                        {stock.high_52week ? (
+                          <div className="font-semibold" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
+                            {getCurrencySymbol(stock.ticker)}{stock.high_52week.toFixed(2)}
+                          </div>
+                        ) : (
+                          <span className="text-muted-foreground text-sm">N/A</span>
+                        )}
+                      </div>
+
+                      {/* 52W Low */}
+                      <div className="col-span-1.5 flex items-center justify-end">
+                        {stock.low_52week ? (
+                          <div className="font-semibold" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
+                            {getCurrencySymbol(stock.ticker)}{stock.low_52week.toFixed(2)}
+                          </div>
+                        ) : (
+                          <span className="text-muted-foreground text-sm">N/A</span>
+                        )}
                       </div>
                     </div>
 
-                    {/* Market Cap */}
-                    <div className="col-span-2 flex items-center justify-end">
-                      {stock.market_cap ? (
-                        <div className="font-semibold" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
-                          {getCurrencySymbol(stock.ticker)}{(stock.market_cap / 1e9).toFixed(2)}B
+                    {/* === MOBILE: stacked card === */}
+                    <div className="md:hidden px-4 py-4 space-y-3">
+                      {/* Header row: rank + ticker + price */}
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-start gap-3 min-w-0 flex-1">
+                          <span className="text-xs font-semibold text-muted-foreground mt-1 flex-shrink-0">
+                            #{index + 1}
+                          </span>
+                          <div className="min-w-0 flex-1">
+                            <div
+                              className="font-bold text-base group-hover:text-primary transition-colors"
+                              style={{ fontFamily: 'Manrope, sans-serif' }}
+                            >
+                              {stock.ticker}
+                            </div>
+                            <div className="text-xs text-muted-foreground truncate">{stock.name}</div>
+                          </div>
                         </div>
-                      ) : (
-                        <span className="text-muted-foreground text-sm">N/A</span>
-                      )}
-                    </div>
+                        <div className="flex flex-col items-end flex-shrink-0">
+                          <div
+                            className="font-bold text-base"
+                            style={{ fontFamily: 'JetBrains Mono, monospace' }}
+                          >
+                            {getCurrencySymbol(stock.ticker)}{stock.price.toFixed(2)}
+                          </div>
+                          <div
+                            className={`text-xs font-medium flex items-center gap-0.5 ${stock.change_percent >= 0 ? 'text-success' : 'text-destructive'}`}
+                            style={{ fontFamily: 'JetBrains Mono, monospace' }}
+                          >
+                            {stock.change_percent >= 0 ? (
+                              <TrendingUp className="w-3 h-3" />
+                            ) : (
+                              <TrendingDown className="w-3 h-3" />
+                            )}
+                            {stock.change_percent >= 0 ? '+' : ''}{stock.change_percent.toFixed(2)}%
+                          </div>
+                        </div>
+                      </div>
 
-                    {/* 52W High */}
-                    <div className="col-span-1.5 flex items-center justify-end">
-                      {stock.high_52week ? (
-                        <div className="font-semibold" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
-                          {getCurrencySymbol(stock.ticker)}{stock.high_52week.toFixed(2)}
-                        </div>
-                      ) : (
-                        <span className="text-muted-foreground text-sm">N/A</span>
-                      )}
-                    </div>
+                      {/* Sparkline */}
+                      <div className="flex justify-center">
+                        <Sparkline data={stock.sparkline} width={300} height={40} />
+                      </div>
 
-                    {/* 52W Low */}
-                    <div className="col-span-1.5 flex items-center justify-end">
-                      {stock.low_52week ? (
-                        <div className="font-semibold" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
-                          {getCurrencySymbol(stock.ticker)}{stock.low_52week.toFixed(2)}
+                      {/* Stats grid: 3 cols, no overlap */}
+                      <div className="grid grid-cols-3 gap-2 pt-1 border-t border-border/30">
+                        <div className="flex flex-col">
+                          <span className="text-[10px] uppercase tracking-wide text-muted-foreground">Mkt Cap</span>
+                          <span className="text-xs font-semibold" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
+                            {stock.market_cap
+                              ? `${getCurrencySymbol(stock.ticker)}${(stock.market_cap / 1e9).toFixed(1)}B`
+                              : 'N/A'}
+                          </span>
                         </div>
-                      ) : (
-                        <span className="text-muted-foreground text-sm">N/A</span>
-                      )}
+                        <div className="flex flex-col">
+                          <span className="text-[10px] uppercase tracking-wide text-muted-foreground">52W High</span>
+                          <span className="text-xs font-semibold" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
+                            {stock.high_52week
+                              ? `${getCurrencySymbol(stock.ticker)}${stock.high_52week.toFixed(2)}`
+                              : 'N/A'}
+                          </span>
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="text-[10px] uppercase tracking-wide text-muted-foreground">52W Low</span>
+                          <span className="text-xs font-semibold" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
+                            {stock.low_52week
+                              ? `${getCurrencySymbol(stock.ticker)}${stock.low_52week.toFixed(2)}`
+                              : 'N/A'}
+                          </span>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 ))}

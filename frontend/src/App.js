@@ -359,25 +359,45 @@ const HomePage = () => {
     }
   };
 
-  const searchStocks = async (query) => {
-    if (!query.trim()) {
-      setSearchResults([]);
-      return;
-    }
+  // Refs for debouncing + race-condition-safe search
+  const searchTimeoutRef = useRef(null);
+  const searchRequestIdRef = useRef(0);
 
-    setLoading(true);
+  const performSearch = async (query, requestId) => {
     try {
       const exchangeFilter = selectedMarket === 'us' ? 'us' : selectedMarket === 'india' ? 'nse' : 'all';
       const response = await axios.get(`${API}/stocks/search`, {
         params: { q: query, exchange: exchangeFilter },
       });
-      setSearchResults(response.data);
+      // Only apply this response if it's still the latest one
+      if (searchRequestIdRef.current === requestId) {
+        setSearchResults(response.data);
+      }
     } catch (error) {
       console.error('Error searching stocks:', error);
-      toast.error('Failed to search stocks');
-    } finally {
-      setLoading(false);
+      if (searchRequestIdRef.current === requestId) {
+        toast.error('Failed to search stocks');
+      }
     }
+  };
+
+  const searchStocks = (query) => {
+    // Clear any pending search
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+
+    if (!query.trim()) {
+      searchRequestIdRef.current += 1; // invalidate in-flight requests
+      setSearchResults([]);
+      return;
+    }
+
+    // Debounce: only fire after 220ms of no typing → stops dropdown jitter
+    searchTimeoutRef.current = setTimeout(() => {
+      const reqId = ++searchRequestIdRef.current;
+      performSearch(query, reqId);
+    }, 220);
   };
 
   const fetchStockQuote = async (ticker) => {

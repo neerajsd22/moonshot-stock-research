@@ -1132,11 +1132,11 @@ const HomePage = () => {
       
       {/* Header */}
       <header className="sticky top-0 z-50 backdrop-blur-xl bg-[#0a0a0f]/80 border-b border-[rgba(217,70,239,0.1)]">
-        <div className="max-w-[1600px] mx-auto px-3 py-2 sm:px-6 sm:py-4">
-          {/* On mobile: stacked (logo+search row, buttons row). On desktop: single row. */}
-          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+        <div className="max-w-[1600px] mx-auto px-3 py-2 lg:px-6 lg:py-4">
+          {/* On mobile/tablet (<1024px): stacked (logo+search row, buttons row). On desktop ≥1024px: single row. */}
+          <div className="flex flex-col lg:flex-row lg:items-center gap-2 lg:gap-4">
             {/* Row 1 on mobile: Logo + Search */}
-            <div className="flex items-center gap-2 sm:gap-4 sm:flex-1 sm:min-w-0">
+            <div className="flex items-center gap-2 lg:gap-4 lg:flex-1 lg:min-w-0">
               {/* Logo */}
               <div 
                 className="flex items-center gap-2 sm:gap-3 cursor-pointer group flex-shrink-0" 
@@ -1211,8 +1211,8 @@ const HomePage = () => {
               </div>
             </div>
             
-            {/* Row 2 on mobile (right side on desktop): action buttons */}
-            <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0 sm:ml-auto justify-end">
+            {/* Row 2 on mobile (right side on desktop ≥1024px): action buttons */}
+            <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0 lg:ml-auto justify-end">
               {/* Categories Popover */}
               <Popover open={categoriesOpen} onOpenChange={setCategoriesOpen}>
                 <PopoverTrigger asChild>

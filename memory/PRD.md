@@ -23,6 +23,8 @@ Build a comprehensive stock analysis application called "Moonshot" with stock se
 - **Database**: MongoDB (access_codes, custom_categories, pinned_stocks)
 - **Auth**: Access code system with admin panel
 
+> 📐 **Full system design with Mermaid diagrams:** see [`/app/memory/ARCHITECTURE.md`](./ARCHITECTURE.md) — covers high-level architecture, request flow, component tree, backend module map, data model (ERD), API surface, caching strategy, deployment topology, and architectural decisions.
+
 ## What's Been Implemented
 - Stock search, stacking (up to 10), pinning, dismissal
 - Financial charts with Y-axis labels, key stats, news, earnings snapshots

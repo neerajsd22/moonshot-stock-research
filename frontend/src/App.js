@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import '@/App.css';
 import axios from 'axios';
-import { Search, TrendingUp, Pin, X, LayoutList, ExternalLink, Plus, List, Bell, BarChart3, Settings, BrainCircuit, ChevronDown, CalendarDays, RefreshCw, Menu, ChevronLeft, Grid3X3 } from 'lucide-react';
+import { Search, TrendingUp, Pin, X, LayoutList, ExternalLink, Plus, List, Bell, BarChart3, Settings, BrainCircuit, ChevronDown, CalendarDays, RefreshCw, Menu, ChevronLeft, Grid3X3, Compass, Rows3, Maximize2, MoreHorizontal } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -1225,10 +1225,10 @@ const HomePage = () => {
                     data-testid="categories-popover-trigger"
                     variant="outline"
                     size="sm"
-                    className={`h-9 sm:h-11 px-2 sm:px-4 flex items-center gap-2 btn-outline-gold ${categoriesOpen ? 'border-[#d946ef]/50 bg-[rgba(217,70,239,0.1)]' : ''}`}
+                    className={`flex-col sm:flex-row h-12 sm:h-11 px-2 sm:px-4 gap-0.5 sm:gap-2 btn-outline-gold ${categoriesOpen ? 'border-[#d946ef]/50 bg-[rgba(217,70,239,0.1)]' : ''}`}
                   >
-                    <Grid3X3 className="w-4 h-4" />
-                    <span className="hidden sm:inline">Explore</span>
+                    <Compass className="w-4 h-4" />
+                    <span className="text-[9px] sm:text-sm leading-none sm:leading-normal">Explore</span>
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent
@@ -1324,10 +1324,11 @@ const HomePage = () => {
                 variant="outline"
                 size="sm"
                 onClick={() => setViewMode(isCompact ? 'spacious' : 'dense')}
-                className="h-9 sm:h-11 px-2 sm:px-4 flex items-center gap-2 btn-outline-gold"
+                className="flex-col sm:flex-row h-12 sm:h-11 px-2 sm:px-4 gap-0.5 sm:gap-2 btn-outline-gold"
+                title={isCompact ? 'Switch to expanded view' : 'Switch to compact view'}
               >
-                {isCompact ? <LayoutList className="w-4 h-4" /> : <LayoutList className="w-4 h-4" />}
-                <span className="hidden sm:inline">{isCompact ? 'Expand' : 'Compact'}</span>
+                {isCompact ? <Maximize2 className="w-4 h-4" /> : <Rows3 className="w-4 h-4" />}
+                <span className="text-[9px] sm:text-sm leading-none sm:leading-normal">{isCompact ? 'Expand' : 'Compact'}</span>
               </Button>
 
               {/* Portfolio Button with live P&L pulse dot */}
@@ -1339,10 +1340,10 @@ const HomePage = () => {
                 variant="outline"
                 size="sm"
                 onClick={() => setSidebarOpen(true)}
-                className="h-9 sm:h-11 px-2 sm:px-4 flex items-center gap-2 btn-outline-gold relative"
+                className="flex-col sm:flex-row h-12 sm:h-11 px-2 sm:px-4 gap-0.5 sm:gap-2 btn-outline-gold relative"
               >
-                <Menu className="w-4 h-4" />
-                <span className="hidden sm:inline">Menu</span>
+                <MoreHorizontal className="w-4 h-4" />
+                <span className="text-[9px] sm:text-sm leading-none sm:leading-normal">Menu</span>
                 {alertCount > 0 && (
                   <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-[#d946ef] text-[#0a0a0f] text-[9px] font-bold rounded-full flex items-center justify-center" data-testid="menu-alert-badge">
                     {alertCount}

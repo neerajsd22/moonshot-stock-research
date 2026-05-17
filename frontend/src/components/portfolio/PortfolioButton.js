@@ -1,4 +1,4 @@
-import { Briefcase } from 'lucide-react';
+import { Wallet } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { usePortfolioSummary } from './usePortfolioSummary';
 
@@ -34,27 +34,29 @@ const PortfolioButton = () => {
       onClick={() => navigate('/portfolio')}
       data-testid="portfolio-header-button"
       title={tooltip}
-      className="relative flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 h-9 sm:h-10 rounded-lg
+      className="relative flex flex-col sm:flex-row items-center gap-0.5 sm:gap-2 px-2 sm:px-3 h-12 sm:h-10 rounded-lg
                  border border-[rgba(255,255,255,0.08)] bg-[rgba(255,255,255,0.03)]
                  hover:border-[#d946ef]/50 hover:bg-[rgba(217,70,239,0.06)]
-                 text-xs sm:text-sm text-gray-300 hover:text-white
+                 text-gray-300 hover:text-white
                  transition-all duration-200"
       style={{ fontFamily: 'Outfit, sans-serif' }}
     >
-      <Briefcase className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-      <span className="hidden sm:inline">Portfolio</span>
-      <span
-        data-testid="portfolio-dot"
-        data-state={empty ? 'empty' : today > 0 ? 'up' : today < 0 ? 'down' : 'flat'}
-        className={`relative flex h-2 w-2 ml-0.5`}
-      >
-        {!empty && (
-          <span
-            className={`absolute inline-flex h-full w-full rounded-full opacity-60 animate-ping ${dotColor}`}
-          />
-        )}
-        <span className={`relative inline-flex rounded-full h-2 w-2 ${dotColor}`} />
+      <span className="relative flex items-center">
+        <Wallet className="w-4 h-4" />
+        <span
+          data-testid="portfolio-dot"
+          data-state={empty ? 'empty' : today > 0 ? 'up' : today < 0 ? 'down' : 'flat'}
+          className="absolute -top-1 -right-1.5 flex h-2 w-2"
+        >
+          {!empty && (
+            <span
+              className={`absolute inline-flex h-full w-full rounded-full opacity-60 animate-ping ${dotColor}`}
+            />
+          )}
+          <span className={`relative inline-flex rounded-full h-2 w-2 ${dotColor}`} />
+        </span>
       </span>
+      <span className="text-[9px] sm:text-sm leading-none sm:leading-normal">Portfolio</span>
     </button>
   );
 };

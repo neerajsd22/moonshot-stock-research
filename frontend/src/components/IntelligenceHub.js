@@ -20,9 +20,11 @@ import {
   Building2,
   GitCompare,
   ChevronDown,
-  ChevronRight
+  ChevronRight,
+  Briefcase
 } from 'lucide-react';
 import axios from 'axios';
+import CapitalDeployments from './intelligence/CapitalDeployments';
 
 const API = process.env.REACT_APP_BACKEND_URL;
 
@@ -521,6 +523,7 @@ const IntelligenceHub = ({ ticker }) => {
   const [whaleWatch, setWhaleWatch] = useState(null);
   const [similarStocks, setSimilarStocks] = useState(null);
   const [smartEarnings, setSmartEarnings] = useState(null);
+  const [capitalDeployments, setCapitalDeployments] = useState(null);
   const [loading, setLoading] = useState({});
 
   const fetchData = async (type) => {
@@ -535,7 +538,8 @@ const IntelligenceHub = ({ ticker }) => {
         insider: 'insider-alerts',
         whale: 'whale-watch',
         similar: 'similar-stocks',
-        smartEarnings: 'smart-earnings'
+        smartEarnings: 'smart-earnings',
+        capitalDeployments: 'capital-deployments'
       };
       
       const res = await axios.get(`${API}/api/stocks/${ticker}/${endpoints[type]}`);
@@ -548,6 +552,7 @@ const IntelligenceHub = ({ ticker }) => {
         case 'whale': setWhaleWatch(res.data); break;
         case 'similar': setSimilarStocks(res.data); break;
         case 'smartEarnings': setSmartEarnings(res.data); break;
+        case 'capitalDeployments': setCapitalDeployments(res.data); break;
         default: break;
       }
     } catch (error) {
@@ -559,7 +564,7 @@ const IntelligenceHub = ({ ticker }) => {
 
   useEffect(() => {
     if (ticker) {
-      ['signals', 'smartEarnings', 'moving', 'insider', 'whale', 'similar'].forEach(fetchData);
+      ['signals', 'smartEarnings', 'moving', 'insider', 'whale', 'similar', 'capitalDeployments'].forEach(fetchData);
     }
   }, [ticker]);
 
@@ -568,7 +573,7 @@ const IntelligenceHub = ({ ticker }) => {
   };
 
   const refreshAll = () => {
-    ['signals', 'smartEarnings', 'moving', 'insider', 'whale', 'similar'].forEach(fetchData);
+    ['signals', 'smartEarnings', 'moving', 'insider', 'whale', 'similar', 'capitalDeployments'].forEach(fetchData);
   };
 
   if (!ticker) return null;
@@ -608,6 +613,22 @@ const IntelligenceHub = ({ ticker }) => {
 
   const getWhaleSummary = () => whaleWatch?.institutional_summary ? `Inst: ${whaleWatch.institutional_summary.institutional_ownership_pct}%` : '';
   const getWhaleBadge = () => whaleWatch?.whale_signal?.type || '';
+
+  const getCapDeploySummary = () => {
+    if (!capitalDeployments) return '';
+    const newCount = capitalDeployments.new_this_quarter?.length || 0;
+    const acqCount = capitalDeployments.acquisitions?.length || 0;
+    if (newCount > 0 && acqCount > 0) return `${newCount} new · ${acqCount} M&A`;
+    if (newCount > 0) return `${newCount} new this Q`;
+    if (acqCount > 0) return `${acqCount} acquisition${acqCount !== 1 ? 's' : ''}`;
+    return '';
+  };
+  const getCapDeployBadge = () => {
+    if (!capitalDeployments) return '';
+    if (capitalDeployments.is_13f_filer) return '13F';
+    if (capitalDeployments.acquisitions?.length) return 'M&A';
+    return '';
+  };
 
   const getSimilarSummary = () => {
     if (!similarStocks?.peer_comparison?.pe_premium_pct) return '';
@@ -726,6 +747,25 @@ const IntelligenceHub = ({ ticker }) => {
             loading={loading.whale}
           />
           {expandedSection === 'whale' && <WhaleContent data={whaleWatch} />}
+        </div>
+
+        {/* Capital Deployments */}
+        <div data-testid="ih-capital-deployments-section">
+          <AccordionHeader
+            icon={Briefcase}
+            title="Capital Deployments"
+            summary={getCapDeploySummary()}
+            badge={getCapDeployBadge()}
+            badgeColor="bg-[rgba(234,179,8,0.25)] text-yellow-200"
+            isOpen={expandedSection === 'capitalDeployments'}
+            onClick={() => toggleSection('capitalDeployments')}
+            loading={loading.capitalDeployments}
+          />
+          {expandedSection === 'capitalDeployments' && (
+            <div className="mt-1">
+              <CapitalDeployments data={capitalDeployments} loading={loading.capitalDeployments && !capitalDeployments} />
+            </div>
+          )}
         </div>
 
         {/* Similar */}

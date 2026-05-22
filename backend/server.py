@@ -4054,6 +4054,41 @@ async def get_similar_stocks(ticker: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+# ========== CAPITAL DEPLOYMENTS (SEC EDGAR — 13F-HR + 8-K) ==========
+@api_router.get("/stocks/{ticker}/capital-deployments")
+async def get_capital_deployments_endpoint(ticker: str):
+    """
+    Intelligence Hub — Capital Deployments.
+
+    Returns this company's public-stock holdings (Form 13F-HR) and acquisitions
+    (Form 8-K Items 1.01 / 2.01) from the last 12 months. SEC EDGAR sourced.
+
+    Response shape:
+      {
+        ticker, is_13f_filer, filing_date,
+        new_this_quarter: [{ticker, name, value_usd, shares, badge, qoq_change_pct}],
+        current_book:     [...],
+        acquisitions:     [{date, target_name, deal_size_text, filing_url}]
+      }
+    """
+    try:
+        from sec_edgar import get_capital_deployments
+        from starlette.concurrency import run_in_threadpool
+
+        return await run_in_threadpool(get_capital_deployments, ticker)
+    except Exception as e:
+        logger.error(f"Error in capital-deployments for {ticker}: {e}")
+        # Never 5xx the Intelligence Hub — return empty shape on failure
+        return {
+            "ticker": (ticker or "").upper(),
+            "is_13f_filer": False,
+            "filing_date": None,
+            "new_this_quarter": [],
+            "current_book": [],
+            "acquisitions": [],
+        }
+
+
 app.include_router(api_router)
 
 app.add_middleware(

@@ -1,0 +1,41 @@
+{
+  "summary": "End-to-end testing of the new 'Capital Deployments' Intelligence Hub module. Backend: all 7 pytests pass against the live preview URL (NVDA/BRK-B 13F filers populated, AAPL/TSLA correctly flagged is_13f_filer=false, XYZNONEXISTENT invalid ticker returns 200 with empty shape, JSON-safe with no NaN/Inf, row & acquisition shapes validated). Frontend: accordion mounts in the correct position (between Whale Watch and Similar Stocks), opens on click, tabs switch correctly, NVDA shows 3 New-This-Quarter rows (NEW + TOPUP badges), Current Book has 5 rows + collapse toggle, acquisitions empty state renders, +94% badge tooltip displays the correct copy 'Position size grew 94% quarter-over-quarter', and mobile (390px) layout has no horizontal overflow.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_results": {
+    "BE_pytest_capital_deployments": "PASS 7/7 (1.81s) - NVDA filer, BRK-B large book w/ AAPL top-5, AAPL non-filer, acq shape, JSON-safe, invalid ticker non-5xx",
+    "BE_TSLA_non_filer": "PASS - is_13f_filer=false, current_book=[], acquisitions=[]",
+    "BE_NVDA_live_data": "PASS - 3 new_this_quarter (badges {NEW, TOPUP}), 7 current_book rows, qoq_change_pct=94 on CRWV TOPUP",
+    "FE_accordion_present": "PASS - data-testid='ih-capital-deployments-section' found, located between Whale Watch and Similar Stocks",
+    "FE_accordion_expands": "PASS - click opens module, inner 'capital-deployments' rendered",
+    "FE_tabs": "PASS - cd-tab-new (default) shows 3 rows w/ 2 NEW + 1 pct badge; cd-tab-book shows 5 rows + cd-collapse-toggle present",
+    "FE_acquisitions_empty_state": "PASS - cd-empty-ma rendered with copy 'No 8-K acquisition disclosures in the last 12 months.'",
+    "FE_tooltip_pct_badge": "PASS - hover on +94% badge surfaces tooltip 'Position size grew 94% quarter-over-quarter'",
+    "FE_mobile_390": "PASS - tabs visible, no horizontal overflow at 390x844"
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_capital_deployments.py",
+    "/app/test_reports/pytest/test_capital_deployments_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Unrelated pre-existing React warning: 'Encountered two children with the same key NVDA' fires on stock page load — not from CapitalDeployments (it uses ticker-based keys but only one per list); originates from another part of App.js (likely a list rendering tickers without deduping). Non-blocking, but worth a future cleanup pass.",
+    "Pre-existing Recharts warning: 'The width(-1) and height(-1) of chart should be greater than 0' — chart container size race during initial render; not caused by CD module.",
+    "CapitalDeployments component is well-scoped: clean testids, proper empty states (cd-empty-13f / cd-empty-ma / cd-empty-both), and the +N% tooltip uses the requested QoQ copy. No issues observed."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "100% (7/7 pytest + manual TSLA/NVDA shape checks)", "frontend": "100% (9/9 scenarios)"},
+  "test_credentials": "Access code QZ91U2U8 (set via localStorage.access_code to bypass landing page)",
+  "seed_data_creation": "None — SEC EDGAR live data used (NVDA, BRK-B, AAPL, TSLA, XYZNONEXISTENT)",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Capital Deployments feature is fully working end-to-end. Use ?stock=NVDA query param + localStorage('access_code','QZ91U2U8') to land directly on a 13F-populated page. Accordion is collapsed by default — click [data-testid='ih-capital-deployments-section'] to expand. Inner testids: cd-tab-new, cd-tab-book, cd-collapse-toggle, cd-badge-new, cd-badge-pct, cd-badge-exited, cd-holding-row-{TICKER}, cd-acq-row-{DATE}, cd-empty-13f, cd-empty-ma, cd-empty-both, cd-loading. Pre-existing duplicate-React-key 'NVDA' warning exists in the broader stock page (not CD) — flag for future cleanup.",
+  "rca of the issue": "N/A — no defects detected"
+}

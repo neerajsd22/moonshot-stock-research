@@ -12,18 +12,13 @@ import { Briefcase, Handshake, ChevronDown, ChevronUp, RefreshCw } from 'lucide-
 /**
  * CapitalDeployments — Intelligence Hub module.
  *
- * Sections:
- *   1. Public-Stock Holdings (Form 13F-HR)
- *      Tab A: New This Quarter
- *      Tab B: Current Book
- *   2. Acquisitions — Last 12 Months (Form 8-K)
- *
- * `data` shape:
+ * Accepts the data payload from
+ *   GET /api/stocks/:ticker/capital-deployments
+ * shaped as:
  *   {
- *     is_13f_filer: bool,
- *     filing_date: "YYYY-MM-DD",
- *     new_this_quarter: [{ ticker, name, value_usd, shares, badge: 'NEW' | '+24%' | 'EXITED', qoq_change_pct }],
- *     current_book:     [{ ticker, name, value_usd, shares, badge?, qoq_change_pct? }],
+ *     ticker, is_13f_filer, filing_date,
+ *     new_this_quarter: [{ ticker, name, value_usd, shares, badge?: 'NEW'|'TOPUP'|'EXITED', qoq_change_pct? }],
+ *     current_book:     [...],
  *     acquisitions:     [{ date, target_name, deal_size_text, filing_url }],
  *   }
  */

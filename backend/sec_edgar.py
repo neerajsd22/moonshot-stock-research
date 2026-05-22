@@ -343,12 +343,13 @@ def _consolidate_by_cusip(rows: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
 
 
 def _compute_13f(cik: str, submissions: Dict[str, Any]) -> Dict[str, Any]:
-    """Returns {is_13f_filer, filing_date, new_this_quarter, current_book}."""
+    """Returns {is_13f_filer, filing_date, filing_url, new_this_quarter, current_book}."""
     latest_two = _get_two_latest_13f(submissions)
     if not latest_two:
         return {
             "is_13f_filer": False,
             "filing_date": None,
+            "filing_url": None,
             "new_this_quarter": [],
             "current_book": [],
         }
@@ -423,6 +424,7 @@ def _compute_13f(cik: str, submissions: Dict[str, Any]) -> Dict[str, Any]:
     return {
         "is_13f_filer": True,
         "filing_date": latest.get("filingDate"),
+        "filing_url": _accession_dir(cik, latest["accessionNumber"]),
         "new_this_quarter": new_this_quarter,
         "current_book": current_book,
     }
@@ -517,8 +519,8 @@ def _compute_acquisitions(
                 "date": _format_filing_date(r["filingDate"]),
                 "target_name": info["target_name"],
                 "deal_size_text": info["deal_size_text"],
-                "filing_url": f"https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany"
-                f"&CIK={cik}&type=8-K&dateb=&owner=include&count=40",
+                # Specific 8-K filing index (Option C — date links to this filing)
+                "filing_url": _accession_dir(cik, accession),
             }
         )
         if len(out) >= 8:  # cap
@@ -542,6 +544,10 @@ def get_capital_deployments(ticker: str) -> Dict[str, Any]:
         "ticker": ticker,
         "is_13f_filer": False,
         "filing_date": None,
+        "thirteenf_filing_url": None,
+        "all_13f_url": None,
+        "all_8k_url": None,
+        "edgar_profile_url": None,
         "new_this_quarter": [],
         "current_book": [],
         "acquisitions": [],
@@ -550,8 +556,22 @@ def get_capital_deployments(ticker: str) -> Dict[str, Any]:
         _cache_set(key, empty)
         return empty
 
+    # EDGAR landing pages (work whether or not a 13F has ever been filed)
+    edgar_profile_url = (
+        f"https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK={cik}"
+    )
+    all_13f_url = f"{edgar_profile_url}&type=13F-HR&dateb=&owner=include&count=40"
+    all_8k_url = f"{edgar_profile_url}&type=8-K&dateb=&owner=include&count=40"
+
     submissions = _get_submissions(cik)
     if not submissions:
+        empty.update(
+            {
+                "edgar_profile_url": edgar_profile_url,
+                "all_13f_url": all_13f_url,
+                "all_8k_url": all_8k_url,
+            }
+        )
         _cache_set(key, empty)
         return empty
 
@@ -564,6 +584,10 @@ def get_capital_deployments(ticker: str) -> Dict[str, Any]:
         "filing_date": _format_filing_date(thirteenf["filing_date"])
         if thirteenf["filing_date"]
         else None,
+        "thirteenf_filing_url": thirteenf.get("filing_url"),
+        "all_13f_url": all_13f_url if thirteenf["is_13f_filer"] else None,
+        "all_8k_url": all_8k_url,
+        "edgar_profile_url": edgar_profile_url,
         "new_this_quarter": thirteenf["new_this_quarter"],
         "current_book": thirteenf["current_book"],
         "acquisitions": acquisitions,

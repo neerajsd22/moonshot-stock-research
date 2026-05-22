@@ -7,7 +7,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { Briefcase, Handshake, ChevronDown, ChevronUp, RefreshCw } from 'lucide-react';
+import { Briefcase, Handshake, ChevronDown, ChevronUp, RefreshCw, ArrowUpRight } from 'lucide-react';
 
 /**
  * CapitalDeployments — Intelligence Hub module.
@@ -173,21 +173,25 @@ const HoldingList = ({ rows, emptyText }) => {
 };
 
 const AcquisitionRow = ({ row }) => (
-  <a
-    href={row.filing_url}
-    target="_blank"
-    rel="noopener noreferrer"
+  <div
     data-testid={`cd-acq-row-${row.date}`}
-    className="block px-3 py-3 hover:bg-[rgba(217,70,239,0.06)] transition-colors duration-150 border-b border-[rgba(255,255,255,0.04)] last:border-b-0"
+    className="block px-3 py-3 transition-colors duration-150 border-b border-[rgba(255,255,255,0.04)] last:border-b-0 hover:bg-[rgba(217,70,239,0.04)]"
   >
     <div className="flex items-center justify-between gap-3">
       <div className="min-w-0 flex-1">
-        <div
-          className="text-[11px] text-gray-500 mb-0.5"
+        {/* Option C — date is the inline source link */}
+        <a
+          href={row.filing_url}
+          target="_blank"
+          rel="noopener noreferrer"
+          data-testid={`cd-acq-date-link-${row.date}`}
+          title="Opens the original 8-K filing on SEC.gov in a new tab"
+          className="inline-flex items-center gap-1 text-[11px] text-gray-500 hover:text-[#d946ef] transition-colors mb-0.5 group"
           style={{ fontFamily: 'JetBrains Mono, monospace' }}
         >
           {row.date}
-        </div>
+          <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+        </a>
         <div
           className="font-bold text-sm text-white truncate"
           style={{ fontFamily: 'Outfit, sans-serif' }}
@@ -203,8 +207,66 @@ const AcquisitionRow = ({ row }) => (
         ACQUIRED
       </Badge>
     </div>
-  </a>
+  </div>
 );
+
+const SourceCard = ({ data }) => {
+  const links = [
+    {
+      key: 'thirteenf',
+      label: 'View 13F-HR',
+      href: data?.thirteenf_filing_url || data?.all_13f_url,
+      show: !!(data?.thirteenf_filing_url || data?.all_13f_url),
+    },
+    {
+      key: 'eightk',
+      label: 'View 8-K filings',
+      href: data?.all_8k_url,
+      show: !!data?.all_8k_url,
+    },
+    {
+      key: 'profile',
+      label: 'EDGAR profile',
+      href: data?.edgar_profile_url,
+      show: !!data?.edgar_profile_url,
+    },
+  ].filter((l) => l.show);
+
+  if (!links.length) {
+    return (
+      <p className="text-[10px] text-gray-600 italic px-1 pt-2 border-t border-[rgba(255,255,255,0.04)]">
+        Source: SEC EDGAR (Forms 13F-HR &amp; 8-K).
+      </p>
+    );
+  }
+
+  return (
+    <div
+      data-testid="cd-source-card"
+      className="mt-1 rounded-lg border border-[rgba(255,255,255,0.06)] bg-[rgba(255,255,255,0.02)] px-3 py-2.5"
+    >
+      <p className="text-[10px] uppercase tracking-wider text-gray-500 mb-1.5">
+        Data verified against SEC EDGAR
+      </p>
+      <div className="flex flex-wrap gap-1.5">
+        {links.map((l) => (
+          <a
+            key={l.key}
+            href={l.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            data-testid={`cd-source-${l.key}`}
+            title="Opens the original SEC filing in a new tab"
+            className="inline-flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-full border border-[rgba(255,255,255,0.08)] bg-[rgba(255,255,255,0.02)] text-gray-300 hover:text-[#f0abfc] hover:border-[rgba(217,70,239,0.45)] hover:bg-[rgba(217,70,239,0.08)] transition-colors"
+          >
+            <ArrowUpRight className="w-3 h-3" />
+            {l.label}
+          </a>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 const CapitalDeployments = ({ data, loading }) => {
   if (loading) {
@@ -233,12 +295,15 @@ const CapitalDeployments = ({ data, loading }) => {
 
   if (!has13F && !hasMA) {
     return (
-      <div
-        data-testid="cd-empty-both"
-        className="text-xs text-gray-500 italic px-3 py-6 text-center"
-      >
-        No reported capital deployments. Switch to{' '}
-        <span className="text-[#d946ef]">Whale Watch</span> for a holder-side view.
+      <div className="space-y-3 px-1 sm:px-2 pb-2" data-testid="capital-deployments">
+        <div
+          data-testid="cd-empty-both"
+          className="text-xs text-gray-500 italic px-3 py-6 text-center"
+        >
+          No reported capital deployments. Switch to{' '}
+          <span className="text-[#d946ef]">Whale Watch</span> for a holder-side view.
+        </div>
+        <SourceCard data={data} />
       </div>
     );
   }
@@ -356,10 +421,8 @@ const CapitalDeployments = ({ data, loading }) => {
         )}
       </section>
 
-      {/* Footer */}
-      <p className="text-[10px] text-gray-600 italic px-1 pt-1 border-t border-[rgba(255,255,255,0.04)]">
-        Source: SEC EDGAR (Forms 13F-HR &amp; 8-K).
-      </p>
+      {/* Footer — source card with verifiable links to SEC EDGAR */}
+      <SourceCard data={data} />
     </div>
   );
 };

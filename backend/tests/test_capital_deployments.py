@@ -20,6 +20,10 @@ EXPECTED_KEYS = {
     "ticker",
     "is_13f_filer",
     "filing_date",
+    "thirteenf_filing_url",
+    "all_13f_url",
+    "all_8k_url",
+    "edgar_profile_url",
     "new_this_quarter",
     "current_book",
     "acquisitions",
@@ -112,3 +116,36 @@ def test_invalid_ticker_does_not_500():
     assert body["is_13f_filer"] is False
     assert body["current_book"] == []
     assert body["acquisitions"] == []
+
+
+def test_source_links_are_well_formed():
+    """Option C + D: per-row 8-K links + footer card with 13F / 8-K / EDGAR profile."""
+    # NVDA (13F filer) — must expose 13F filing, all-13F list, all-8K list, EDGAR profile
+    r = _get("NVDA")
+    body = r.json()
+    if not body.get("current_book"):
+        return  # SEC rate-limit; skip
+    assert body["thirteenf_filing_url"], "13F filer must expose thirteenf_filing_url"
+    assert body["thirteenf_filing_url"].startswith("https://www.sec.gov/Archives/edgar/data/")
+    assert body["all_13f_url"] and "type=13F-HR" in body["all_13f_url"]
+    assert body["all_8k_url"] and "type=8-K" in body["all_8k_url"]
+    assert body["edgar_profile_url"] and "action=getcompany" in body["edgar_profile_url"]
+
+    # AAPL (non-13F filer) — no 13F filing URL, but EDGAR + 8-K list still available
+    r = _get("AAPL")
+    body = r.json()
+    assert body["thirteenf_filing_url"] is None
+    assert body["all_13f_url"] is None  # don't promise a list of zero filings
+    assert body["all_8k_url"] and "type=8-K" in body["all_8k_url"]
+    assert body["edgar_profile_url"]
+
+
+def test_acquisition_filing_url_is_specific():
+    """Each acquisition's filing_url must point to that exact 8-K (Option C)."""
+    for tk in ("NVDA", "BRK-B"):
+        r = _get(tk)
+        body = r.json()
+        for acq in body.get("acquisitions", []):
+            assert acq["filing_url"].startswith("https://www.sec.gov/Archives/edgar/data/"), (
+                f"acquisition filing_url must be a specific filing index, got {acq['filing_url']}"
+            )

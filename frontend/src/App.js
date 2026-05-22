@@ -14,6 +14,7 @@ import { Routes, Route, useNavigate, useSearchParams } from 'react-router-dom';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import CategoryPage from './CategoryPage';
+import CapitalDeploymentsPreview from './CapitalDeploymentsPreview';
 import CategoriesPage from './CategoriesPage';
 import CreateCategoryDialog from './components/CreateCategoryDialog';
 import WatchlistManager from './components/WatchlistManager';
@@ -1954,6 +1955,7 @@ function App() {
     <>
       <Routes>
         <Route path="/admin" element={<AdminPage />} />
+        <Route path="/preview/capital-deployments" element={<CapitalDeploymentsPreview />} />
         <Route path="/*" element={
           <>
             <AccessGate>

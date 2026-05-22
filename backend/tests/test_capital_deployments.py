@@ -63,7 +63,7 @@ def test_nvda_is_13f_filer_with_holdings():
     if not body.get("current_book"):
         # SEC EDGAR may rate-limit; treat as upstream failure, not test failure
         return
-    assert body["is_13f_filer"] is True
+    assert body["is_13f_filer"]
     assert isinstance(body["filing_date"], str) and len(body["filing_date"]) > 0
     assert len(body["current_book"]) > 0
     for row in body["current_book"]:
@@ -76,17 +76,17 @@ def test_brk_b_has_large_book():
     if not body.get("current_book"):
         return
     # Berkshire's portfolio is consistently >10 distinct positions
-    assert body["is_13f_filer"] is True
+    assert body["is_13f_filer"]
     assert len(body["current_book"]) >= 10
     # Apple is consistently Berkshire's largest or near-largest holding
-    tickers = [r["ticker"] for r in body["current_book"][:5]]
+    tickers = [row["ticker"] for row in body["current_book"][:5]]
     assert "AAPL" in tickers
 
 
 def test_aapl_is_not_a_13f_filer():
     r = _get("AAPL")
     body = r.json()
-    assert body["is_13f_filer"] is False
+    assert not body["is_13f_filer"]
     assert body["current_book"] == []
     assert body["new_this_quarter"] == []
 
@@ -113,7 +113,7 @@ def test_invalid_ticker_does_not_500():
     r = _get("XYZNONEXISTENT")
     assert r.status_code == 200
     body = r.json()
-    assert body["is_13f_filer"] is False
+    assert not body["is_13f_filer"]
     assert body["current_book"] == []
     assert body["acquisitions"] == []
 

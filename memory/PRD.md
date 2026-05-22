@@ -81,6 +81,16 @@ Build a comprehensive stock analysis application called "Moonshot" with stock se
 
 ### Refactoring
 - Remove orphaned CategoriesPage.js (still routed but functionally duplicated)
-- Continue breaking down App.js (still ~2,335 lines). Next candidates: Header, Sidebar, StockList layout sections.
-- Modularize server.py (~3,650 lines) into routers/services per resource (search, quotes, alerts, intelligence). Move predefined ticker dictionaries out of `search_stocks()` to module-level constants.
+- Continue breaking down App.js (still ~1,950 lines). Next candidates: Header, Sidebar, StockList layout sections.
+- Modularize server.py (~4,000 lines) into routers/services per resource (search, quotes, alerts, intelligence). Move predefined ticker dictionaries out of `search_stocks()` to module-level constants.
 - Add TTL cache (~60s) around yfinance Search lookups to reduce rate-limit risk.
+
+### Code-quality backlog (from Feb 2026 code-review audit)
+- **React hook dependency warnings** (~40 sites across `usePullToRefresh`, `use-toast`, `ComparisonChart`, `AILoadingAnimation`, `usePortfolioSummary`, `PortfolioPage`, `WatchlistManager`, `PriceAlertManager`). Needs a dedicated PR with regression testing — risk of subtle stale-closure bugs.
+- **Array-index keys** (~40 sites across `StockDetailsBlock`, `HealthReportCard`, `NewsCard`, `ComparisonChart`, `AILoadingAnimation`, portfolio components). Replace with stable IDs.
+- **localStorage / sessionStorage security** (`App.js:976`, `AdminPage.js:28/58/69`). Move auth tokens to httpOnly cookies, encrypt other sensitive data, or move to memory-only session storage. Needs backend session-cookie design first.
+- **Oversized components** to split: `AccessGate.js` (420), `AdminPage.js` (394), `AdvancedChart.js` (549), `PriceAlertManager.js` (504), `StockDetailsBlock.js` (484).
+- **`portfolio_import.py` complexity**: `parse_input()` (20 CC), `_score_content()` (16 CC, 6 nesting levels), `detect_columns()` (13 CC), `_read_rows()` (11 CC) — break into focused helpers + lookup tables.
+- **Python type-hint coverage** is ~11% (vs target 80%). Bulk pass needed on `server.py`, `portfolio_import.py`, all `tests/`.
+- **Test files use `is`-comparison for non-bool literals** (~100 sites across `test_portfolio_tracker.py`, `test_price_alerts.py`, `test_new_features.py`). Replace with `==`. (`test_capital_deployments.py` already cleaned up.)
+- **`search_stocks()` in `server.py:483`** has 32 CC / 306 lines / 8 nesting levels — extract filter / scoring / formatting helpers.

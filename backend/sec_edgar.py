@@ -150,62 +150,66 @@ def _list_filing_files(cik: str, accession_no: str) -> List[str]:
         return []
 
 
-def _fetch_information_table(cik: str, accession_no: str) -> List[Dict[str, Any]]:
-    """Parse the information_table XML; returns list of {ticker?, name, value, shares}."""
-    files = _list_filing_files(cik, accession_no)
-    # Candidates: any .xml that is NOT the cover-sheet "primary_doc.xml".
-    # Pattern-match preferred first (info/table), else fall back to any other XML.
+def _scale_13f_value(raw: int) -> int:
+    """EDGAR 13F: post-2023 filings report value in dollars; pre-2023 in thousands.
+    Detect by magnitude — raw amounts under $1M are almost certainly old-format thousands."""
+    return raw * 1000 if raw < 1_000_000 else raw
+
+
+def _parse_holding_entry(entry) -> Optional[Dict[str, Any]]:
+    """Convert a single 13F infoTable XML entry into our row dict, or None to skip."""
+    name_el = entry.find(f"{_INFOTABLE_NS}nameOfIssuer")
+    value_el = entry.find(f"{_INFOTABLE_NS}value")
+    if name_el is None or value_el is None:
+        return None
+    try:
+        value_usd = _scale_13f_value(int(value_el.text))
+    except (TypeError, ValueError):
+        return None
+    shrs_el = entry.find(f"{_INFOTABLE_NS}shrsOrPrnAmt/{_INFOTABLE_NS}sshPrnamt")
+    try:
+        shares = int(shrs_el.text) if shrs_el is not None and shrs_el.text else None
+    except (TypeError, ValueError):
+        shares = None
+    cusip_el = entry.find(f"{_INFOTABLE_NS}cusip")
+    return {
+        "name": (name_el.text or "").strip(),
+        "cusip": (cusip_el.text or "").strip() if cusip_el is not None else "",
+        "value_usd": value_usd,
+        "shares": shares,
+    }
+
+
+def _fetch_xml(url: str) -> Optional["ET.Element"]:
+    """Fetch+parse an XML file from EDGAR. Returns None on any failure."""
+    try:
+        r = requests.get(url, headers=HEADERS, timeout=TIMEOUT)
+        r.raise_for_status()
+        return ET.fromstring(r.content)
+    except Exception as exc:
+        logger.warning("EDGAR XML fetch failed %s: %s", url, exc)
+        return None
+
+
+def _xml_candidates(files: List[str]) -> List[str]:
+    """Pick XML files that could be the 13F info table (any .xml except primary_doc.xml).
+    Prefer files whose name contains 'info' or 'table'."""
     xml_files = [f for f in files if f.lower().endswith(".xml") and f.lower() != "primary_doc.xml"]
     preferred = [f for f in xml_files if "info" in f.lower() or "table" in f.lower()]
-    info_files = preferred if preferred else xml_files
-    if not info_files:
-        return []
+    return preferred if preferred else xml_files
 
-    # Try each candidate until we find one with infoTable entries
-    for candidate in info_files:
-        url = f"{_accession_dir(cik, accession_no)}/{candidate}"
-        try:
-            r = requests.get(url, headers=HEADERS, timeout=TIMEOUT)
-            r.raise_for_status()
-            root = ET.fromstring(r.content)
-        except Exception as exc:
-            logger.warning("13F info table parse failed %s/%s/%s: %s", cik, accession_no, candidate, exc)
+
+def _fetch_information_table(cik: str, accession_no: str) -> List[Dict[str, Any]]:
+    """Parse the 13F information_table XML; returns list of holding dicts."""
+    candidates = _xml_candidates(_list_filing_files(cik, accession_no))
+    for candidate in candidates:
+        root = _fetch_xml(f"{_accession_dir(cik, accession_no)}/{candidate}")
+        if root is None:
             continue
         entries = root.findall(f"{_INFOTABLE_NS}infoTable")
         if not entries:
             continue
-
-        holdings: List[Dict[str, Any]] = []
-        for entry in entries:
-            name_el = entry.find(f"{_INFOTABLE_NS}nameOfIssuer")
-            value_el = entry.find(f"{_INFOTABLE_NS}value")
-            shrs_el = entry.find(f"{_INFOTABLE_NS}shrsOrPrnAmt/{_INFOTABLE_NS}sshPrnamt")
-            cusip_el = entry.find(f"{_INFOTABLE_NS}cusip")
-            if name_el is None or value_el is None:
-                continue
-            try:
-                # EDGAR 13F: post-2023 filings report `value` in dollars;
-                # pre-2023 reported in thousands. We detect by magnitude.
-                raw = int(value_el.text)
-                if raw < 1_000_000:
-                    # Old "in thousands" reporting (positions < $1M raw value)
-                    value_usd = raw * 1000
-                else:
-                    value_usd = raw
-            except (TypeError, ValueError):
-                continue
-            try:
-                shares = int(shrs_el.text) if shrs_el is not None and shrs_el.text else None
-            except (TypeError, ValueError):
-                shares = None
-            holdings.append(
-                {
-                    "name": (name_el.text or "").strip(),
-                    "cusip": (cusip_el.text or "").strip() if cusip_el is not None else "",
-                    "value_usd": value_usd,
-                    "shares": shares,
-                }
-            )
+        holdings = [h for h in (_parse_holding_entry(e) for e in entries) if h]
         if holdings:
             return holdings
     return []
@@ -342,17 +346,75 @@ def _consolidate_by_cusip(rows: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     return list(by_cusip.values()) + no_cusip
 
 
+_MATERIAL_QOQ_PCT = 10  # threshold for "TOPUP" badge
+
+
+def _classify_vs_prior(curr: Dict[str, Any], prior: Optional[Dict[str, Any]]) -> tuple:
+    """Compute (badge, qoq_change_pct, is_new) for a holding vs its prior-quarter row."""
+    if prior is None and curr.get("cusip"):
+        return "NEW", None, True
+    prior_shares = (prior or {}).get("shares") or 0
+    curr_shares = curr.get("shares") or 0
+    if prior_shares and curr_shares:
+        pct = ((curr_shares - prior_shares) / prior_shares) * 100
+        if abs(pct) >= _MATERIAL_QOQ_PCT:
+            return "TOPUP", int(round(pct)), False
+    return None, None, False
+
+
+def _build_holding_row(
+    h: Dict[str, Any], badge: Optional[str], qoq_change_pct: Optional[int]
+) -> Dict[str, Any]:
+    ticker = _guess_ticker_from_name(h["name"])
+    return {
+        "ticker": ticker or h["name"][:6].upper(),
+        "name": h["name"],
+        "value_usd": h["value_usd"],
+        "shares": h["shares"],
+        "badge": badge,
+        "qoq_change_pct": qoq_change_pct,
+    }
+
+
+def _build_exit_row(p: Dict[str, Any]) -> Dict[str, Any]:
+    ticker = _guess_ticker_from_name(p["name"])
+    return {
+        "ticker": ticker or p["name"][:6].upper(),
+        "name": p["name"],
+        "value_usd": 0,
+        "shares": 0,
+        "badge": "EXITED",
+        "qoq_change_pct": None,
+    }
+
+
+def _detect_exits(
+    latest_holdings: List[Dict[str, Any]], prior_holdings: List[Dict[str, Any]]
+) -> List[Dict[str, Any]]:
+    """Positions in prior_holdings whose CUSIP is not in latest_holdings."""
+    latest_cusips = {h["cusip"] for h in latest_holdings if h.get("cusip")}
+    return [
+        _build_exit_row(p)
+        for p in prior_holdings
+        if p.get("cusip") and p["cusip"] not in latest_cusips
+    ]
+
+
+def _empty_13f() -> Dict[str, Any]:
+    return {
+        "is_13f_filer": False,
+        "filing_date": None,
+        "filing_url": None,
+        "new_this_quarter": [],
+        "current_book": [],
+    }
+
+
 def _compute_13f(cik: str, submissions: Dict[str, Any]) -> Dict[str, Any]:
     """Returns {is_13f_filer, filing_date, filing_url, new_this_quarter, current_book}."""
     latest_two = _get_two_latest_13f(submissions)
     if not latest_two:
-        return {
-            "is_13f_filer": False,
-            "filing_date": None,
-            "filing_url": None,
-            "new_this_quarter": [],
-            "current_book": [],
-        }
+        return _empty_13f()
 
     latest = latest_two[0]
     latest_holdings = _consolidate_by_cusip(
@@ -363,63 +425,22 @@ def _compute_13f(cik: str, submissions: Dict[str, Any]) -> Dict[str, Any]:
         prior_holdings = _consolidate_by_cusip(
             _fetch_information_table(cik, latest_two[1]["accessionNumber"])
         )
-
-    # CUSIP-keyed lookup of prior shares for QoQ comparison
     prior_by_cusip = {h["cusip"]: h for h in prior_holdings if h.get("cusip")}
 
     current_book: List[Dict[str, Any]] = []
     new_this_quarter: List[Dict[str, Any]] = []
     for h in latest_holdings:
-        prior = prior_by_cusip.get(h.get("cusip"))
-        badge = None
-        qoq_change_pct = None
-        is_new = False
-        if prior is None and h.get("cusip"):
-            badge = "NEW"
-            is_new = True
-        else:
-            prior_shares = (prior or {}).get("shares") or 0
-            curr_shares = h.get("shares") or 0
-            if prior_shares and curr_shares:
-                pct = ((curr_shares - prior_shares) / prior_shares) * 100
-                # Material moves only (>=10%)
-                if abs(pct) >= 10:
-                    badge = "TOPUP"
-                    qoq_change_pct = int(round(pct))
-        ticker = _guess_ticker_from_name(h["name"])
-        row = {
-            "ticker": ticker or h["name"][:6].upper(),
-            "name": h["name"],
-            "value_usd": h["value_usd"],
-            "shares": h["shares"],
-            "badge": badge,
-            "qoq_change_pct": qoq_change_pct,
-        }
+        badge, qoq_pct, is_new = _classify_vs_prior(h, prior_by_cusip.get(h.get("cusip")))
+        row = _build_holding_row(h, badge, qoq_pct)
         current_book.append(row)
-        if is_new or (badge == "TOPUP" and abs(qoq_change_pct or 0) >= 10):
+        if is_new or badge == "TOPUP":
             new_this_quarter.append(row)
 
-    # Detect exited positions (in prior, not in latest)
-    latest_cusips = {h["cusip"] for h in latest_holdings if h.get("cusip")}
-    for p in prior_holdings:
-        if p.get("cusip") and p["cusip"] not in latest_cusips:
-            ticker = _guess_ticker_from_name(p["name"])
-            new_this_quarter.append(
-                {
-                    "ticker": ticker or p["name"][:6].upper(),
-                    "name": p["name"],
-                    "value_usd": 0,
-                    "shares": 0,
-                    "badge": "EXITED",
-                    "qoq_change_pct": None,
-                }
-            )
+    new_this_quarter.extend(_detect_exits(latest_holdings, prior_holdings))
 
     # Sort books by value, exited last
     current_book.sort(key=lambda r: r["value_usd"], reverse=True)
-    new_this_quarter.sort(
-        key=lambda r: (r["badge"] == "EXITED", -r["value_usd"])
-    )
+    new_this_quarter.sort(key=lambda r: (r["badge"] == "EXITED", -r["value_usd"]))
 
     return {
         "is_13f_filer": True,
@@ -531,6 +552,31 @@ def _compute_acquisitions(
 # ---------------------------------------------------------------------------
 # Public façade
 # ---------------------------------------------------------------------------
+def _build_edgar_urls(cik: str) -> Dict[str, str]:
+    """Build the three top-level EDGAR landing URLs for a company."""
+    profile = f"https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK={cik}"
+    return {
+        "edgar_profile_url": profile,
+        "all_13f_url": f"{profile}&type=13F-HR&dateb=&owner=include&count=40",
+        "all_8k_url": f"{profile}&type=8-K&dateb=&owner=include&count=40",
+    }
+
+
+def _empty_payload(ticker: str, urls: Optional[Dict[str, str]] = None) -> Dict[str, Any]:
+    return {
+        "ticker": ticker,
+        "is_13f_filer": False,
+        "filing_date": None,
+        "thirteenf_filing_url": None,
+        "all_13f_url": (urls or {}).get("all_13f_url"),
+        "all_8k_url": (urls or {}).get("all_8k_url"),
+        "edgar_profile_url": (urls or {}).get("edgar_profile_url"),
+        "new_this_quarter": [],
+        "current_book": [],
+        "acquisitions": [],
+    }
+
+
 def get_capital_deployments(ticker: str) -> Dict[str, Any]:
     """Top-level call used by the FastAPI endpoint. 24h TTL on full payload."""
     ticker = (ticker or "").upper()
@@ -540,44 +586,19 @@ def get_capital_deployments(ticker: str) -> Dict[str, Any]:
         return cached
 
     cik = get_cik(ticker)
-    empty = {
-        "ticker": ticker,
-        "is_13f_filer": False,
-        "filing_date": None,
-        "thirteenf_filing_url": None,
-        "all_13f_url": None,
-        "all_8k_url": None,
-        "edgar_profile_url": None,
-        "new_this_quarter": [],
-        "current_book": [],
-        "acquisitions": [],
-    }
     if not cik:
-        _cache_set(key, empty)
-        return empty
+        result = _empty_payload(ticker)
+        _cache_set(key, result)
+        return result
 
-    # EDGAR landing pages (work whether or not a 13F has ever been filed)
-    edgar_profile_url = (
-        f"https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK={cik}"
-    )
-    all_13f_url = f"{edgar_profile_url}&type=13F-HR&dateb=&owner=include&count=40"
-    all_8k_url = f"{edgar_profile_url}&type=8-K&dateb=&owner=include&count=40"
-
+    urls = _build_edgar_urls(cik)
     submissions = _get_submissions(cik)
     if not submissions:
-        empty.update(
-            {
-                "edgar_profile_url": edgar_profile_url,
-                "all_13f_url": all_13f_url,
-                "all_8k_url": all_8k_url,
-            }
-        )
-        _cache_set(key, empty)
-        return empty
+        result = _empty_payload(ticker, urls)
+        _cache_set(key, result)
+        return result
 
     thirteenf = _compute_13f(cik, submissions)
-    acquisitions = _compute_acquisitions(cik, submissions, months=12)
-
     result = {
         "ticker": ticker,
         "is_13f_filer": thirteenf["is_13f_filer"],
@@ -585,12 +606,12 @@ def get_capital_deployments(ticker: str) -> Dict[str, Any]:
         if thirteenf["filing_date"]
         else None,
         "thirteenf_filing_url": thirteenf.get("filing_url"),
-        "all_13f_url": all_13f_url if thirteenf["is_13f_filer"] else None,
-        "all_8k_url": all_8k_url,
-        "edgar_profile_url": edgar_profile_url,
+        "all_13f_url": urls["all_13f_url"] if thirteenf["is_13f_filer"] else None,
+        "all_8k_url": urls["all_8k_url"],
+        "edgar_profile_url": urls["edgar_profile_url"],
         "new_this_quarter": thirteenf["new_this_quarter"],
         "current_book": thirteenf["current_book"],
-        "acquisitions": acquisitions,
+        "acquisitions": _compute_acquisitions(cik, submissions, months=12),
     }
     _cache_set(key, result)
     return result
